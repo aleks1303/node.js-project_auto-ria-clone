@@ -1,10 +1,35 @@
 .env
-.idea
+.env.db
+.idea/
 node_modules
-dist
+dist/
 
-/mongo.db/
+mongo.db
 *.wt
+*.swp
 journal/
 storage/
 node_modules/
+mongo_db/
+storage.bson
+*.log
+# IDE та редактори
+
+
+
+
+
+# Залежності
+
+
+# Збірка
+
+
+# БАЗА ДАНИХ (MongoDB)
+# Ігноруємо папку, яку ми створили для волюму в docker-compose
+
+
+# Про всяк випадок ігноруємо окремі системні файли монго,
+# якщо вони з'являться поза папкою
+
+

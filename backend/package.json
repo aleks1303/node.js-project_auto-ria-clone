@@ -8,6 +8,7 @@
     "watch:server": "tsx src/main.ts --watch"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "bcrypt": "^6.0.0",
     "cron": "^4.4.0",
     "express": "^5.1.0",
