@@ -1,3 +1,4 @@
+import { accountTypeEnum } from "../enums/account-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { IBase } from "./base.interface";
 
@@ -13,6 +14,7 @@ type ITokenModel = Pick<IToken, "accessToken" | "refreshToken" | "_userId">;
 interface ITokenPayload {
     userId: string;
     role: RoleEnum;
+    accountType: accountTypeEnum;
 }
 
 type ITokenPair = Pick<IToken, "accessToken" | "refreshToken">;
