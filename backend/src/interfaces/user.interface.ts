@@ -3,14 +3,14 @@ import { RoleEnum } from "../enums/role.enum";
 import { IBase } from "./base.interface";
 
 export interface IUser extends IBase {
-    email: string;
-    password: string;
-    role: RoleEnum;
-    accountType: accountTypeEnum;
     name: string;
     surname: string;
-    phone?: string;
-    age?: number;
+    age: number;
+    email: string;
+    password: string;
+    phone: string;
+    role: RoleEnum;
+    accountType: accountTypeEnum;
     avatar?: string;
     isActive: boolean;
     isDeleted: boolean;
