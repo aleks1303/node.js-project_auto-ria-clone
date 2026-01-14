@@ -15,4 +15,6 @@ export interface IUser extends IBase {
     isActive: boolean;
     isDeleted: boolean;
     isVerified: boolean;
+    city?: string;
+    region?: string;
 }

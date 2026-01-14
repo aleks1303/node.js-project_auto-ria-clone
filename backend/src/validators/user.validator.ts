@@ -17,6 +17,8 @@ export class UserValidator {
     private static email = Joi.string().email().lowercase().trim();
     private static password = Joi.string().regex(RegexEnum.PASSWORD);
     private static phone = Joi.string().regex(RegexEnum.PHONE);
+    private static city = Joi.string().min(2).max(30).trim();
+    private static region = Joi.string().min(2).max(30).trim();
 
     public static create = Joi.object({
         name: this.name.required(),
@@ -25,7 +27,18 @@ export class UserValidator {
         email: this.email.required(),
         password: this.password.required(),
         phone: this.phone.required(),
+        city: this.city.optional(),
+        region: this.region.optional(),
     });
+
+    public static update = Joi.object({
+        name: this.name,
+        surname: this.surname,
+        age: this.age,
+        phone: this.phone,
+        city: this.city,
+        region: this.region,
+    }).min(1);
 }
 
 // private static role = Joi.object()

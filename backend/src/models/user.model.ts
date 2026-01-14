@@ -30,12 +30,16 @@ const userSchema = new Schema(
         },
         name: { type: String, required: true, trim: true },
         surname: { type: String, required: true, trim: true },
-        phone: { type: String, required: true, trim: true },
+        phone: { type: String, required: true, trim: true, unique: true },
         age: { type: Number, required: true },
         avatar: { type: String, default: "" },
+
         isActive: { type: Boolean, default: true },
         isDeleted: { type: Boolean, default: false },
         isVerified: { type: Boolean, default: false },
+
+        city: { type: String, required: false, trim: true },
+        region: { type: String, required: false, trim: true },
     },
     {
         timestamps: true,
