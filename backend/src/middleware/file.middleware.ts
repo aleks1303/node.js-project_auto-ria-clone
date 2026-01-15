@@ -17,6 +17,7 @@ class FileMiddleware {
                     throw new ApiError("large file allowed up to 5Mb", 400);
                 }
                 if (!mimes.includes(file.mimetype)) {
+                    // noinspection ExceptionCaughtLocallyJS
                     throw new ApiError(
                         `invalid file type, require ${mimes.join(", ")}`,
                         400,
