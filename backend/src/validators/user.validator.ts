@@ -31,6 +31,11 @@ export class UserValidator {
         region: this.region.optional(),
     });
 
+    public static signIn = Joi.object({
+        email: this.email.required(),
+        password: this.password.required(),
+    });
+
     public static update = Joi.object({
         name: this.name,
         surname: this.surname,

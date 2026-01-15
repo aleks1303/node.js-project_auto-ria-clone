@@ -9,7 +9,7 @@ interface IToken extends IBase {
     _userId: string;
 }
 
-type ITokenModel = Pick<IToken, "accessToken" | "refreshToken" | "_userId">;
+type ITokenModel = Pick<IToken, "refreshToken" | "_userId">;
 
 interface ITokenPayload {
     userId: string;

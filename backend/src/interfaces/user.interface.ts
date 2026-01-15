@@ -31,3 +31,4 @@ export type IUserCreateDTO = Pick<
     | "city"
     | "region"
 >;
+export type ISignInDTO = Pick<IUser, "email" | "password">;

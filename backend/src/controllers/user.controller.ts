@@ -12,5 +12,10 @@ class UserController {
             next(e);
         }
     }
+
+    public async getMe(req: Request, res: Response, next: NextFunction) {
+        const user = res.locals.user;
+        res.status(StatusCodesEnum.OK).json(user);
+    }
 }
 export const userController = new UserController();

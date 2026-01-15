@@ -13,5 +13,9 @@ class UserRepository {
     public getByEmail(email: string): Promise<IUser> {
         return User.findOne({ email });
     }
+
+    public getById(userId: string): Promise<IUser> {
+        return User.findById(userId);
+    }
 }
 export const userRepository = new UserRepository();
