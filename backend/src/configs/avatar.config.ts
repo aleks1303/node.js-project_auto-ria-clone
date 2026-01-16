@@ -1,6 +1,6 @@
-import { AvatarType } from "../interfaces/avatar.interface";
+import { IFileConfig } from "../interfaces/file-config.interface";
 
-export const avatarConfig: AvatarType = {
-    maxSize: 5 * 1024 * 1024,
+export const avatarConfig: IFileConfig = {
+    maxSize: 2 * 1024 * 1024,
     mimes: ["image/jpg", "image/jpeg", "image/png", "image/webp"],
 };

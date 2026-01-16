@@ -1,5 +1,7 @@
 import { accountTypeEnum } from "../enums/account-type.enum";
+import { OrderEnum } from "../enums/order";
 import { RoleEnum } from "../enums/role.enum";
+import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
 import { IBase } from "./base.interface";
 
 export interface IUser extends IBase {
@@ -31,4 +33,35 @@ export type IUserCreateDTO = Pick<
     | "city"
     | "region"
 >;
+
+export type IUserResponse = Pick<
+    IUser,
+    | "_id"
+    | "name"
+    | "surname"
+    | "email"
+    | "age"
+    | "phone"
+    | "role"
+    | "accountType"
+    | "city"
+    | "region"
+    | "avatar"
+    | "isActive"
+    | "isVerified"
+    | "isDeleted"
+>;
 export type ISignInDTO = Pick<IUser, "email" | "password">;
+
+export interface IUserListQuery {
+    limit?: number;
+    page?: number;
+    search?: string;
+    order?: OrderEnum;
+    orderBy?: UserListOrderByEnum;
+}
+export interface IUserListResponse {
+    data: IUserResponse[];
+    total: number;
+    query?: IUserListQuery;
+}

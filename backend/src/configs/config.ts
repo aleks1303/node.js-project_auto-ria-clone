@@ -26,7 +26,7 @@ interface IConfig {
     AWS_ACCESS_KEY: string;
     AWS_SECRET_KEY: string;
     AWS_S3_REGION: string;
-    AWS_S3_ACL: string;
+    AWS_S3_ACL: ObjectCannedACL;
     AWS_S3_ENDPOINT: string;
 }
 

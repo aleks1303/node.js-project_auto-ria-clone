@@ -1,5 +1,3 @@
-import path from "node:path";
-
 import { model, Schema } from "mongoose";
 
 import { accountTypeEnum } from "../enums/account-type.enum"; // Твій новий enum
@@ -44,15 +42,15 @@ const userSchema = new Schema(
     {
         timestamps: true,
         versionKey: false,
-        toJSON: {
-            transform: (doc, ret) => {
-                delete ret.password;
-                if (ret.avatar) {
-                    ret.avatar = `/media/${path.basename(ret.avatar)}`;
-                }
-                return ret;
-            },
-        },
+        // toJSON: {
+        //     transform: (doc, ret) => {
+        //         delete ret.password;
+        //         if (ret.avatar) {
+        //             ret.avatar = `/media/${path.basename(ret.avatar)}`;
+        //         }
+        //         return ret;
+        //     },
+        // },
     },
 );
 

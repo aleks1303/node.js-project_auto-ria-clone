@@ -1,4 +1,4 @@
-export interface AvatarType {
+export interface IFileConfig {
     maxSize: number;
     mimes: string[];
 }

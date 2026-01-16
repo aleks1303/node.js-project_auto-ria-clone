@@ -3,14 +3,19 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { ISignInDTO, IUserCreateDTO } from "../interfaces/user.interface";
+import { userPresenter } from "../presenters/user.presenter";
 import { authService } from "../services/auth.service";
 
 class AuthController {
     public async signUp(req: Request, res: Response, next: NextFunction) {
         try {
             const body = req.body as IUserCreateDTO;
-            const data = await authService.signUp(body);
-            res.status(StatusCodesEnum.CREATED).json(data);
+            const { user, tokens } = await authService.signUp(body);
+            const userResponse = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.CREATED).json({
+                user: userResponse,
+                tokens,
+            });
         } catch (e) {
             next(e);
         }
@@ -19,8 +24,12 @@ class AuthController {
     public async signIn(req: Request, res: Response, next: NextFunction) {
         try {
             const body = req.body as ISignInDTO;
-            const data = await authService.signIn(body);
-            res.status(StatusCodesEnum.OK).json(data);
+            const { user, tokens } = await authService.signIn(body);
+            const userResponse = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.OK).json({
+                user: userResponse,
+                tokens,
+            });
         } catch (e) {
             next(e);
         }

@@ -17,5 +17,9 @@ class UserRepository {
     public getById(userId: string): Promise<IUser> {
         return User.findById(userId);
     }
+
+    public updateById(userId: string, dto: Partial<IUser>): Promise<IUser> {
+        return User.findByIdAndUpdate(userId, dto, { new: true });
+    }
 }
 export const userRepository = new UserRepository();
