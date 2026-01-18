@@ -53,13 +53,23 @@ export type IUserResponse = Pick<
 >;
 export type ISignInDTO = Pick<IUser, "email" | "password">;
 
+// export interface IUserListQuery {
+//     limit?: number;
+//     page?: number;
+//     search?: string;
+//     order?: OrderEnum;
+//     orderBy?: UserListOrderByEnum;
+// }
+
 export interface IUserListQuery {
-    limit?: number;
+    pageSize?: number; // раніше був limit
     page?: number;
     search?: string;
     order?: OrderEnum;
     orderBy?: UserListOrderByEnum;
+    role?: string;
 }
+
 export interface IUserListResponse {
     data: IUserResponse[];
     total: number;
