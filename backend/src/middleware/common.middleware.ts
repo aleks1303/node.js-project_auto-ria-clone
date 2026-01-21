@@ -13,7 +13,7 @@ class CommonMiddleware {
                 if (!isObjectIdOrHexString) {
                     throw new ApiError(
                         `${key}: ${id} invalid Id`,
-                        StatusCodesEnum.BED_REQUEST,
+                        StatusCodesEnum.BAD_REQUEST,
                     );
                 }
                 next();
@@ -34,10 +34,24 @@ class CommonMiddleware {
         };
     }
 
+    // public query(validator: ObjectSchema) {
+    //     return async (req: Request, res: Response, next: NextFunction) => {
+    //         try {
+    //             req.query = await validator.validateAsync(req.query);
+    //             next();
+    //         } catch (e) {
+    //             next(e);
+    //         }
+    //     };
+    // }
+
     public query(validator: ObjectSchema) {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
-                req.query = await validator.validateAsync(req.query);
+                // Записуємо провалідовані дані з дефолтами у спеціальне поле
+                res.locals.validatedQuery = await validator.validateAsync(
+                    req.query,
+                );
                 next();
             } catch (e) {
                 next(e);
@@ -50,7 +64,7 @@ class CommonMiddleware {
                 if (!req.file) {
                     new ApiError(
                         " No file uploaded",
-                        StatusCodesEnum.BED_REQUEST,
+                        StatusCodesEnum.BAD_REQUEST,
                     );
                 }
                 next();

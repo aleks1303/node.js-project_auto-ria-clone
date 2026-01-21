@@ -2,21 +2,20 @@ import { accountTypeEnum } from "../enums/account-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { IBase } from "./base.interface";
 
-interface IToken extends IBase {
+export interface IToken extends IBase {
     _id: string;
     accessToken: string;
     refreshToken: string;
     _userId: string;
 }
 
-type ITokenModel = Pick<IToken, "refreshToken" | "_userId">;
+export type ITokenModel = Pick<IToken, "refreshToken" | "_userId">;
 
-interface ITokenPayload {
+export interface ITokenPayload {
     userId: string;
     role: RoleEnum;
     accountType: accountTypeEnum;
 }
 
-type ITokenPair = Pick<IToken, "accessToken" | "refreshToken">;
-type IRefresh = Pick<IToken, "refreshToken">;
-export { IRefresh, IToken, ITokenModel, ITokenPair, ITokenPayload };
+export type ITokenPair = Pick<IToken, "accessToken" | "refreshToken">;
+export type IRefresh = Pick<IToken, "refreshToken">;

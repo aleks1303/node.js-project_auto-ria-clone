@@ -16,6 +16,7 @@ class UserPresenter {
             age: entity.age,
             phone: entity.phone, // Додаємо телефон для зв'язку
             role: entity.role,
+            permissions: entity.permissions,
             accountType: entity.accountType, // Важливо для AutoRia
             city: entity.city,
             region: entity.region,
@@ -28,16 +29,47 @@ class UserPresenter {
         };
     }
 
+    // public toListResDto(
+    //     entities: IUser[],
+    //     total: number,
+    //     query: IUserListQuery,
+    // ): IUserListResponse {
+    //     return {
+    //         // Використовуємо стрілочну функцію, щоб не втратити контекст 'this'
+    //         data: entities.map((entity) => this.toPublicResDto(entity)),
+    //         total,
+    //         ...query,
+    //     };
+    // }
+
+    // public toListResDto(
+    //     entities: IUser[],
+    //     total: number,
+    //     query: IUserListQuery,
+    // ): IUserListResponse {
+    //     const totalPages = Math.ceil(total / query.pageSize);
+    //
+    //     return {
+    //         data: entities.map((entity) => this.toPublicResDto(entity)), // Очищаємо паролі
+    //         total,
+    //         totalPages,
+    //         page: query.page,
+    //         pageSize: query.pageSize,
+    //         prevPage: query.page > 1,
+    //         nextPage: query.page < totalPages,
+    //     };
+    // }
+
     public toListResDto(
         entities: IUser[],
         total: number,
         query: IUserListQuery,
     ): IUserListResponse {
         return {
-            // Використовуємо стрілочну функцію, щоб не втратити контекст 'this'
             data: entities.map((entity) => this.toPublicResDto(entity)),
             total,
-            ...query,
+            totalPages: Math.ceil(total / (query.pageSize || 10)),
+            query,
         };
     }
 }

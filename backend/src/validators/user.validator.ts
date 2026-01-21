@@ -1,6 +1,9 @@
 import Joi from "joi";
 
+import { OrderEnum } from "../enums/order";
 import { RegexEnum } from "../enums/regex.enum";
+import { RoleEnum } from "../enums/role.enum";
+import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
 
 export class UserValidator {
     private static name = Joi.string()
@@ -19,6 +22,7 @@ export class UserValidator {
     private static phone = Joi.string().regex(RegexEnum.PHONE);
     private static city = Joi.string().min(2).max(30).trim();
     private static region = Joi.string().min(2).max(30).trim();
+    private static role = Joi.string().valid(...Object.values(RoleEnum));
 
     public static create = Joi.object({
         name: this.name.required(),
@@ -29,6 +33,9 @@ export class UserValidator {
         phone: this.phone.required(),
         city: this.city.optional(),
         region: this.region.optional(),
+        role: this.role
+            .valid(RoleEnum.BUYER, RoleEnum.SELLER)
+            .default(RoleEnum.BUYER),
     });
 
     public static signIn = Joi.object({
@@ -44,11 +51,19 @@ export class UserValidator {
         city: this.city,
         region: this.region,
     }).min(1);
-}
 
-// private static role = Joi.object()
-//     .valid(...Object.values(RoleEnum))
-//     .default(RoleEnum.BUYER);
-// private static accountType = Joi.object()
-//     .valid(...Object.values(accountTypeEnum))
-//     .default(accountTypeEnum.BASIS);
+    public static query = Joi.object({
+        pageSize: Joi.number().min(1).max(100).default(10),
+        page: Joi.number().min(1).default(1),
+        search: Joi.string().trim().allow(""),
+        orderBy: Joi.string()
+            .valid(...Object.values(UserListOrderByEnum))
+            .default(UserListOrderByEnum.NAME),
+        order: Joi.string()
+            .valid(...Object.values(OrderEnum))
+            .default(OrderEnum.ASC),
+        role: Joi.string()
+            .valid(...Object.values(RoleEnum))
+            .optional(),
+    });
+}

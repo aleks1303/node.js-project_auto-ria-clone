@@ -3,13 +3,13 @@ import { UploadedFile } from "express-fileupload";
 import { FileItemTypeEnum } from "../enums/file-item-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { IUser } from "../interfaces/user.interface";
+import { IUser, IUserListQuery } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
 import { s3Service } from "./s3.service";
 
 class UserService {
-    public getAll(): Promise<IUser[]> {
-        return userRepository.getAll();
+    public async getAll(query: IUserListQuery): Promise<[IUser[], number]> {
+        return await userRepository.getAll(query);
     }
 
     public async uploadAvatar(
@@ -24,12 +24,8 @@ class UserService {
             user._id,
             oldFilePath,
         );
-        console.log("--- DEBUG ---");
-        console.log("URL from S3:", avatar);
 
-        const update = await userRepository.updateById(user._id, { avatar });
-        console.log("Updated user from DB:", update);
-        return update;
+        return await userRepository.updateById(user._id, { avatar });
     }
 
     public async deleteAvatar(jwtPayload: ITokenPayload): Promise<void> {

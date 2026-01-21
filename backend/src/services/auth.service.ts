@@ -1,3 +1,5 @@
+import { rolePermissions } from "../constants/permissions.constant";
+import { RoleEnum } from "../enums/role.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
@@ -16,8 +18,22 @@ class AuthService {
         dto: IUserCreateDTO,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await this.isEmailExist(dto.email);
+        const role = dto.role || RoleEnum.BUYER;
+        const permissions = rolePermissions[role];
+        const checkRole = [RoleEnum.BUYER, RoleEnum.SELLER];
+        if (!checkRole.includes(role)) {
+            throw new ApiError(
+                "Ви можете зареєструватися тільки як Покупець або Продавець",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
         const password = await passwordService.hashPassword(dto.password);
-        const newUser = await userRepository.create({ ...dto, password });
+        const newUser = await userRepository.create({
+            ...dto,
+            role,
+            permissions,
+            password,
+        });
         const tokens = tokenService.generateTokens({
             userId: newUser._id,
             role: newUser.role,

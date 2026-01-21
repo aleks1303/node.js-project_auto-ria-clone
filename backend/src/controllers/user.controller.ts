@@ -3,19 +3,21 @@ import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
+import { IUserListQuery } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 
 class UserController {
     public async getAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const data = await userService.getAll();
-            res.status(StatusCodesEnum.OK).json(data);
+            const query = res.locals.validatedQuery as IUserListQuery;
+            const [entities, total] = await userService.getAll(query);
+            const result = userPresenter.toListResDto(entities, total, query);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
     }
-
     public async getMe(req: Request, res: Response, next: NextFunction) {
         const user = res.locals.user;
         const userResponse = userPresenter.toPublicResDto(user);

@@ -1,5 +1,6 @@
 import { accountTypeEnum } from "../enums/account-type.enum";
 import { OrderEnum } from "../enums/order";
+import { PermissionsEnum } from "../enums/permissions.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
 import { IBase } from "./base.interface";
@@ -13,6 +14,7 @@ export interface IUser extends IBase {
     password: string;
     phone: string;
     role: RoleEnum;
+    permissions: PermissionsEnum[];
     accountType: accountTypeEnum;
     avatar?: string;
     isActive: boolean;
@@ -29,6 +31,8 @@ export type IUserCreateDTO = Pick<
     | "age"
     | "email"
     | "password"
+    | "role"
+    | "permissions"
     | "phone"
     | "city"
     | "region"
@@ -43,6 +47,7 @@ export type IUserResponse = Pick<
     | "age"
     | "phone"
     | "role"
+    | "permissions"
     | "accountType"
     | "city"
     | "region"
@@ -70,8 +75,19 @@ export interface IUserListQuery {
     role?: string;
 }
 
+// export interface IUserListResponse {
+//     data: IUserResponse[];
+//     totalPages: number;
+//     page: number;
+//     pageSize: number;
+//     prevPage: boolean;
+//     nextPage: boolean;
+//     total: number;
+//     query?: IUserListQuery;
+// }
 export interface IUserListResponse {
     data: IUserResponse[];
     total: number;
-    query?: IUserListQuery;
+    totalPages: number;
+    query: IUserListQuery; // Повертаємо вхідні параметри для фронтенду
 }
