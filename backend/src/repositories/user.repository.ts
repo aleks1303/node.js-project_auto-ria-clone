@@ -12,10 +12,10 @@ class UserRepository {
         const skip = (query.page - 1) * query.pageSize;
         const filter: FilterQuery<IUser> = { isDeleted: false };
 
-        // Фільтр по тексту
         if (query.search) {
             filter.$or = [
                 { name: { $regex: query.search, $options: "i" } },
+                { surname: { $regex: query.search, $options: "i" } },
                 { email: { $regex: query.search, $options: "i" } },
             ];
         }

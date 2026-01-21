@@ -37,17 +37,6 @@ class AuthMiddleware {
                 accessToken,
                 TokenTypeEnum.ACCESS,
             );
-            // const isTokenExists = await tokenService.isTokenExists(
-            //     accessToken,
-            //     TokenTypeEnum.ACCESS,
-            // );
-            //
-            // if (!isTokenExists) {
-            //     throw new ApiError(
-            //         "Invalid token",
-            //         StatusCodesEnum.UNAUTHORIZED,
-            //     );
-            // }
             const user = await userRepository.getById(tokenPayload.userId);
 
             if (!user) {
@@ -104,21 +93,38 @@ class AuthMiddleware {
         }
     }
 
-    public isAdmin(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { role } = req.res.locals.tokenPayload as ITokenPayload;
-
-            if (role !== RoleEnum.ADMIN) {
-                throw new ApiError(
-                    "No has permissions",
-                    StatusCodesEnum.FORBIDDEN,
-                );
+    public checkRole(roles: RoleEnum[]) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { role } = res.locals.tokenPayload as ITokenPayload;
+                if (!roles.includes(role)) {
+                    throw new ApiError(
+                        "Access denied. High level of clearance required",
+                        StatusCodesEnum.FORBIDDEN,
+                    );
+                }
+                next();
+            } catch (e) {
+                next(e);
             }
-            next();
-        } catch (e) {
-            next(e);
-        }
+        };
     }
+    // на видалення
+    // public isAdmin(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { role } = req.res.locals.tokenPayload as ITokenPayload;
+    //
+    //         if (role !== RoleEnum.ADMIN) {
+    //             throw new ApiError(
+    //                 "No has permissions",
+    //                 StatusCodesEnum.FORBIDDEN,
+    //             );
+    //         }
+    //         next();
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 }
 
 export const authMiddleware = new AuthMiddleware();
