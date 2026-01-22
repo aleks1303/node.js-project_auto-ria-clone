@@ -57,9 +57,10 @@ export type IUserResponse = Pick<
     | "isDeleted"
 >;
 export type ISignInDTO = Pick<IUser, "email" | "password">;
+export type IVerifyType = Pick<IUser, "email">;
 
 export interface IUserListQuery {
-    pageSize?: number; // раніше був limit
+    pageSize?: number;
     page?: number;
     search?: string;
     order?: OrderEnum;

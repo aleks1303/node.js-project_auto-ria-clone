@@ -5,7 +5,6 @@ import { User } from "./user.model";
 
 const tokenSchema = new Schema(
     {
-        // accessToken: { type: String, required: true },
         refreshToken: { type: String, required: true },
         _userId: { type: Schema.Types.ObjectId, required: true, ref: User },
     },
@@ -14,4 +13,5 @@ const tokenSchema = new Schema(
         versionKey: false,
     },
 );
+tokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86500 });
 export const Token = model<IToken>("tokens", tokenSchema);
