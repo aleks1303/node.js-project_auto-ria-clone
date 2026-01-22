@@ -1,4 +1,6 @@
 import { rolePermissions } from "../constants/permissions.constant";
+import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.error";
@@ -7,9 +9,12 @@ import {
     ISignInDTO,
     IUser,
     IUserCreateDTO,
+    IVerifyType,
 } from "../interfaces/user.interface";
+import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
@@ -39,9 +44,23 @@ class AuthService {
             role: newUser.role,
             accountType: newUser.accountType,
         });
+        const actionToken = tokenService.generateActionToken(
+            { userId: newUser._id },
+            ActionTokenTypeEnum.VERIFY_EMAIL,
+        );
         await tokenRepository.create({
             refreshToken: tokens.refreshToken,
             _userId: newUser._id,
+        });
+        await actionTokenRepository.create({
+            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+            _userId: newUser._id,
+            actionToken: actionToken,
+        });
+        await emailService.sendMail(EmailTypeEnum.WELCOME, newUser.email, {
+            name: newUser.name,
+            email: newUser.email,
+            actionToken: actionToken,
         });
 
         return { user: newUser, tokens };
@@ -96,6 +115,48 @@ class AuthService {
         });
 
         return tokens;
+    }
+
+    public async verify(dto: IVerifyType) {
+        const user = await userRepository.getByEmail(dto.email);
+        if (!user) {
+            throw new ApiError("User not found", 404);
+        }
+        if (user.isVerified) {
+            throw new ApiError("Email already verified", 400);
+        }
+        const verifyToken = tokenService.generateActionToken(
+            { userId: user._id },
+            ActionTokenTypeEnum.VERIFY_EMAIL,
+        );
+        await actionTokenRepository.create({
+            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+            _userId: user._id,
+            actionToken: verifyToken,
+        });
+
+        await emailService.sendMail(EmailTypeEnum.WELCOME, user.email, {
+            email: user.email,
+            name: user.name,
+            actionToken: verifyToken,
+        });
+    }
+
+    public async verifyTokenEmail(token: string): Promise<void> {
+        const tokenData = await actionTokenRepository.findByParams({
+            actionToken: token,
+            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+        });
+        if (!tokenData) {
+            throw new ApiError(
+                "Token not found or already used",
+                StatusCodesEnum.UNAUTHORIZED,
+            );
+        }
+        await userRepository.updateById(tokenData._userId, {
+            isVerified: true,
+        });
+        await actionTokenRepository.deleteManyByParams({ actionToken: token });
     }
 
     public async isEmailExist(email: string): Promise<void> {

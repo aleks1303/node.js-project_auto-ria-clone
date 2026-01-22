@@ -17,5 +17,7 @@ export interface ITokenPayload {
     accountType: accountTypeEnum;
 }
 
+export type ITokenActionPayload = Pick<ITokenPayload, "userId">;
+
 export type ITokenPair = Pick<IToken, "accessToken" | "refreshToken">;
 export type IRefresh = Pick<IToken, "refreshToken">;

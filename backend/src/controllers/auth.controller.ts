@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { ISignInDTO, IUserCreateDTO } from "../interfaces/user.interface";
+import {
+    ISignInDTO,
+    IUserCreateDTO,
+    IVerifyType,
+} from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { authService } from "../services/auth.service";
 
@@ -45,6 +49,26 @@ class AuthController {
             );
 
             res.status(StatusCodesEnum.CREATED).json({ tokens });
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async verify(req: Request, res: Response, next: NextFunction) {
+        try {
+            const dto = req.body as IVerifyType;
+            await authService.verify(dto);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async verifyEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { token } = req.params as { token: string };
+            await authService.verifyTokenEmail(token);
+            res.sendStatus(200);
         } catch (e) {
             next(e);
         }

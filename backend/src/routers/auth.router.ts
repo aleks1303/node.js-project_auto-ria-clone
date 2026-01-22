@@ -22,5 +22,7 @@ router.post(
     authMiddleware.checkRefreshToken,
     authController.refresh,
 );
+router.post("/verify", authController.verify);
+router.get("/verify/:token", authController.verifyEmail);
 
 export const authRouter = router;

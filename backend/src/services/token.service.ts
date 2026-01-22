@@ -5,7 +5,11 @@ import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
-import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
+import {
+    ITokenActionPayload,
+    ITokenPair,
+    ITokenPayload,
+} from "../interfaces/token.interface";
 import { tokenRepository } from "../repositories/token.repository";
 
 class TokenService {
@@ -59,7 +63,7 @@ class TokenService {
     }
 
     public generateActionToken(
-        payload: ITokenPayload,
+        payload: ITokenActionPayload,
         type: ActionTokenTypeEnum,
     ): string {
         const { secret, expiresIn } = this.getSecret(type);
