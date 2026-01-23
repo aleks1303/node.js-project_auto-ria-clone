@@ -125,6 +125,10 @@ class AuthService {
         if (user.isVerified) {
             throw new ApiError("Email already verified", 400);
         }
+        await actionTokenRepository.deleteManyByParams({
+            _userId: user._id,
+            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+        });
         const verifyToken = tokenService.generateActionToken(
             { userId: user._id },
             ActionTokenTypeEnum.VERIFY_EMAIL,
