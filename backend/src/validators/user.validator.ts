@@ -52,6 +52,10 @@ export class UserValidator {
         region: this.region,
     }).min(1);
 
+    public static verify = Joi.object({
+        email: this.email,
+    });
+
     public static query = Joi.object({
         pageSize: Joi.number().min(1).max(100).default(10),
         page: Joi.number().min(1).default(1),
