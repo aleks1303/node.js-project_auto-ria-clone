@@ -48,15 +48,6 @@ const userSchema = new Schema(
     {
         timestamps: true,
         versionKey: false,
-        // toJSON: {
-        //     transform: (doc, ret) => {
-        //         delete ret.password;
-        //         if (ret.avatar) {
-        //             ret.avatar = `/media/${path.basename(ret.avatar)}`;
-        //         }
-        //         return ret;
-        //     },
-        // },
     },
 );
 

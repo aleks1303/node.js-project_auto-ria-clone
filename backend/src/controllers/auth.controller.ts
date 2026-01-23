@@ -63,7 +63,7 @@ class AuthController {
         try {
             const dto = req.body as IVerifyType;
             await authService.verify(dto);
-            res.sendStatus(204);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
@@ -73,7 +73,7 @@ class AuthController {
         try {
             const { token } = req.params as { token: string };
             await authService.verifyTokenEmail(token);
-            res.sendStatus(200);
+            res.sendStatus(StatusCodesEnum.OK);
         } catch (e) {
             next(e);
         }
@@ -86,7 +86,7 @@ class AuthController {
         try {
             const dto = req.body as ForgotPasswordSend;
             await authService.forgotPasswordSendEmail(dto);
-            res.sendStatus(204);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
@@ -102,7 +102,7 @@ class AuthController {
                 .actionPayload as ITokenActionPayload;
             const dto = req.body as ForgotPasswordSet;
             await authService.forgotPasswordSet(dto, tokenPayload);
-            res.sendStatus(204);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
