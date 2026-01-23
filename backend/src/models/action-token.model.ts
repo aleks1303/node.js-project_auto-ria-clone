@@ -15,7 +15,7 @@ const actionTokenSchema = new Schema(
         versionKey: false,
     },
 );
-
+actionTokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 export const ActionToken = model<IActionToken>(
     "actionToken",
     actionTokenSchema,
