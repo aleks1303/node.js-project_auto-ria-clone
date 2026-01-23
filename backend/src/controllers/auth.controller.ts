@@ -114,7 +114,7 @@ class AuthController {
             const { refreshToken } = res.locals.refreshToken;
 
             await authService.logout(userId, refreshToken);
-            res.sendStatus(204);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
