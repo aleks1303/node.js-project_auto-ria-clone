@@ -29,4 +29,17 @@ router.post(
 );
 router.get("/verify/:token", authController.verifyEmail);
 
+router.post(
+    "/forgot-password",
+    commonMiddleware.isBodyValid(UserValidator.verify),
+    authController.forgotPasswordSendEmail,
+);
+router.put(
+    "/forgot-password",
+    authMiddleware.checkActionToken,
+    authController.forgotPasswordSet,
+);
+
+router.post("/logout", authMiddleware.checkRefreshToken, authController.logout);
+
 export const authRouter = router;

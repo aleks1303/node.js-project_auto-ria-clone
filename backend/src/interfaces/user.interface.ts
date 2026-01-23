@@ -58,6 +58,10 @@ export type IUserResponse = Pick<
 >;
 export type ISignInDTO = Pick<IUser, "email" | "password">;
 export type IVerifyType = Pick<IUser, "email">;
+export type ForgotPasswordSend = Pick<IUser, "email">;
+export type ForgotPasswordSet = Pick<IUser, "password"> & {
+    actionToken: string;
+};
 
 export interface IUserListQuery {
     pageSize?: number;

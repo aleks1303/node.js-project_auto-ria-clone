@@ -56,6 +56,11 @@ export class UserValidator {
         email: this.email,
     });
 
+    public static setForgotPassword = Joi.object({
+        password: this.password,
+        actionToken: Joi.string().trim().required(),
+    });
+
     public static query = Joi.object({
         pageSize: Joi.number().min(1).max(100).default(10),
         page: Joi.number().min(1).default(1),

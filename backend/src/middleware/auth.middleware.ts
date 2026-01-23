@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
-import { IRefresh, ITokenPayload } from "../interfaces/token.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
+import { ForgotPasswordSet } from "../interfaces/user.interface";
+import { actionTokenRepository } from "../repositories/action-token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { tokenService } from "../services/token.service";
 
@@ -64,8 +67,12 @@ class AuthMiddleware {
         next: NextFunction,
     ) {
         try {
-            const { refreshToken } = req.body as IRefresh;
-
+            // const { refreshToken } = req.body as IRefresh;
+            const header = req.headers.authorization;
+            if (!header) {
+                throw new ApiError("Header is provided", 401);
+            }
+            const refreshToken = header.split("Bearer ")[1];
             if (!refreshToken) {
                 throw new ApiError(
                     "No refresh token provided",
@@ -87,6 +94,35 @@ class AuthMiddleware {
             res.locals.refreshToken = refreshToken;
             res.locals.tokenPayload = tokenPayload;
 
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async checkActionToken(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const { actionToken } = req.body as ForgotPasswordSet;
+            if (!actionToken) {
+                throw new ApiError(
+                    "Token is required",
+                    StatusCodesEnum.BAD_REQUEST,
+                );
+            }
+            const payload = tokenService.verifyToken(
+                actionToken,
+                ActionTokenTypeEnum.FORGOT_PASSWORD,
+            );
+            const actionTokenEntity =
+                await actionTokenRepository.getByToken(actionToken);
+            if (!actionTokenEntity) {
+                throw new ApiError("Token is not valid", 401);
+            }
+            res.locals.actionPayload = payload;
             next();
         } catch (e) {
             next(e);

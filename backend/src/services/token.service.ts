@@ -82,7 +82,6 @@ class TokenService {
             throw new ApiError("Invalid token", StatusCodesEnum.UNAUTHORIZED);
         }
     }
-
     public async isTokenExists(
         token: string,
         type: TokenTypeEnum,

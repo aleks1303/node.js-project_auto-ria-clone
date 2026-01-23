@@ -1,8 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { ITokenPayload } from "../interfaces/token.interface";
 import {
+    ITokenActionPayload,
+    ITokenPayload,
+} from "../interfaces/token.interface";
+import {
+    ForgotPasswordSend,
+    ForgotPasswordSet,
     ISignInDTO,
     IUserCreateDTO,
     IVerifyType,
@@ -69,6 +74,47 @@ class AuthController {
             const { token } = req.params as { token: string };
             await authService.verifyTokenEmail(token);
             res.sendStatus(200);
+        } catch (e) {
+            next(e);
+        }
+    }
+    public async forgotPasswordSendEmail(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const dto = req.body as ForgotPasswordSend;
+            await authService.forgotPasswordSendEmail(dto);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async forgotPasswordSet(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const tokenPayload = res.locals
+                .actionPayload as ITokenActionPayload;
+            const dto = req.body as ForgotPasswordSet;
+            await authService.forgotPasswordSet(dto, tokenPayload);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = res.locals.tokenPayload;
+            const { refreshToken } = res.locals.refreshToken;
+
+            await authService.logout(userId, refreshToken);
+            res.sendStatus(204);
         } catch (e) {
             next(e);
         }

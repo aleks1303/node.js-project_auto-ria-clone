@@ -4,14 +4,21 @@ import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.error";
-import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import {
+    ITokenActionPayload,
+    ITokenPair,
+    ITokenPayload,
+} from "../interfaces/token.interface";
+import {
+    ForgotPasswordSend,
+    ForgotPasswordSet,
     ISignInDTO,
     IUser,
     IUserCreateDTO,
     IVerifyType,
 } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
+import { passwordRepository } from "../repositories/password.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
@@ -161,6 +168,72 @@ class AuthService {
             isVerified: true,
         });
         await actionTokenRepository.deleteManyByParams({ actionToken: token });
+    }
+
+    public async forgotPasswordSendEmail(
+        dto: ForgotPasswordSend,
+    ): Promise<void> {
+        const user = await userRepository.getByEmail(dto.email);
+        if (!user) {
+            throw new ApiError("User not found", 404);
+        }
+        const actionToken = tokenService.generateActionToken(
+            { userId: user._id },
+            ActionTokenTypeEnum.FORGOT_PASSWORD,
+        );
+        await actionTokenRepository.create({
+            type: ActionTokenTypeEnum.FORGOT_PASSWORD,
+            _userId: user._id,
+            actionToken,
+        });
+        await emailService.sendMail(EmailTypeEnum.FORGOT_PASSWORD, user.email, {
+            name: user.name,
+            email: user.email,
+            actionToken: actionToken,
+        });
+    }
+
+    public async forgotPasswordSet(
+        dto: ForgotPasswordSet,
+        tokenPayload: ITokenActionPayload,
+    ) {
+        const user = await userRepository.getById(tokenPayload.userId);
+        const usedPasswords = await passwordService.isPasswordValid(
+            user._id,
+            dto.password,
+            180,
+        );
+        if (usedPasswords) {
+            throw new ApiError(
+                "This password was used in the last 180 days",
+                400,
+            );
+        }
+        const password = await passwordService.hashPassword(dto.password);
+        await passwordRepository.createPassword({
+            _userId: user._id,
+            password: password,
+        });
+        await userRepository.updateById(tokenPayload.userId, { password });
+        await actionTokenRepository.deleteManyByParams({
+            _userId: tokenPayload.userId,
+            type: ActionTokenTypeEnum.FORGOT_PASSWORD,
+        });
+        await tokenRepository.deleteManyByParams({
+            _userId: tokenPayload.userId,
+        });
+    }
+    //
+    // public async logout(userId: string, refreshToken: string): Promise<void> {
+    //     const user = await userRepository.getById(userId);
+    //     if (!user) {
+    //         throw new ApiError("User not found", 404);
+    //     }
+    //     await tokenRepository.logout({ refreshToken });
+    // }
+
+    public async logout(userId: string, refreshToken: string): Promise<void> {
+        await tokenRepository.deleteByParams({ _userId: userId, refreshToken });
     }
 
     public async isEmailExist(email: string): Promise<void> {
