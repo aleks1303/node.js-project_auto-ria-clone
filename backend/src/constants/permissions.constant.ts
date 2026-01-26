@@ -9,6 +9,7 @@ export const rolePermissions: RolePermissions = {
 
     // 2. ПРОДАВЕЦЬ: може створювати та керувати СВОЇМИ авто
     [RoleEnum.SELLER]: [
+        PermissionsEnum.USERS_GET_ALL,
         PermissionsEnum.CARS_CREATE,
         PermissionsEnum.CARS_UPDATE_OWN,
         PermissionsEnum.CARS_DELETE_OWN,

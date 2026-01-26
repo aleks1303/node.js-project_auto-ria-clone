@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
+import { rolePermissions } from "../constants/permissions.constant";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import { PermissionsEnum } from "../enums/permissions.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
@@ -129,6 +131,25 @@ class AuthMiddleware {
         }
     }
 
+    public checkPermission(permission: PermissionsEnum) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { role } = res.locals.tokenPayload as ITokenPayload;
+                const permissions = rolePermissions[role];
+
+                if (!permissions || !permissions.includes(permission)) {
+                    throw new ApiError(
+                        "Forbidden: You don't have the required permission",
+                        StatusCodesEnum.FORBIDDEN,
+                    );
+                }
+                next();
+            } catch (e) {
+                next(e);
+            }
+        };
+    }
+
     public checkRole(roles: RoleEnum[]) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -145,6 +166,7 @@ class AuthMiddleware {
             }
         };
     }
+
     // на видалення
     // public isAdmin(req: Request, res: Response, next: NextFunction) {
     //     try {
