@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload";
 import * as mongoose from "mongoose";
 
 import { config } from "./configs/config";
+import { runnerCrones } from "./cron";
 import { ApiError } from "./errors/api.error";
 import { apiRouter } from "./routers/api.router";
 
@@ -53,6 +54,7 @@ const start = async () => {
         await dbConnection();
         app.listen(port, () => {
             console.log(`Server listening on port ${port}`);
+            runnerCrones();
         });
     } catch (e) {
         console.log(e.message);
