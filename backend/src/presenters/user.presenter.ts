@@ -11,13 +11,13 @@ class UserPresenter {
         return {
             _id: entity._id,
             name: entity.name,
-            surname: entity.surname, // Додаємо прізвище
+            surname: entity.surname,
             email: entity.email,
             age: entity.age,
-            phone: entity.phone, // Додаємо телефон для зв'язку
+            phone: entity.phone,
             role: entity.role,
             permissions: entity.permissions,
-            accountType: entity.accountType, // Важливо для AutoRia
+            accountType: entity.accountType,
             city: entity.city,
             region: entity.region,
             avatar: entity.avatar
