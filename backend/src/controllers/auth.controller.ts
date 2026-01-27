@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import {
     ITokenActionPayload,
     ITokenPayload,

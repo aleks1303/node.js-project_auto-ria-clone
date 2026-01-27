@@ -1,6 +1,6 @@
 import { UploadedFile } from "express-fileupload";
 
-import { FileItemTypeEnum } from "../enums/file-item-type.enum";
+import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { IUser, IUserListQuery } from "../interfaces/user.interface";

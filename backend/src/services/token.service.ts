@@ -1,9 +1,9 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 
 import { config } from "../configs/config";
-import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
-import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { TokenTypeEnum } from "../enums/token-type.enum";
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
+import { ActionTokenTypeEnum } from "../enums/user-enum/action-token-type.enum";
+import { TokenTypeEnum } from "../enums/user-enum/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import {
     ITokenActionPayload,

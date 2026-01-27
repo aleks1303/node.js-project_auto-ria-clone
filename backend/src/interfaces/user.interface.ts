@@ -1,8 +1,8 @@
-import { accountTypeEnum } from "../enums/account-type.enum";
-import { OrderEnum } from "../enums/order";
-import { PermissionsEnum } from "../enums/permissions.enum";
-import { RoleEnum } from "../enums/role.enum";
-import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
+import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
+import { OrderEnum } from "../enums/user-enum/order";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
+import { UserListOrderByEnum } from "../enums/user-enum/user-list-order-by.enum";
 import { IBase } from "./base.interface";
 
 export interface IUser extends IBase {

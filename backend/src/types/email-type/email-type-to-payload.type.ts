@@ -1,4 +1,4 @@
-import { EmailTypeEnum } from "../../enums/email-type.enum";
+import { EmailTypeEnum } from "../../enums/user-enum/email-type.enum";
 import { EmailPayloadCombined } from "./email-payload-combined";
 import { PickRequired } from "./pick-required.type";
 
@@ -11,6 +11,4 @@ export type EmailTypeToPayload = {
         EmailPayloadCombined,
         "email" | "name" | "actionToken"
     >;
-
-    [EmailTypeEnum.LOGOUT]: PickRequired<EmailPayloadCombined, "name">;
 };

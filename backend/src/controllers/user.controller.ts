@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 
-import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { IUserListQuery } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";

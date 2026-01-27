@@ -9,7 +9,7 @@ import {
 import { UploadedFile } from "express-fileupload";
 
 import { config } from "../configs/config";
-import { FileItemTypeEnum } from "../enums/file-item-type.enum";
+import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
 
 class S3Service {
     constructor(

@@ -1,8 +1,8 @@
 import { rolePermissions } from "../constants/permissions.constant";
-import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
-import { EmailTypeEnum } from "../enums/email-type.enum";
-import { RoleEnum } from "../enums/role.enum";
-import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
+import { ActionTokenTypeEnum } from "../enums/user-enum/action-token-type.enum";
+import { EmailTypeEnum } from "../enums/user-enum/email-type.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
 import {
     ITokenActionPayload,

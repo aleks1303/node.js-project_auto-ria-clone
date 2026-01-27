@@ -1,5 +1,5 @@
-import { PermissionsEnum } from "../enums/permissions.enum";
-import { RoleEnum } from "../enums/role.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
 
 type RolePermissions = Record<RoleEnum, PermissionsEnum[]>;
 

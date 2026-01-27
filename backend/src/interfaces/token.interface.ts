@@ -1,5 +1,5 @@
-import { accountTypeEnum } from "../enums/account-type.enum";
-import { RoleEnum } from "../enums/role.enum";
+import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
 import { IBase } from "./base.interface";
 
 export interface IToken extends IBase {

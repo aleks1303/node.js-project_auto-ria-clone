@@ -1,8 +1,9 @@
 import { model, Schema } from "mongoose";
 
-import { accountTypeEnum } from "../enums/account-type.enum"; // Твій новий enum
-import { PermissionsEnum } from "../enums/permissions.enum";
-import { RoleEnum } from "../enums/role.enum";
+import { nameModel } from "../constants/model.constant";
+import { accountTypeEnum } from "../enums/user-enum/account-type.enum"; // Твій новий enum
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
 import { IUser } from "../interfaces/user.interface";
 
 const userSchema = new Schema(
@@ -51,4 +52,4 @@ const userSchema = new Schema(
     },
 );
 
-export const User = model<IUser>("users", userSchema);
+export const User = model<IUser>(nameModel.USER, userSchema);

@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { avatarConfig } from "../configs/avatar.config";
 import { userController } from "../controllers/user.controller";
-import { PermissionsEnum } from "../enums/permissions.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { commonMiddleware } from "../middleware/common.middleware";
 import { fileMiddleware } from "../middleware/file.middleware";

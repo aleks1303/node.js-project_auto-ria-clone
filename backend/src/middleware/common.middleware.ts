@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectSchema } from "joi";
 import { isObjectIdOrHexString } from "mongoose";
 
-import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { ApiError } from "../errors/api.error";
 
 class CommonMiddleware {

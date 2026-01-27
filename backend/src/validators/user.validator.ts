@@ -1,9 +1,9 @@
 import Joi from "joi";
 
-import { OrderEnum } from "../enums/order";
-import { RegexEnum } from "../enums/regex.enum";
-import { RoleEnum } from "../enums/role.enum";
-import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
+import { OrderEnum } from "../enums/user-enum/order";
+import { RegexEnum } from "../enums/user-enum/regex.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
+import { UserListOrderByEnum } from "../enums/user-enum/user-list-order-by.enum";
 
 export class UserValidator {
     private static name = Joi.string()

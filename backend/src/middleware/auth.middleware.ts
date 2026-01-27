@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
 import { rolePermissions } from "../constants/permissions.constant";
-import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
-import { PermissionsEnum } from "../enums/permissions.enum";
-import { RoleEnum } from "../enums/role.enum";
-import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { TokenTypeEnum } from "../enums/token-type.enum";
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
+import { ActionTokenTypeEnum } from "../enums/user-enum/action-token-type.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
+import { TokenTypeEnum } from "../enums/user-enum/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { ForgotPasswordSet } from "../interfaces/user.interface";
