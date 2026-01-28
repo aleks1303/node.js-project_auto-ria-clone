@@ -32,7 +32,12 @@ class AuthService {
         await this.isEmailExist(dto.email);
         const role = dto.role || RoleEnum.BUYER;
         const permissions = rolePermissions[role];
-        const checkRole = [RoleEnum.BUYER, RoleEnum.SELLER];
+        const checkRole = [
+            RoleEnum.BUYER,
+            RoleEnum.SELLER,
+            RoleEnum.MANAGER,
+            RoleEnum.ADMIN,
+        ];
         if (!checkRole.includes(role)) {
             throw new ApiError(
                 "Ви можете зареєструватися тільки як Покупець або Продавець",
@@ -51,14 +56,14 @@ class AuthService {
             role: newUser.role,
             accountType: newUser.accountType,
         });
-        const actionToken = tokenService.generateActionToken(
-            { userId: newUser._id },
-            ActionTokenTypeEnum.VERIFY_EMAIL,
-        );
         await tokenRepository.create({
             refreshToken: tokens.refreshToken,
             _userId: newUser._id,
         });
+        const actionToken = tokenService.generateActionToken(
+            { userId: newUser._id },
+            ActionTokenTypeEnum.VERIFY_EMAIL,
+        );
         await actionTokenRepository.create({
             type: ActionTokenTypeEnum.VERIFY_EMAIL,
             _userId: newUser._id,

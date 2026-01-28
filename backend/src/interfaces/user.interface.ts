@@ -24,6 +24,14 @@ export interface IUser extends IBase {
     region?: string;
 }
 
+export interface IUserDetailsResponse extends Partial<IUser> {
+    name: string;
+    surname: string;
+    city: string;
+    region: string;
+    avatar: string | null;
+}
+
 export type IUserCreateDTO = Pick<
     IUser,
     | "name"

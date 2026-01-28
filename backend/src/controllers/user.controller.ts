@@ -19,8 +19,20 @@ class UserController {
         }
     }
     public async getMe(req: Request, res: Response, next: NextFunction) {
-        const user = res.locals.user;
-        const userResponse = userPresenter.toPublicResDto(user);
+        const { userId } = res.locals.tokenPayload as ITokenPayload;
+        const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+
+        const user = await userService.getById(userId);
+        const userResponse = userPresenter.toDetailsResDto(user, tokenPayload);
+        res.status(StatusCodesEnum.OK).json({ user: userResponse });
+    }
+
+    public async getById(req: Request, res: Response, next: NextFunction) {
+        const { userId } = req.params as { userId: string };
+        const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+
+        const user = await userService.getById(userId);
+        const userResponse = userPresenter.toDetailsResDto(user, tokenPayload);
         res.status(StatusCodesEnum.OK).json({ user: userResponse });
     }
 

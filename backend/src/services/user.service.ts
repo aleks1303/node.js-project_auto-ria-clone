@@ -13,6 +13,14 @@ class UserService {
         return await userRepository.getAll(query);
     }
 
+    public async getById(userId: string): Promise<IUser> {
+        const user = await userRepository.getById(userId);
+        if (!user) {
+            throw new ApiError("User not found", 404);
+        }
+        return user;
+    }
+
     public async updateMe(
         userId: string,
         user: Partial<IUser>,

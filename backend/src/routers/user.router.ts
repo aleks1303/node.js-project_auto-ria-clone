@@ -37,4 +37,11 @@ router.delete(
     userController.deleteAvatar,
 );
 
+router.get(
+    "/:userId",
+    authMiddleware.checkAccessToken,
+    commonMiddleware.isIdValidate("userId"),
+    userController.getById,
+);
+
 export const userRouter = router;

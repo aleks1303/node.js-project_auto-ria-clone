@@ -37,6 +37,7 @@ router.post(
 router.put(
     "/forgot-password",
     authMiddleware.checkActionToken,
+    commonMiddleware.isBodyValid(UserValidator.setForgotPassword),
     authController.forgotPasswordSet,
 );
 

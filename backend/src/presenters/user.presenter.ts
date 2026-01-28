@@ -1,6 +1,9 @@
 import { config } from "../configs/config";
+import { RoleEnum } from "../enums/user-enum/role.enum";
+import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUser,
+    IUserDetailsResponse,
     IUserListQuery,
     IUserListResponse,
     IUserResponse,
@@ -27,6 +30,48 @@ class UserPresenter {
             isVerified: entity.isVerified,
             isDeleted: entity.isDeleted,
         };
+    }
+
+    public toDetailsResDto(
+        user: IUser,
+        viewer?: ITokenPayload,
+    ): IUserDetailsResponse {
+        // 1. Базові поля, які бачать абсолютно всі
+        const baseResponse = {
+            name: user.name,
+            surname: user.surname,
+            avatar: user.avatar
+                ? `${config.AWS_S3_ENDPOINT}/${user.avatar}`
+                : null,
+            region: user.region,
+            city: user.city,
+        };
+
+        // Визначаємо права: це адмін/менеджер АБО людина дивиться на саму себе
+        const hasFullAccess =
+            viewer?.role === RoleEnum.MANAGER ||
+            viewer?.role === RoleEnum.ADMIN ||
+            viewer?.userId === user._id.toString();
+
+        // 2. Якщо є доступ — розширюємо об'єкт повними даними
+        if (hasFullAccess) {
+            return {
+                _id: user._id.toString(),
+                ...baseResponse,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+                age: user.age,
+                accountType: user.accountType,
+                permissions: user.permissions,
+                isActive: user.isActive,
+                isVerified: user.isVerified,
+                isDeleted: user.isDeleted,
+            };
+        }
+
+        // 3. Для сторонніх покупців повертаємо тільки "візитку"
+        return baseResponse;
     }
 
     // public toListResDto(
