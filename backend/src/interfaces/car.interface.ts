@@ -20,6 +20,11 @@ export interface ICar extends IBase, ICurrencyInfo, ICarModeration {
     _userId: Types.ObjectId | string;
 }
 
+export type ICarCreateDb = Omit<
+    ICar,
+    "_id" | "updatedAt" | "image" | "exchangeRate" | "createdAt"
+>;
+// export type ICarCreateDb = Omit<ICar, "_id" | "updatedAt" | "createdAt">;
 export type ICarResponse = Pick<
     ICar,
     | "_id"

@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 
 import { nameModel } from "../constants/model.constant";
 import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
@@ -32,7 +32,11 @@ const carSchema = new Schema(
         editCount: { type: Number, default: 0 },
 
         // Зв'язок з юзером
-        _userId: { type: Types.ObjectId, ref: nameModel.USER, required: true },
+        _userId: {
+            type: Schema.Types.ObjectId,
+            ref: nameModel.USER,
+            required: true,
+        },
     },
     { timestamps: true, versionKey: false },
 );

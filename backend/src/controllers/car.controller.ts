@@ -1,17 +1,25 @@
+import { NextFunction, Request, Response } from "express";
+
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
+import { ICarCreateDto } from "../interfaces/car.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
+import { CarPresenter } from "../presenters/car.presenter";
+import { carService } from "../services/car.service";
+
 class CarController {
-    // public async create(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         // Витягуємо юзера, якого поклала туди authMiddleware
-    //         const body = req.body as ICarCreateDto;
-    //         const { userId } = res.locals.tokenPayload as ITokenPayload;
-    //         // Передаємо в сервіс дані авто та ID власника окремо
-    //         const car = await carService.create(body, userId);
-    //         const carResponse = CarPresenter.toPublicResCarDto(car);
-    //         res.status(201).json(carResponse);
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
+    public async create(req: Request, res: Response, next: NextFunction) {
+        try {
+            // Витягуємо юзера, якого поклала туди authMiddleware
+            const body = req.body as ICarCreateDto;
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            // Передаємо в сервіс дані авто та ID власника окремо
+            const car = await carService.create(body, userId);
+            const carResponse = CarPresenter.toPublicResCarDto(car);
+            res.status(StatusCodesEnum.OK).json(carResponse);
+        } catch (e) {
+            next(e);
+        }
+    }
 
     public async getAllCars() {}
 }
