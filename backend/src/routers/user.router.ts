@@ -18,11 +18,23 @@ router.get(
     userController.getAll,
 );
 router.get("/me", authMiddleware.checkAccessToken, userController.getMe);
+
+router.put(
+    "/me",
+    authMiddleware.checkAccessToken,
+    commonMiddleware.isBodyValid(UserValidator.update),
+    userController.updateMe,
+);
 router.post(
     "/me/avatar",
     authMiddleware.checkAccessToken,
     fileMiddleware.isFileValid("avatar", avatarConfig),
     userController.uploadAvatar,
+);
+router.delete(
+    "/avatar",
+    authMiddleware.checkAccessToken,
+    userController.deleteAvatar,
 );
 
 export const userRouter = router;

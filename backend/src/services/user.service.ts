@@ -1,5 +1,6 @@
 import { UploadedFile } from "express-fileupload";
 
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
@@ -10,6 +11,17 @@ import { s3Service } from "./s3.service";
 class UserService {
     public async getAll(query: IUserListQuery): Promise<[IUser[], number]> {
         return await userRepository.getAll(query);
+    }
+
+    public async updateMe(
+        userId: string,
+        user: Partial<IUser>,
+    ): Promise<IUser> {
+        const data = await userRepository.getById(userId);
+        if (!data) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+        return await userRepository.updateById(userId, user);
     }
 
     public async uploadAvatar(

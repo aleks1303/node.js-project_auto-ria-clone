@@ -56,6 +56,15 @@ export type IUserResponse = Pick<
     | "isVerified"
     | "isDeleted"
 >;
+
+export interface IUserUpdateDto {
+    name?: string;
+    surname?: string;
+    age?: number;
+    phone?: string;
+    city?: string;
+    region?: string;
+}
 export type ISignInDTO = Pick<IUser, "email" | "password">;
 export type IVerifyType = Pick<IUser, "email">;
 export type ForgotPasswordSend = Pick<IUser, "email">;

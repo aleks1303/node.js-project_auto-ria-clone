@@ -3,7 +3,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { IUserListQuery } from "../interfaces/user.interface";
+import { IUserListQuery, IUserUpdateDto } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 
@@ -22,6 +22,17 @@ class UserController {
         const user = res.locals.user;
         const userResponse = userPresenter.toPublicResDto(user);
         res.status(StatusCodesEnum.OK).json({ user: userResponse });
+    }
+
+    public async updateMe(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const dto = req.body as IUserUpdateDto;
+            const user = await userService.updateMe(userId, dto);
+            res.json(user);
+        } catch (e) {
+            next(e);
+        }
     }
 
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {

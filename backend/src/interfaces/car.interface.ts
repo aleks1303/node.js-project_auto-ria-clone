@@ -23,6 +23,7 @@ export interface ICar extends IBase, ICurrencyInfo, ICarModeration {
 export type ICarResponse = Pick<
     ICar,
     | "_id"
+    | "_userId"
     | "brand"
     | "model"
     | "year"
