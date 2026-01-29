@@ -7,6 +7,7 @@ import { CarPresenter } from "../presenters/car.presenter";
 import { carService } from "../services/car.service";
 
 class CarController {
+    public async getAllCars() {}
     public async create(req: Request, res: Response, next: NextFunction) {
         try {
             // Витягуємо юзера, якого поклала туди authMiddleware
@@ -21,7 +22,18 @@ class CarController {
         }
     }
 
-    public async getAllCars() {}
+    public async update(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { carId } = req.params as { carId: string };
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const body = req.body as ICarCreateDto;
+            const updatedCar = await carService.update(carId, userId, body);
+            const carResponse = CarPresenter.toPublicResCarDto(updatedCar);
+            res.status(StatusCodesEnum.OK).json(carResponse);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const carController = new CarController();

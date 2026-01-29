@@ -9,4 +9,8 @@ export const EmailConstant = {
         subject: "Are you forgot our password?",
         template: "forgot-password",
     },
+    [EmailTypeEnum.BLOCKED_CAR]: {
+        subject: "Ad blocked due to violation",
+        template: "car blocked",
+    },
 };

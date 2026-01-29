@@ -12,6 +12,7 @@ export class CarValidator {
         .required();
     private static description = Joi.string().min(10).max(1000).required();
     private static region = Joi.string().required();
+    private static city = Joi.string().required();
     private static price = Joi.number().positive().required();
     private static currency = Joi.string()
         .valid(...Object.values(CurrencyEnum))
@@ -23,16 +24,15 @@ export class CarValidator {
         year: this.year,
         description: this.description,
         region: this.region,
+        city: this.city,
         price: this.price,
         currency: this.currency,
     });
 
     public static update = Joi.object({
-        brand: this.brand,
-        model: this.model,
-        year: this.year,
         description: this.description,
         region: this.region,
+        city: this.city,
         price: this.price,
         currency: this.currency,
     });

@@ -1,5 +1,6 @@
 import { FilterQuery } from "mongoose";
 
+import { RoleEnum } from "../enums/user-enum/role.enum";
 import {
     IUser,
     IUserCreateDTO,
@@ -40,6 +41,9 @@ class UserRepository {
 
     public getByEmail(email: string): Promise<IUser> {
         return User.findOne({ email });
+    }
+    public findByRole(role: RoleEnum): Promise<IUser[]> {
+        return User.find({ role });
     }
 
     public getById(userId: string): Promise<IUser> {

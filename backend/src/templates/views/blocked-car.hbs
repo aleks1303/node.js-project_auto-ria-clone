@@ -1,0 +1,98 @@
+<table style="width:100%; max-width:600px; margin:0 auto; font-family:Arial, sans-serif; border-collapse:collapse;">
+    <!-- HEADER -->
+    <tr style="background-color:#f8f9fa;">
+        <td style="padding:20px; text-align:center; border-bottom:3px solid #eb690b;">
+            <h1 style="margin:0; color:#2e343a;">
+                AutoRia <span style="color:#eb690b;">Clone</span>
+            </h1>
+            <p style="margin:5px 0 0; font-size:14px; color:#6c757d;">
+                Moderation notification
+            </p>
+        </td>
+    </tr>
+
+    <!-- BODY -->
+    <tr>
+        <td style="padding:30px 20px; background-color:#ffffff;">
+            <h2 style="color:#dc3545; text-align:center;">
+                🚫 Оголошення заблоковано
+            </h2>
+
+            <p style="color:#333; font-size:15px; line-height:1.6;">
+                Оголошення було <strong>деактивоване автоматично</strong> після
+                <strong>{{editCount}}</strong> невдалих спроб редагування
+                (виявлено заборонену лексику).
+            </p>
+
+            <!-- CAR INFO -->
+            <table style="width:100%; margin-top:20px; border:1px solid #dee2e6;">
+                <tr style="background-color:#f1f3f5;">
+                    <td colspan="2" style="padding:10px; font-weight:bold;">
+                        🚗 Інформація про авто
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px; width:40%;">ID оголошення</td>
+                    <td style="padding:8px;">{{car._id}}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;">Марка / Модель</td>
+                    <td style="padding:8px;">{{car.brand}} {{car.model}}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;">Рік</td>
+                    <td style="padding:8px;">{{car.year}}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;">Ціна</td>
+                    <td style="padding:8px;">
+                        {{car.price}} {{car.currency}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;">Регіон</td>
+                    <td style="padding:8px;">{{car.region}}</td>
+                </tr>
+            </table>
+
+            <!-- OWNER -->
+            <table style="width:100%; margin-top:20px; border:1px solid #dee2e6;">
+                <tr style="background-color:#f1f3f5;">
+                    <td style="padding:10px; font-weight:bold;">
+                        👤 Власник
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;">
+                        User ID: {{car._userId}}
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ACTION -->
+            <div style="text-align:center; margin-top:30px;">
+                <a
+                    href="{{frontUrl}}/admin/cars/{{car._id}}"
+                    style="
+                        background-color:#eb690b;
+                        color:#ffffff;
+                        padding:12px 20px;
+                        text-decoration:none;
+                        border-radius:5px;
+                        font-weight:bold;
+                        display:inline-block;
+                    "
+                >
+                    Перейти в адмін-панель
+                </a>
+            </div>
+        </td>
+    </tr>
+
+    <!-- FOOTER -->
+    <tr>
+        <td style="padding:15px; text-align:center; font-size:12px; color:#999;">
+            © 2026 AutoRia Clone · Moderation System
+        </td>
+    </tr>
+</table>

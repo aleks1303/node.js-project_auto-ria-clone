@@ -1,8 +1,9 @@
 import { Types } from "mongoose";
 
 import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
+import { CurrencyEnum } from "../enums/car-enum/currency.enum";
 import { IBase } from "./base.interface";
-import { ICurrencyInfo } from "./currency.interface";
+import { IConvertedPrices, ICurrencyInfo } from "./currency.interface";
 
 export interface ICarModeration {
     status: CarStatusEnum;
@@ -17,6 +18,7 @@ export interface ICar extends IBase, ICurrencyInfo, ICarModeration {
     image?: string;
     description: string;
     region: string;
+    city: string;
     _userId: Types.ObjectId | string;
 }
 
@@ -24,6 +26,20 @@ export type ICarCreateDb = Omit<
     ICar,
     "_id" | "updatedAt" | "image" | "exchangeRate" | "createdAt"
 >;
+export interface ICarUpdateDto {
+    price?: number;
+    currency?: CurrencyEnum;
+    description?: string;
+    region?: string;
+    city?: string;
+}
+export interface ICarUpdateDb extends ICarUpdateDto {
+    status?: CarStatusEnum;
+    editCount?: number;
+    exchangeRate?: number;
+    convertedPrices?: IConvertedPrices;
+}
+
 // export type ICarCreateDb = Omit<ICar, "_id" | "updatedAt" | "createdAt">;
 export type ICarResponse = Pick<
     ICar,
@@ -37,6 +53,7 @@ export type ICarResponse = Pick<
     | "currency"
     | "convertedPrices"
     | "region"
+    | "city"
     | "status"
     | "image"
     | "createdAt"
@@ -44,5 +61,12 @@ export type ICarResponse = Pick<
 
 export type ICarCreateDto = Pick<
     ICar,
-    "brand" | "model" | "year" | "price" | "currency" | "description" | "region"
+    | "brand"
+    | "model"
+    | "year"
+    | "price"
+    | "currency"
+    | "description"
+    | "region"
+    | "city"
 >;

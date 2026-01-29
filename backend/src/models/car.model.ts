@@ -12,11 +12,12 @@ const carSchema = new Schema(
         image: { type: String, default: "" },
         description: { type: String, required: true },
         region: { type: String, required: true },
+        city: { type: String, required: true },
 
         // Блок ціни
         price: { type: Number, required: true },
         currency: { type: String, enum: CurrencyEnum, required: true },
-        exchangeRate: { type: Number, required: true },
+        exchangeRate: { type: Number },
         convertedPrices: {
             USD: { type: Number, required: true },
             EUR: { type: Number, required: true },

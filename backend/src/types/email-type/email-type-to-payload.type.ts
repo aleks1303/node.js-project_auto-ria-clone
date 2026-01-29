@@ -11,4 +11,8 @@ export type EmailTypeToPayload = {
         EmailPayloadCombined,
         "email" | "name" | "actionToken"
     >;
+    [EmailTypeEnum.BLOCKED_CAR]: PickRequired<
+        EmailPayloadCombined,
+        "car" | "editCount"
+    >;
 };

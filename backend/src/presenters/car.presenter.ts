@@ -14,6 +14,7 @@ export class CarPresenter {
             currency: car.currency,
             convertedPrices: car.convertedPrices,
             region: car.region,
+            city: car.city,
             status: car.status,
             image: car.image ? `${config.AWS_S3_ENDPOINT}/${car.image}` : null,
             createdAt: car.createdAt,
