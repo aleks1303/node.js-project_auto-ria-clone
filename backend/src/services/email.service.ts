@@ -35,6 +35,10 @@ class EmailService {
                     "templates",
                     "partials",
                 ),
+                runtimeOptions: {
+                    allowProtoPropertiesByDefault: true,
+                    allowProtoMethodsByDefault: true,
+                },
             },
             viewPath: path.join(process.cwd(), "src", "templates", "views"),
             extName: ".hbs",

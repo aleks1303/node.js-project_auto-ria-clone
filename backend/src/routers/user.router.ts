@@ -40,7 +40,7 @@ router.delete(
 router.get(
     "/:userId",
     authMiddleware.checkAccessToken,
-    commonMiddleware.isIdValidate("userId"),
+    commonMiddleware.isIdValid("userId"),
     userController.getById,
 );
 

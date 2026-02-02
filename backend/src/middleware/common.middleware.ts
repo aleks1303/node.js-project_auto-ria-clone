@@ -6,7 +6,7 @@ import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { ApiError } from "../errors/api.error";
 
 class CommonMiddleware {
-    public isIdValidate(key: string) {
+    public isIdValid(key: string) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
                 const id = req.params[key];

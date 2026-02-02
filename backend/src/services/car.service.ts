@@ -35,47 +35,40 @@ class CarService {
         // 3. Збираємо фінальний об'єкт для бази (тепер ми впевнені в кожному полі)
         return infoCar.toObject() as ICar;
     }
-    public async update(
-        carId: string,
-        userId: string,
-        body: ICarUpdateDto,
-    ): Promise<ICar> {
-        const car = await carRepository.getById(carId);
-        if (!car) {
-            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-        }
-
-        if (car._userId.toString() !== userId) {
-            throw new ApiError(
-                "You are not the owner of this car",
-                StatusCodesEnum.FORBIDDEN,
+    public async update(car: ICar, body: ICarUpdateDto): Promise<ICar> {
+        let editCount = car.editCount;
+        const updateData: Partial<ICar> = { ...body };
+        if (body.price || body.currency) {
+            const { convertedPrices, exchangeRate } = currencyHelper.convertAll(
+                body.price || car.price,
+                body.currency || car.currency,
             );
+            // Додаємо ці дані в об'єкт для оновлення
+            updateData.convertedPrices = convertedPrices;
+            updateData.exchangeRate = exchangeRate;
         }
+        let hasBadWords = false;
+        if (body.description !== undefined) {
+            hasBadWords = moderationHelper.hasBadWords(body.description);
 
-        let { status, editCount } = car;
-
-        // 1. Модерація (тільки якщо прийшов опис)
-
-        const hasBadWords = moderationHelper.hasBadWords(body.description);
-
-        if (hasBadWords) {
-            editCount += 1;
-            if (editCount >= 3) {
-                status = CarStatusEnum.INACTIVE;
+            if (hasBadWords) {
+                updateData.editCount += 1;
+                if (editCount >= 3) {
+                    updateData.status = CarStatusEnum.INACTIVE;
+                } else {
+                    updateData.status = CarStatusEnum.PENDING; // або залишаємо як було, якщо хочеш
+                }
             } else {
-                status = CarStatusEnum.PENDING; // або залишаємо як було, якщо хочеш
+                // Якщо опис чистий — активуємо
+                updateData.status = CarStatusEnum.ACTIVE;
             }
-        } else {
-            // Якщо опис чистий — активуємо
-            status = CarStatusEnum.ACTIVE;
         }
 
         // 2. Єдине оновлення в БД
-        const updatedCar = await carRepository.update(carId, {
-            ...body,
-            status,
-            editCount,
-        });
+        const updatedCar = await carRepository.update(
+            car._id.toString(),
+            updateData,
+        );
 
         // 3. Обробка наслідків модерації
         if (hasBadWords) {

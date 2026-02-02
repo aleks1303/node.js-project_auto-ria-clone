@@ -131,13 +131,18 @@ class AuthMiddleware {
         }
     }
 
-    public checkPermission(permission: PermissionsEnum) {
+    public checkPermission(...requiredPermissions: PermissionsEnum[]) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
                 const { role } = res.locals.tokenPayload as ITokenPayload;
-                const permissions = rolePermissions[role];
+                const userPermissions = rolePermissions[role] || [];
 
-                if (!permissions || !permissions.includes(permission)) {
+                // Перевіряємо, чи є у юзера хоча б один з дозволених пермішенів
+                const hasPermission = requiredPermissions.some((p) =>
+                    userPermissions.includes(p),
+                );
+
+                if (!hasPermission) {
                     throw new ApiError(
                         "Forbidden: You don't have the required permission",
                         StatusCodesEnum.FORBIDDEN,
@@ -149,7 +154,6 @@ class AuthMiddleware {
             }
         };
     }
-
     public checkRole(roles: RoleEnum[]) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {

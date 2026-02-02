@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
-import { ICarCreateDto } from "../interfaces/car.interface";
+import { ICar, ICarCreateDto } from "../interfaces/car.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { CarPresenter } from "../presenters/car.presenter";
 import { carService } from "../services/car.service";
@@ -24,10 +24,9 @@ class CarController {
 
     public async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const { carId } = req.params as { carId: string };
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const car = res.locals.car as ICar;
             const body = req.body as ICarCreateDto;
-            const updatedCar = await carService.update(carId, userId, body);
+            const updatedCar = await carService.update(car, body);
             const carResponse = CarPresenter.toPublicResCarDto(updatedCar);
             res.status(StatusCodesEnum.OK).json(carResponse);
         } catch (e) {
