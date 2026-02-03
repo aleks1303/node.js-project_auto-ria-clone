@@ -1,13 +1,44 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
-import { ICar, ICarCreateDto } from "../interfaces/car.interface";
+import {
+    ICar,
+    ICarCreateDto,
+    ICarListQuery,
+} from "../interfaces/car.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { CarPresenter } from "../presenters/car.presenter";
 import { carService } from "../services/car.service";
 
 class CarController {
-    public async getAllCars() {}
+    // car.controller.ts
+    public async getAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            // Дані після валідації Joi
+            const query = res.locals.validatedQuery as ICarListQuery;
+
+            // Дані з розшифрованого токена
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+
+            // Викликаємо сервіс (який просто викликає репозиторій)
+            const [entities, total] = await carService.getAll(
+                query,
+                tokenPayload?.role,
+            );
+
+            // Перетворюємо дані для відправки клієнту
+            const result = CarPresenter.toListResDto(
+                entities,
+                total,
+                query,
+                tokenPayload,
+            );
+
+            res.status(StatusCodesEnum.OK).json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
     public async create(req: Request, res: Response, next: NextFunction) {
         try {
             // Витягуємо юзера, якого поклала туди authMiddleware

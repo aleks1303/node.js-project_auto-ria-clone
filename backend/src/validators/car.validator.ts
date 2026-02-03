@@ -17,6 +17,16 @@ export class CarValidator {
         ...Object.values(CurrencyEnum),
     );
 
+    public static listQuery = Joi.object({
+        page: Joi.number().integer().min(1).default(1),
+        pageSize: Joi.number().integer().min(1).max(100).default(10),
+        brand: this.brand, // використовуємо твоє приватне поле
+        model: this.model,
+        region: this.region,
+        priceMin: Joi.number().positive(),
+        priceMax: Joi.number().positive(),
+    });
+
     public static create = Joi.object({
         brand: this.brand.required(),
         model: this.model.required(),

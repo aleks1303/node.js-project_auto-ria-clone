@@ -11,6 +11,7 @@ const carSchema = new Schema(
         year: { type: Number, required: true },
         image: { type: String, default: "" },
         description: { type: String, required: true },
+        views: { type: Number, default: 0 },
         region: { type: String, required: true },
         city: { type: String, required: true },
 

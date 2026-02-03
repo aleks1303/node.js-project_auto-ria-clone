@@ -19,6 +19,7 @@ export interface ICar extends IBase, ICurrencyInfo, ICarModeration {
     description: string;
     region: string;
     city: string;
+    views?: number;
     _userId: Types.ObjectId | string;
 }
 
@@ -70,3 +71,12 @@ export type ICarCreateDto = Pick<
     | "region"
     | "city"
 >;
+export interface ICarListQuery {
+    page: number;
+    pageSize: number;
+    brand?: string;
+    model?: string;
+    region?: string;
+    priceMin?: number;
+    priceMax?: number;
+}

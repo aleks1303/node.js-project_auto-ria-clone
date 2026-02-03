@@ -9,6 +9,6 @@ export interface IConvertedPrices {
 export interface ICurrencyInfo {
     price: number;
     currency: CurrencyEnum;
-    exchangeRate: number;
-    convertedPrices: IConvertedPrices;
+    exchangeRate?: number;
+    convertedPrices?: IConvertedPrices;
 }

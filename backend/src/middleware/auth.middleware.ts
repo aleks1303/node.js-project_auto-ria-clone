@@ -62,6 +62,32 @@ class AuthMiddleware {
             next(e);
         }
     }
+    public async checkAccessTokenOptional(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const authorizationHeader = req.headers.authorization;
+            if (!authorizationHeader) return next(); // Гість? Ок, йди далі.
+
+            const accessToken = authorizationHeader.split(" ")[1];
+            if (!accessToken) return next();
+
+            // Якщо токен надіслали, перевіряємо його
+            res.locals.tokenPayload = tokenService.verifyToken(
+                accessToken,
+                TokenTypeEnum.ACCESS,
+            );
+
+            // Записуємо в locals, щоб Controller/Presenter знали, хто це
+
+            next();
+        } catch {
+            // Якщо токен битий - ігноруємо його і пускаємо як гостя
+            next();
+        }
+    }
 
     public async checkRefreshToken(
         req: Request,

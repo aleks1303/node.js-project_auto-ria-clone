@@ -8,6 +8,7 @@ import { moderationHelper } from "../helpers/moderation.helper";
 import {
     ICar,
     ICarCreateDto,
+    ICarListQuery,
     ICarUpdateDto,
 } from "../interfaces/car.interface";
 import { carRepository } from "../repositories/car.repository";
@@ -15,7 +16,9 @@ import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
 
 class CarService {
-    // car.service.ts
+    public async getAll(query: ICarListQuery, role?: RoleEnum) {
+        return await carRepository.getAll(query, role);
+    }
     public async create(body: ICarCreateDto, userId: string): Promise<ICar> {
         // 1. Обчислюємо ціни
         const { convertedPrices } = currencyHelper.convertAll(

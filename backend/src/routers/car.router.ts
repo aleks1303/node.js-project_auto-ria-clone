@@ -6,9 +6,15 @@ import { authMiddleware } from "../middleware/auth.middleware";
 import { carMiddleware } from "../middleware/car.middleware";
 import { commonMiddleware } from "../middleware/common.middleware";
 import { CarValidator } from "../validators/car.validator";
+import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
-
+router.get(
+    "/",
+    authMiddleware.checkAccessTokenOptional,
+    commonMiddleware.query(UserValidator.query),
+    carController.getAll,
+);
 router.post(
     "/create",
     authMiddleware.checkAccessToken,
