@@ -36,7 +36,7 @@ class CarService {
         return infoCar.toObject() as ICar;
     }
     public async update(car: ICar, body: ICarUpdateDto): Promise<ICar> {
-        let editCount = car.editCount;
+        let editCount = car.editCount || 0;
         const updateData: Partial<ICar> = { ...body };
         if (body.price || body.currency) {
             const { convertedPrices, exchangeRate } = currencyHelper.convertAll(
@@ -52,7 +52,8 @@ class CarService {
             hasBadWords = moderationHelper.hasBadWords(body.description);
 
             if (hasBadWords) {
-                updateData.editCount += 1;
+                editCount += 1;
+                updateData.editCount = editCount;
                 if (editCount >= 3) {
                     updateData.status = CarStatusEnum.INACTIVE;
                 } else {
