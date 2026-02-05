@@ -14,24 +14,16 @@ class CarController {
     // car.controller.ts
     public async getAll(req: Request, res: Response, next: NextFunction) {
         try {
-            // Дані після валідації Joi
             const query = res.locals.validatedQuery as ICarListQuery;
-
-            // Дані з розшифрованого токена
-            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-
-            // Викликаємо сервіс (який просто викликає репозиторій)
-            const [entities, total] = await carService.getAll(
-                query,
-                tokenPayload?.role,
-            );
-
-            // Перетворюємо дані для відправки клієнту
+            const { role, accountType } =
+                (res.locals.tokenPayload as ITokenPayload) || {};
+            const [entities, total] = await carService.getAll(query, role);
             const result = CarPresenter.toListResDto(
                 entities,
                 total,
                 query,
-                tokenPayload,
+                role,
+                accountType,
             );
 
             res.status(StatusCodesEnum.OK).json(result);
@@ -41,10 +33,8 @@ class CarController {
     }
     public async create(req: Request, res: Response, next: NextFunction) {
         try {
-            // Витягуємо юзера, якого поклала туди authMiddleware
             const body = req.body as ICarCreateDto;
             const { userId } = res.locals.tokenPayload as ITokenPayload;
-            // Передаємо в сервіс дані авто та ID власника окремо
             const car = await carService.create(body, userId);
             const carResponse = CarPresenter.toPublicResCarDto(car);
             res.status(StatusCodesEnum.OK).json(carResponse);

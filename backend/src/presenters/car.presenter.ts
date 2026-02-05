@@ -1,7 +1,13 @@
 import { config } from "../configs/config";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
-import { ICar, ICarListQuery, ICarResponse } from "../interfaces/car.interface";
-import { ITokenPayload } from "../interfaces/token.interface";
+import { RoleEnum } from "../enums/user-enum/role.enum";
+import {
+    ICar,
+    ICarListQuery,
+    ICarResponse,
+    ICarsResponseDto,
+    ISeller,
+} from "../interfaces/car.interface";
 
 export class CarPresenter {
     public static toPublicResCarDto(car: ICar): ICarResponse {
@@ -31,11 +37,12 @@ export class CarPresenter {
         entities: ICar[],
         total: number,
         query: ICarListQuery,
-        tokenPayload?: ITokenPayload,
+        role?: RoleEnum,
+        accountType?: accountTypeEnum,
     ) {
         return {
             data: entities.map((entity) =>
-                this.toPublicResDto(entity, tokenPayload),
+                this.toPublicCarsResDto(entity, role, accountType),
             ),
             total,
             page: query.page,
@@ -44,9 +51,13 @@ export class CarPresenter {
         };
     }
 
-    public static toPublicResDto(entity: ICar, tokenPayload?: ITokenPayload) {
+    public static toPublicCarsResDto(
+        entity: ICar,
+        role?: RoleEnum,
+        accountType?: accountTypeEnum,
+    ) {
         // 1. Створюємо базовий об'єкт (публічний)
-        const response = {
+        const response: ICarsResponseDto = {
             _id: entity._id,
             brand: entity.brand,
             model: entity.model,
@@ -55,17 +66,32 @@ export class CarPresenter {
             year: entity.year,
             region: entity.region,
             description: entity.description,
-            status: entity.status,
             createdAt: entity.createdAt,
         };
+        const isAdminOrManager = !!(
+            role && [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(role)
+        );
+        const isPremium = accountType === accountTypeEnum.PREMIUM;
 
+        if (isAdminOrManager) {
+            response.status = entity.status;
+            if (entity._userId && typeof entity._userId === "object") {
+                const user = entity._userId as unknown as ISeller; // Тут 'any' допустимо лише для приведення типу після populate
+                response.seller = {
+                    _id: user._id,
+                    name: user.name,
+                    surname: user.surname,
+                    email: user.email,
+                };
+            }
+        }
         // 2. Якщо в токені accountType === "premium", додаємо поле statistics
         // Поле entity.views вже має бути в моделі ICar у базі
-        if (tokenPayload?.accountType === accountTypeEnum.PREMIUM) {
+        if (isPremium || isAdminOrManager) {
             return {
                 ...response,
                 statistics: {
-                    totalViews: entity.views,
+                    totalViews: entity.views || 0,
                 },
             };
         }

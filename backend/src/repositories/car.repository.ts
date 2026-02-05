@@ -44,9 +44,11 @@ class CarRepository {
         // Виконуємо пошук та підрахунок одночасно
         const [entities, total] = await Promise.all([
             Car.find(filter)
+                .populate("_userId", "name surname email role")
                 .skip(skip)
                 .limit(query.pageSize)
-                .sort({ createdAt: -1 }), // Нові оголошення зверху
+                .sort({ [query.orderBy]: query.order === "asc" ? 1 : -1 }),
+            // Нові оголошення зверху
             Car.countDocuments(filter),
         ]);
 
