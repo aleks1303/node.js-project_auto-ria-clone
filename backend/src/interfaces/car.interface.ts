@@ -61,7 +61,7 @@ export type ICarResponse = Pick<
     | "createdAt"
 >;
 
-export interface ISeller {
+export interface IOwnerInfo {
     _id?: Types.ObjectId | string;
     name: string;
     surname: string;
@@ -80,7 +80,7 @@ export interface ICarsResponseDto {
     createdAt: Date;
     status?: CarStatusEnum;
     views?: number;
-    seller?: ISeller;
+    owner?: IOwnerInfo;
     statistics?: {
         totalViews: number;
     };

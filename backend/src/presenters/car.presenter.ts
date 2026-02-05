@@ -6,7 +6,7 @@ import {
     ICarListQuery,
     ICarResponse,
     ICarsResponseDto,
-    ISeller,
+    IOwnerInfo,
 } from "../interfaces/car.interface";
 
 export class CarPresenter {
@@ -76,8 +76,8 @@ export class CarPresenter {
         if (isAdminOrManager) {
             response.status = entity.status;
             if (entity._userId && typeof entity._userId === "object") {
-                const user = entity._userId as unknown as ISeller; // Тут 'any' допустимо лише для приведення типу після populate
-                response.seller = {
+                const user = entity._userId as unknown as IOwnerInfo; // Тут 'any' допустимо лише для приведення типу після populate
+                response.owner = {
                     _id: user._id,
                     name: user.name,
                     surname: user.surname,

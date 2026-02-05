@@ -37,9 +37,11 @@ class CarRepository {
             filter.region = query.region;
         }
         if (query.priceMin || query.priceMax) {
-            filter.price = {};
-            if (query.priceMin) filter.price.$gte = query.priceMin;
-            if (query.priceMax) filter.price.$lte = query.priceMax;
+            filter["convertedPrices.UAH"] = {};
+            if (query.priceMin)
+                filter["convertedPrices.UAH"].$gte = query.priceMin;
+            if (query.priceMax)
+                filter["convertedPrices.UAH"].$lte = query.priceMax;
         }
 
         // Виконуємо пошук та підрахунок одночасно
