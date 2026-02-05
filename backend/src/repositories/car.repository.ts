@@ -19,7 +19,8 @@ class CarRepository {
         const ADMIN_ROLES = [RoleEnum.ADMIN, RoleEnum.MANAGER];
         // Створюємо базовий фільтр
         const filter: FilterQuery<ICar> = {};
-
+        const sortField =
+            query.orderBy === "price" ? "convertedPrices.UAH" : query.orderBy;
         // Якщо це НЕ адмін і НЕ менеджер — показуємо тільки активні
         if (!role || !ADMIN_ROLES.includes(role)) {
             filter.status = CarStatusEnum.ACTIVE;
@@ -47,7 +48,7 @@ class CarRepository {
                 .populate("_userId", "name surname email role")
                 .skip(skip)
                 .limit(query.pageSize)
-                .sort({ [query.orderBy]: query.order === "asc" ? 1 : -1 }),
+                .sort({ [sortField]: query.order === "asc" ? 1 : -1 }),
             // Нові оголошення зверху
             Car.countDocuments(filter),
         ]);

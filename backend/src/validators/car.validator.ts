@@ -1,6 +1,8 @@
 import Joi from "joi";
 
+import { CarListOrderByEnum } from "../enums/car-enum/car-list-order-by.enum";
 import { CurrencyEnum } from "../enums/car-enum/currency.enum";
+import { OrderEnum } from "../enums/user-enum/order";
 
 export class CarValidator {
     private static brand = Joi.string().min(2).max(30).trim();
@@ -17,7 +19,7 @@ export class CarValidator {
         ...Object.values(CurrencyEnum),
     );
 
-    public static listQuery = Joi.object({
+    public static query = Joi.object({
         page: Joi.number().integer().min(1).default(1),
         pageSize: Joi.number().integer().min(1).max(100).default(10),
         brand: this.brand, // використовуємо твоє приватне поле
@@ -25,6 +27,12 @@ export class CarValidator {
         region: this.region,
         priceMin: Joi.number().positive(),
         priceMax: Joi.number().positive(),
+        orderBy: Joi.string()
+            .valid(...Object.values(CarListOrderByEnum))
+            .default(CarListOrderByEnum.CREATED_AT),
+        order: Joi.string()
+            .valid(...Object.values(OrderEnum)) // Використовуємо твій OrderEnum тут
+            .default(OrderEnum.DESC),
     });
 
     public static create = Joi.object({
