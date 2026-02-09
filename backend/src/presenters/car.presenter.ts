@@ -20,6 +20,7 @@ export class CarPresenter {
             description: car.description,
             price: car.price,
             currency: car.currency,
+            exchangeRates: car.exchangeRates,
             convertedPrices: car.convertedPrices,
             region: car.region,
             city: car.city,

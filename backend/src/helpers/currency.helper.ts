@@ -8,8 +8,8 @@ class CurrencyHelper {
     // 1. Наш "Мок" - імітуємо, що це прийшло з API Привату
     private getRates(): IExchangeRates {
         return {
-            [CurrencyEnum.USD]: 42.2,
-            [CurrencyEnum.EUR]: 51.5,
+            [CurrencyEnum.USD]: 43.3,
+            [CurrencyEnum.EUR]: 50.1,
             [CurrencyEnum.UAH]: 1,
         };
     }

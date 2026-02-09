@@ -53,6 +53,7 @@ export type ICarResponse = Pick<
     | "description"
     | "price"
     | "currency"
+    | "exchangeRates"
     | "convertedPrices"
     | "region"
     | "city"
