@@ -1,12 +1,16 @@
 import { CurrencyEnum } from "../enums/car-enum/currency.enum";
-import { IConvertedPrices } from "../interfaces/currency.interface";
+import {
+    IConvertedPrices,
+    IExchangeRates,
+} from "../interfaces/currency.interface";
 
 class CurrencyHelper {
     // 1. Наш "Мок" - імітуємо, що це прийшло з API Привату
-    private getRates() {
+    private getRates(): IExchangeRates {
         return {
             [CurrencyEnum.USD]: 42.2,
             [CurrencyEnum.EUR]: 51.5,
+            [CurrencyEnum.UAH]: 1,
         };
     }
 
@@ -14,18 +18,11 @@ class CurrencyHelper {
     public convertAll(
         price: number,
         currency: CurrencyEnum,
-    ): { convertedPrices: IConvertedPrices; exchangeRate: number } {
+    ): { convertedPrices: IConvertedPrices; exchangeRates: IExchangeRates } {
         const rates = this.getRates();
-        let priceInUah = 0;
 
         // Конвертуємо вхідну ціну в базову валюту (UAH)
-        if (currency === CurrencyEnum.UAH) {
-            priceInUah = price;
-        } else if (currency === CurrencyEnum.USD) {
-            priceInUah = price * rates[CurrencyEnum.USD];
-        } else if (currency === CurrencyEnum.EUR) {
-            priceInUah = price * rates[CurrencyEnum.EUR];
-        }
+        const priceInUah = price * rates[currency];
 
         return {
             convertedPrices: {
@@ -33,7 +30,7 @@ class CurrencyHelper {
                 USD: Math.round(priceInUah / rates[CurrencyEnum.USD]),
                 EUR: Math.round(priceInUah / rates[CurrencyEnum.EUR]),
             },
-            exchangeRate: rates[CurrencyEnum.USD], // Беремо долар як основний курс для звіту
+            exchangeRates: rates, // Беремо долар як основний курс для звіту
         };
     }
 }

@@ -18,7 +18,10 @@ const carSchema = new Schema(
         // Блок ціни
         price: { type: Number, required: true },
         currency: { type: String, enum: CurrencyEnum, required: true },
-        exchangeRate: { type: Number },
+        exchangeRates: {
+            USD: { type: Number },
+            EUR: { type: Number },
+        },
         convertedPrices: {
             USD: { type: Number, required: true },
             EUR: { type: Number, required: true },

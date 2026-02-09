@@ -21,7 +21,7 @@ class CarService {
     }
     public async create(body: ICarCreateDto, userId: string): Promise<ICar> {
         // 1. Обчислюємо ціни
-        const { convertedPrices } = currencyHelper.convertAll(
+        const { convertedPrices, exchangeRates } = currencyHelper.convertAll(
             body.price,
             body.currency,
         );
@@ -31,7 +31,8 @@ class CarService {
         const infoCar = await carRepository.create({
             ...body, // тут тільки brand, model, year, price, currency, description, region
             _userId: userId, // додаємо зверху
-            convertedPrices, // додаємо зверху
+            convertedPrices,
+            exchangeRates, // додаємо зверху
             status, // додаємо зверху
             editCount: 0, // ініціалізуємо
         });
@@ -42,13 +43,14 @@ class CarService {
         let editCount = car.editCount || 0;
         const updateData: Partial<ICar> = { ...body };
         if (body.price || body.currency) {
-            const { convertedPrices, exchangeRate } = currencyHelper.convertAll(
-                body.price || car.price,
-                body.currency || car.currency,
-            );
+            const { convertedPrices, exchangeRates } =
+                currencyHelper.convertAll(
+                    body.price || car.price,
+                    body.currency || car.currency,
+                );
             // Додаємо ці дані в об'єкт для оновлення
             updateData.convertedPrices = convertedPrices;
-            updateData.exchangeRate = exchangeRate;
+            updateData.exchangeRates = exchangeRates;
         }
         let hasBadWords = false;
         if (body.description !== undefined) {
