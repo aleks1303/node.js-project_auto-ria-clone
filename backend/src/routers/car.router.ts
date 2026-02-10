@@ -33,4 +33,7 @@ router.put(
     commonMiddleware.isBodyValid(CarValidator.update),
     carController.update,
 );
+
+// car.router.ts
+router.get("/:carId", authMiddleware.checkAccessToken, carController.getById);
 export const carRouter = router;

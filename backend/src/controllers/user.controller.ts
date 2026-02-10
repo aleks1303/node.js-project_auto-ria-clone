@@ -47,6 +47,21 @@ class UserController {
         }
     }
 
+    public async buyPremiumAccount(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const premiumUser = await userService.buyPremiumAccount(userId);
+            const userResponse = userPresenter.toPublicResDto(premiumUser);
+            res.status(StatusCodesEnum.OK).json(userResponse);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
         try {
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;

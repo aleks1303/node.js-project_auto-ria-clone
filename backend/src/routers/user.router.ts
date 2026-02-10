@@ -25,6 +25,11 @@ router.put(
     commonMiddleware.isBodyValid(UserValidator.update),
     userController.updateMe,
 );
+router.patch(
+    "/me/premium",
+    authMiddleware.checkAccessToken,
+    userController.buyPremiumAccount,
+);
 router.post(
     "/me/avatar",
     authMiddleware.checkAccessToken,

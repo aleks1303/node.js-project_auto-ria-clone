@@ -1,6 +1,7 @@
 import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
+import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
@@ -30,6 +31,19 @@ class UserService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
         return await userRepository.updateById(userId, user);
+    }
+
+    public async buyPremiumAccount(userId: string): Promise<IUser> {
+        const user = await userRepository.getById(userId);
+        if (user.accountType === accountTypeEnum.PREMIUM) {
+            throw new ApiError(
+                "User already has a premium account",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+        return await userRepository.updateById(userId, {
+            accountType: accountTypeEnum.PREMIUM,
+        });
     }
 
     public async uploadAvatar(

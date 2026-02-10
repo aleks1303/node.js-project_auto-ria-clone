@@ -54,6 +54,25 @@ class CarController {
             next(e);
         }
     }
+    // car.controller.ts
+    public async getById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { carId } = req.params as { carId: string };
+            const { userId } = res.locals.tokenPayload;
+
+            const { car, averagePrice } = await carService.getById(
+                carId,
+                userId,
+            );
+
+            // Використовуємо Presenter тут
+            const response = CarPresenter.toPublicCarsResDto(car, averagePrice);
+
+            res.status(StatusCodesEnum.OK).json(response);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const carController = new CarController();

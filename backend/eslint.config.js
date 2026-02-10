@@ -44,7 +44,7 @@ export default [
             "@typescript-eslint/explicit-module-boundary-types": "off",
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "req|res|next" }],
-            "@typescript-eslint/return-await": ["error", "always"],
+            "@typescript-eslint/return-await": ["error", "in-try-catch"],
             "import/first": "error",
             "import/newline-after-import": ["error", { count: 1 }],
             "import/no-duplicates": "error",

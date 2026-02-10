@@ -70,5 +70,36 @@ class CarRepository {
     public getById(carId: string): Promise<ICar> {
         return Car.findById(carId);
     }
+
+    public async countByUserId(userId: string): Promise<number> {
+        // countDocuments — це вбудований метод Mongoose, який дуже швидко рахує записи
+        return Car.countDocuments({
+            _userId: userId,
+            status: CarStatusEnum.ACTIVE, // Рахуємо тільки ті, що зараз у продажу
+        });
+    }
+    public async getAveragePrice(
+        brand: string,
+        model: string,
+    ): Promise<number> {
+        const result = await Car.aggregate([
+            {
+                $match: {
+                    brand: brand,
+                    model: model,
+                    status: CarStatusEnum.ACTIVE, // Рахуємо тільки по актуальних авто
+                },
+            },
+            {
+                $group: {
+                    _id: null, // Нам не потрібне групування за полем, ми хочемо одне число
+                    averagePrice: { $avg: "$convertedPrices.UAH" }, // Рахуємо середнє в гривні
+                },
+            },
+        ]);
+
+        // Якщо база пуста — повертаємо 0, інакше округлюємо результат
+        return result.length > 0 ? Math.round(result[0].averagePrice) : 0;
+    }
 }
 export const carRepository = new CarRepository();

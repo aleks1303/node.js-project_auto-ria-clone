@@ -56,6 +56,7 @@ export class CarPresenter {
         entity: ICar,
         role?: RoleEnum,
         accountType?: accountTypeEnum,
+        averagePrice?: number,
     ) {
         // 1. Створюємо базовий об'єкт (публічний)
         const response: ICarsResponseDto = {
@@ -93,6 +94,7 @@ export class CarPresenter {
                 ...response,
                 statistics: {
                     totalViews: entity.views || 0,
+                    averagePrice: averagePrice || 0,
                 },
             };
         }
