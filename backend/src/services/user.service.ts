@@ -1,13 +1,18 @@
 import { UploadedFile } from "express-fileupload";
 
+import { rolePermissions } from "../constants/permissions.constant";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
+import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
+import { IBuyPremiumResponse } from "../interfaces/buy-premium.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { IUser, IUserListQuery } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
 import { s3Service } from "./s3.service";
+import { tokenService } from "./token.service";
 
 class UserService {
     public async getAll(query: IUserListQuery): Promise<[IUser[], number]> {
@@ -33,7 +38,9 @@ class UserService {
         return userRepository.updateById(userId, user);
     }
 
-    public async buyPremiumAccount(userId: string): Promise<IUser> {
+    public async buyPremiumAccount(
+        userId: string,
+    ): Promise<IBuyPremiumResponse> {
         const user = await userRepository.getById(userId);
         if (user.accountType === accountTypeEnum.PREMIUM) {
             throw new ApiError(
@@ -41,9 +48,34 @@ class UserService {
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
-        return userRepository.updateById(userId, {
+        if (
+            ![RoleEnum.BUYER, RoleEnum.SELLER].includes(user.role as RoleEnum)
+        ) {
+            throw new ApiError("Ця роль не підтримує преміум-акаунт", 403);
+        }
+
+        const updateData: Partial<IUser> = {
             accountType: accountTypeEnum.PREMIUM,
+        };
+
+        // Якщо це був Покупець, він стає Продавцем з правами
+        if (user.role === RoleEnum.BUYER) {
+            updateData.role = RoleEnum.SELLER;
+            updateData.permissions = this.getPermissionsByRole(RoleEnum.SELLER);
+        }
+
+        const updatedUser = await userRepository.updateById(userId, updateData);
+        const tokens = tokenService.generateTokens({
+            userId: updatedUser._id,
+            role: updatedUser.role,
+            accountType: updatedUser.accountType,
         });
+
+        // Повертаємо об'єкт, який містить все необхідне
+        return {
+            user: updatedUser,
+            tokens: tokens,
+        };
     }
 
     public async uploadAvatar(
@@ -69,6 +101,10 @@ class UserService {
         }
         await s3Service.deleteFile(user.avatar);
         await userRepository.updateById(user._id, { avatar: null });
+    }
+
+    private getPermissionsByRole(role: RoleEnum): PermissionsEnum[] {
+        return rolePermissions[role] || [];
     }
 }
 export const userService = new UserService();

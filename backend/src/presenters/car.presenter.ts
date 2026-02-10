@@ -94,7 +94,10 @@ export class CarPresenter {
                 ...response,
                 statistics: {
                     totalViews: entity.views || 0,
-                    averagePrice: averagePrice || 0,
+                    averagePrice: {
+                        value: averagePrice || 0,
+                        currency: "UAH",
+                    },
                 },
             };
         }

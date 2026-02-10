@@ -53,10 +53,18 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
-            const premiumUser = await userService.buyPremiumAccount(userId);
-            const userResponse = userPresenter.toDetailsResDto(premiumUser);
-            res.status(StatusCodesEnum.OK).json(userResponse);
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            const { user, tokens } = await userService.buyPremiumAccount(
+                tokenPayload.userId,
+            );
+            const userResponse = userPresenter.toDetailsResDto(
+                user,
+                tokenPayload,
+            );
+            res.status(StatusCodesEnum.OK).json({
+                user: userResponse,
+                tokens: tokens,
+            });
         } catch (e) {
             next(e);
         }
