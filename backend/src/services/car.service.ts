@@ -107,9 +107,9 @@ class CarService {
     }
 
     // car.service.ts
-    public async getById(carId: string, currentUserId: string) {
+    public async getById(carId: string, userId: string) {
         const car = await carRepository.getById(carId);
-        const user = await userRepository.getById(currentUserId);
+        const user = await userRepository.getById(userId);
 
         let averagePrice = null;
 

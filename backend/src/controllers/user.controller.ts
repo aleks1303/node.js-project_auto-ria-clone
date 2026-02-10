@@ -55,7 +55,7 @@ class UserController {
         try {
             const { userId } = res.locals.tokenPayload as ITokenPayload;
             const premiumUser = await userService.buyPremiumAccount(userId);
-            const userResponse = userPresenter.toPublicResDto(premiumUser);
+            const userResponse = userPresenter.toDetailsResDto(premiumUser);
             res.status(StatusCodesEnum.OK).json(userResponse);
         } catch (e) {
             next(e);

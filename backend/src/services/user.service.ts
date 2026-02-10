@@ -11,7 +11,7 @@ import { s3Service } from "./s3.service";
 
 class UserService {
     public async getAll(query: IUserListQuery): Promise<[IUser[], number]> {
-        return await userRepository.getAll(query);
+        return userRepository.getAll(query);
     }
 
     public async getById(userId: string): Promise<IUser> {
@@ -30,7 +30,7 @@ class UserService {
         if (!data) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
-        return await userRepository.updateById(userId, user);
+        return userRepository.updateById(userId, user);
     }
 
     public async buyPremiumAccount(userId: string): Promise<IUser> {
@@ -41,7 +41,7 @@ class UserService {
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
-        return await userRepository.updateById(userId, {
+        return userRepository.updateById(userId, {
             accountType: accountTypeEnum.PREMIUM,
         });
     }
@@ -59,7 +59,7 @@ class UserService {
             oldFilePath,
         );
 
-        return await userRepository.updateById(user._id, { avatar });
+        return userRepository.updateById(user._id, { avatar });
     }
 
     public async deleteAvatar(jwtPayload: ITokenPayload): Promise<void> {

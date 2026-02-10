@@ -57,6 +57,7 @@ class CarController {
     // car.controller.ts
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
+            const { role, accountType } = res.locals.tokenPayload;
             const { carId } = req.params as { carId: string };
             const { userId } = res.locals.tokenPayload;
 
@@ -66,7 +67,12 @@ class CarController {
             );
 
             // Використовуємо Presenter тут
-            const response = CarPresenter.toPublicCarsResDto(car, averagePrice);
+            const response = CarPresenter.toPublicCarsResDto(
+                car,
+                role,
+                accountType,
+                averagePrice,
+            );
 
             res.status(StatusCodesEnum.OK).json(response);
         } catch (e) {
