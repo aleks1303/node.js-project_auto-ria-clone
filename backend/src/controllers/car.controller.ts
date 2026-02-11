@@ -54,24 +54,19 @@ class CarController {
             next(e);
         }
     }
-    // car.controller.ts
+
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
-            const { role, accountType } = res.locals.tokenPayload;
             const { carId } = req.params as { carId: string };
-            const { userId } = res.locals.tokenPayload;
+            const { userId, role, accountType } = res.locals.tokenPayload;
 
-            const { car, averagePrice } = await carService.getById(
-                carId,
-                userId,
-            );
+            const { car, statistics } = await carService.getById(carId, userId);
 
-            // Використовуємо Presenter тут
             const response = CarPresenter.toPublicCarsResDto(
                 car,
                 role,
                 accountType,
-                averagePrice,
+                statistics,
             );
 
             res.status(StatusCodesEnum.OK).json(response);
@@ -79,6 +74,31 @@ class CarController {
             next(e);
         }
     }
+    // car.controller.ts
+    // public async getById(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { role, accountType } = res.locals.tokenPayload;
+    //         const { carId } = req.params as { carId: string };
+    //         const { userId } = res.locals.tokenPayload;
+    //
+    //         const { car, averagePrice } = await carService.getById(
+    //             carId,
+    //             userId,
+    //         );
+    //
+    //         // Використовуємо Presenter тут
+    //         const response = CarPresenter.toPublicCarsResDto(
+    //             car,
+    //             role,
+    //             accountType,
+    //             averagePrice,
+    //         );
+    //
+    //         res.status(StatusCodesEnum.OK).json(response);
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 }
 
 export const carController = new CarController();

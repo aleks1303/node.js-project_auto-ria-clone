@@ -21,7 +21,7 @@ export interface ICar extends IBase, ICurrencyInfo, ICarModeration {
     description: string;
     region: string;
     city: string;
-    views?: number;
+    views: Date[];
     _userId: Types.ObjectId | string;
 }
 
@@ -70,7 +70,7 @@ export interface IOwnerInfo {
 }
 
 export interface ICarsResponseDto {
-    _id?: Types.ObjectId | string;
+    _id: Types.ObjectId | string; // Прибираємо опціональність ?, бо id є завжди
     brand: string;
     model: string;
     price: number;
@@ -80,12 +80,30 @@ export interface ICarsResponseDto {
     description: string;
     createdAt: Date;
     status?: CarStatusEnum;
-    views?: number;
+    // В основному об'єкті ми не показуємо масив дат,
+    // тому тут можна лишити як число для загальної кількості
+    totalViews?: number;
     owner?: IOwnerInfo;
-    statistics?: {
-        totalViews: number;
-    };
+    // Оновлюємо це поле:
+    statistics?: ICarStatistics;
 }
+// export interface ICarsResponseDto {
+//     _id?: Types.ObjectId | string;
+//     brand: string;
+//     model: string;
+//     price: number;
+//     currency: CurrencyEnum;
+//     year: number;
+//     region: string;
+//     description: string;
+//     createdAt: Date;
+//     status?: CarStatusEnum;
+//     views?: number;
+//     owner?: IOwnerInfo;
+//     statistics?: {
+//         totalViews: number;
+//     };
+// }
 //  поки не потрібний
 // export type ICarsResponseDto = Pick<
 //     ICar,
@@ -123,4 +141,17 @@ export interface ICarListQuery {
     priceMax?: number;
     orderBy: CarListOrderByEnum;
     order: OrderEnum;
+}
+
+export interface ICarStatistics {
+    views: {
+        day: number;
+        week: number;
+        month: number;
+        total: number;
+    };
+    averagePrice: {
+        region: number;
+        ukraine: number;
+    };
 }

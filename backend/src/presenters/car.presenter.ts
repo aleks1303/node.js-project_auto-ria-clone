@@ -6,6 +6,7 @@ import {
     ICarListQuery,
     ICarResponse,
     ICarsResponseDto,
+    ICarStatistics,
     IOwnerInfo,
 } from "../interfaces/car.interface";
 
@@ -56,7 +57,7 @@ export class CarPresenter {
         entity: ICar,
         role?: RoleEnum,
         accountType?: accountTypeEnum,
-        averagePrice?: number,
+        statistics?: ICarStatistics,
     ) {
         // 1. Створюємо базовий об'єкт (публічний)
         const response: ICarsResponseDto = {
@@ -89,19 +90,21 @@ export class CarPresenter {
         }
         // 2. Якщо в токені accountType === "premium", додаємо поле statistics
         // Поле entity.views вже має бути в моделі ICar у базі
-        if (isPremium || isAdminOrManager) {
-            return {
-                ...response,
-                statistics: {
-                    totalViews: entity.views || 0,
-                    averagePrice: {
-                        value: averagePrice || 0,
-                        currency: "UAH",
-                    },
-                },
-            };
+        // if (isPremium || isAdminOrManager) {
+        //     return {
+        //         ...response,
+        //         statistics: {
+        //             totalViews: entity.views || 0,
+        //             averagePrice: {
+        //                 value: averagePrice || 0,
+        //                 currency: "UAH",
+        //             },
+        //         },
+        //     };
+        // }
+        if ((isPremium || isAdminOrManager) && statistics) {
+            response.statistics = statistics;
         }
-
         // 3. Якщо не преміум — повертаємо без статистики
         return response;
     }

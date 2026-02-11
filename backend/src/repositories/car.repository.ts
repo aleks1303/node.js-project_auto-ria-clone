@@ -16,13 +16,13 @@ class CarRepository {
         role?: RoleEnum,
     ): Promise<[ICar[], number]> {
         const skip = (query.page - 1) * query.pageSize;
-        const ADMIN_ROLES = [RoleEnum.ADMIN, RoleEnum.MANAGER];
+        const adminRoles = [RoleEnum.ADMIN, RoleEnum.MANAGER];
         // Створюємо базовий фільтр
         const filter: FilterQuery<ICar> = {};
         const sortField =
             query.orderBy === "price" ? "convertedPrices.UAH" : query.orderBy;
         // Якщо це НЕ адмін і НЕ менеджер — показуємо тільки активні
-        if (!role || !ADMIN_ROLES.includes(role)) {
+        if (!role || !adminRoles.includes(role)) {
             filter.status = CarStatusEnum.ACTIVE;
         }
 
@@ -50,12 +50,13 @@ class CarRepository {
                 .populate("_userId", "name surname email role")
                 .skip(skip)
                 .limit(query.pageSize)
-                .sort({ [sortField]: query.order === "asc" ? 1 : -1 }),
+                .sort({ [sortField]: query.order === "asc" ? 1 : -1 })
+                .lean(),
             // Нові оголошення зверху
             Car.countDocuments(filter),
         ]);
 
-        return [entities, total];
+        return [entities as unknown as ICar[], total];
     }
 
     public async create(car: ICarCreateDb): Promise<HydratedDocument<ICar>> {
@@ -78,28 +79,58 @@ class CarRepository {
             status: CarStatusEnum.ACTIVE, // Рахуємо тільки ті, що зараз у продажу
         });
     }
-    public async getAveragePrice(
+
+    public async addView(carId: string): Promise<void> {
+        await Car.findByIdAndUpdate(carId, { $push: { views: new Date() } });
+    }
+
+    public async getAveragePrices(
         brand: string,
         model: string,
-    ): Promise<number> {
-        const result = await Car.aggregate([
+        region: string,
+    ) {
+        const stats = await Car.aggregate([
+            { $match: { brand, model, status: "active" } },
             {
-                $match: {
-                    brand: brand,
-                    model: model,
-                    status: CarStatusEnum.ACTIVE, // Рахуємо тільки по актуальних авто
-                },
-            },
-            {
-                $group: {
-                    _id: null, // Нам не потрібне групування за полем, ми хочемо одне число
-                    averagePrice: { $avg: "$convertedPrices.UAH" }, // Рахуємо середнє в гривні
+                $facet: {
+                    ukraine: [
+                        { $group: { _id: null, avg: { $avg: "$price" } } },
+                    ],
+                    region: [
+                        { $match: { region } },
+                        { $group: { _id: null, avg: { $avg: "$price" } } },
+                    ],
                 },
             },
         ]);
 
-        // Якщо база пуста — повертаємо 0, інакше округлюємо результат
-        return result.length > 0 ? Math.round(result[0].averagePrice) : 0;
+        return {
+            ukraine: stats[0].ukraine[0]?.avg || 0,
+            region: stats[0].region[0]?.avg || 0,
+        };
     }
+    // public async getAveragePrice(
+    //     brand: string,
+    //     model: string,
+    // ): Promise<number> {
+    //     const result = await Car.aggregate([
+    //         {
+    //             $match: {
+    //                 brand: brand,
+    //                 model: model,
+    //                 status: CarStatusEnum.ACTIVE, // Рахуємо тільки по актуальних авто
+    //             },
+    //         },
+    //         {
+    //             $group: {
+    //                 _id: null, // Нам не потрібне групування за полем, ми хочемо одне число
+    //                 averagePrice: { $avg: "$convertedPrices.UAH" }, // Рахуємо середнє в гривні
+    //             },
+    //         },
+    //     ]);
+    //
+    //     // Якщо база пуста — повертаємо 0, інакше округлюємо результат
+    //     return result.length > 0 ? Math.round(result[0].averagePrice) : 0;
+    // }
 }
 export const carRepository = new CarRepository();

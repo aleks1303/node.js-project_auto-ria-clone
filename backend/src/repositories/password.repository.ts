@@ -3,7 +3,7 @@ import { Password } from "../models/password.model";
 
 class PasswordRepository {
     public async createPassword(dto: Partial<IPassword>): Promise<IPassword> {
-        return await Password.create(dto);
+        return Password.create(dto);
     }
 
     public findOldPasswords(

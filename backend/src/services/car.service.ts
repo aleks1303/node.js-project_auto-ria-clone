@@ -43,7 +43,8 @@ class CarService {
             convertedPrices,
             exchangeRates, // додаємо зверху
             status, // додаємо зверху
-            editCount: 0, // ініціалізуємо
+            editCount: 0,
+            views: [], // ініціалізуємо
         });
         // 3. Збираємо фінальний об'єкт для бази (тепер ми впевнені в кожному полі)
         return infoCar.toObject() as ICar;
@@ -105,24 +106,65 @@ class CarService {
 
         return updatedCar;
     }
-
-    // car.service.ts
     public async getById(carId: string, userId: string) {
+        // 1. Кожен вхід — це новий перегляд
+        await carRepository.addView(carId);
+
         const car = await carRepository.getById(carId);
         const user = await userRepository.getById(userId);
 
-        let averagePrice = null;
+        let statistics = null;
 
-        if (user.accountType === accountTypeEnum.PREMIUM) {
-            averagePrice = await carRepository.getAveragePrice(
+        // 2. Перевірка на Premium (Пункт 4)
+        if (
+            user.accountType === accountTypeEnum.PREMIUM ||
+            user.role === RoleEnum.ADMIN
+        ) {
+            const now = Date.now();
+            const day = 24 * 60 * 60 * 1000;
+
+            const avgPrices = await carRepository.getAveragePrices(
                 car.brand,
                 car.model,
+                car.region,
             );
+
+            statistics = {
+                views: {
+                    day: car.views.filter((v) => now - v.getTime() < day)
+                        .length,
+                    week: car.views.filter((v) => now - v.getTime() < day * 7)
+                        .length,
+                    month: car.views.filter((v) => now - v.getTime() < day * 30)
+                        .length,
+                    total: car.views.length,
+                },
+                averagePrice: {
+                    region: Math.round(avgPrices.region),
+                    ukraine: Math.round(avgPrices.ukraine),
+                },
+            };
         }
 
-        // Повертаємо об'єкт з даними
-        return { car, averagePrice };
+        return { car, statistics };
     }
+    // car.service.ts
+    // public async getById(carId: string, userId: string) {
+    //     const car = await carRepository.getById(carId);
+    //     const user = await userRepository.getById(userId);
+    //
+    //     let averagePrice = null;
+    //
+    //     if (user.accountType === accountTypeEnum.PREMIUM) {
+    //         averagePrice = await carRepository.getAveragePrice(
+    //             car.brand,
+    //             car.model,
+    //         );
+    //     }
+    //
+    //     // Повертаємо об'єкт з даними
+    //     return { car, averagePrice };
+    // }
 
     private async findManagerAndSendEmail(car: ICar, editCount: number) {
         const managers = await userRepository.findByRole(RoleEnum.MANAGER);
