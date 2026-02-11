@@ -7,9 +7,12 @@ import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
 import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
-import { IBuyPremiumResponse } from "../interfaces/buy-premium.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { IUser, IUserListQuery } from "../interfaces/user.interface";
+import {
+    IUser,
+    IUserListQuery,
+    IUserWithTokens,
+} from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
 import { s3Service } from "./s3.service";
 import { tokenService } from "./token.service";
@@ -38,9 +41,7 @@ class UserService {
         return userRepository.updateById(userId, user);
     }
 
-    public async buyPremiumAccount(
-        userId: string,
-    ): Promise<IBuyPremiumResponse> {
+    public async buyPremiumAccount(userId: string): Promise<IUserWithTokens> {
         const user = await userRepository.getById(userId);
         if (user.accountType === accountTypeEnum.PREMIUM) {
             throw new ApiError(
@@ -76,6 +77,29 @@ class UserService {
             user: updatedUser,
             tokens: tokens,
         };
+    }
+
+    public async changeRoleToSeller(userId: string): Promise<IUserWithTokens> {
+        const user = await userRepository.getById(userId);
+
+        // Якщо він уже продавець або вище - нічого не робимо
+        if (user.role !== RoleEnum.BUYER) {
+            throw new ApiError("Ви вже маєте право продавати авто", 400);
+        }
+
+        const updatedUser = await userRepository.updateById(userId, {
+            role: RoleEnum.SELLER,
+            permissions: rolePermissions[RoleEnum.SELLER],
+        });
+
+        // Обов'язково генеруємо НОВІ токени, щоб у Postman з'явилися права SELLER
+        const tokens = tokenService.generateTokens({
+            userId: updatedUser._id,
+            role: updatedUser.role,
+            accountType: updatedUser.accountType,
+        });
+
+        return { user: updatedUser, tokens };
     }
 
     public async uploadAvatar(

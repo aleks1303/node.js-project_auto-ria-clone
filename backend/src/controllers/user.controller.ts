@@ -69,6 +69,28 @@ class UserController {
             next(e);
         }
     }
+    public async changeRoleToSeller(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            const { user, tokens } = await userService.changeRoleToSeller(
+                tokenPayload.userId,
+            );
+            const userResponse = userPresenter.toDetailsResDto(
+                user,
+                tokenPayload,
+            );
+            res.status(StatusCodesEnum.OK).json({
+                user: userResponse,
+                tokens: tokens,
+            });
+        } catch (e) {
+            next(e);
+        }
+    }
 
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
         try {

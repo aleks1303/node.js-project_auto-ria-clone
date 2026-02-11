@@ -4,6 +4,7 @@ import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { UserListOrderByEnum } from "../enums/user-enum/user-list-order-by.enum";
 import { IBase } from "./base.interface";
+import { ITokenPair } from "./token.interface";
 
 export interface IUser extends IBase {
     _id: string;
@@ -94,4 +95,8 @@ export interface IUserListResponse {
     total: number;
     totalPages: number;
     query: IUserListQuery; // Повертаємо вхідні параметри для фронтенду
+}
+export interface IUserWithTokens {
+    user: IUser;
+    tokens: ITokenPair;
 }

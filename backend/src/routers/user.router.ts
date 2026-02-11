@@ -30,6 +30,11 @@ router.patch(
     authMiddleware.checkAccessToken,
     userController.buyPremiumAccount,
 );
+router.patch(
+    "/me/upgrade-seller",
+    authMiddleware.checkAccessToken,
+    userController.changeRoleToSeller,
+);
 router.post(
     "/me/avatar",
     authMiddleware.checkAccessToken,
