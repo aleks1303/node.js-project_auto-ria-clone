@@ -64,6 +64,9 @@ export class CarPresenter {
             _id: entity._id,
             brand: entity.brand,
             model: entity.model,
+            image: entity.image
+                ? `${config.AWS_S3_ENDPOINT}/${entity.image}`
+                : null,
             price: entity.price,
             currency: entity.currency,
             year: entity.year,

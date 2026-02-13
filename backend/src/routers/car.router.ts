@@ -1,10 +1,12 @@
 import { Router } from "express";
 
+import { carImageConfig } from "../configs/car-image.config";
 import { carController } from "../controllers/car.controller";
 import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { carMiddleware } from "../middleware/car.middleware";
 import { commonMiddleware } from "../middleware/common.middleware";
+import { fileMiddleware } from "../middleware/file.middleware";
 import { CarValidator } from "../validators/car.validator";
 
 const router = Router();
@@ -20,6 +22,18 @@ router.post(
     authMiddleware.checkPermission(PermissionsEnum.CARS_CREATE),
     commonMiddleware.isBodyValid(CarValidator.create),
     carController.create,
+);
+
+router.post(
+    "/:carId/image",
+    authMiddleware.checkAccessToken,
+    fileMiddleware.isFileValid("image", carImageConfig),
+    carController.uploadImage,
+);
+router.delete(
+    "/:carId/image",
+    authMiddleware.checkAccessToken,
+    carController.deleteImage,
 );
 router.put(
     "/:carId",

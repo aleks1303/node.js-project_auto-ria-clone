@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import {
@@ -99,6 +100,34 @@ class CarController {
     //         next(e);
     //     }
     // }
+
+    public async uploadImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { carId } = req.params as { carId: string };
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            const image = req.files.image as UploadedFile;
+
+            const car = await carService.uploadImage(
+                tokenPayload,
+                carId,
+                image,
+            );
+            // Тут можна використати carPresenter, якщо він є
+            res.status(201).json(car);
+        } catch (e) {
+            next(e);
+        }
+    }
+    public async deleteImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { carId } = req.params as { carId: string };
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            await carService.deleteCar(carId, tokenPayload);
+            res.status(StatusCodesEnum.NO_CONTENT);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const carController = new CarController();

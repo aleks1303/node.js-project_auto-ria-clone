@@ -1,7 +1,10 @@
+import { UploadedFile } from "express-fileupload";
+
 import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { EmailTypeEnum } from "../enums/user-enum/email-type.enum";
+import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
 import { currencyHelper } from "../helpers/currency.helper";
@@ -12,10 +15,12 @@ import {
     ICarListQuery,
     ICarUpdateDto,
 } from "../interfaces/car.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
 import { brandRepository } from "../repositories/brand.repository";
 import { carRepository } from "../repositories/car.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
+import { s3Service } from "./s3.service";
 
 class CarService {
     public async getAll(query: ICarListQuery, role?: RoleEnum) {
@@ -48,7 +53,7 @@ class CarService {
         // 2. Перевіряємо на матюки
         const isClean = !moderationHelper.hasBadWords(body.description);
         const status = isClean ? CarStatusEnum.ACTIVE : CarStatusEnum.PENDING;
-        const infoCar = await carRepository.create({
+        return carRepository.create({
             ...body, // тут тільки brand, model, year, price, currency, description, region
             _userId: userId, // додаємо зверху
             convertedPrices,
@@ -57,8 +62,6 @@ class CarService {
             editCount: 0,
             views: [], // ініціалізуємо
         });
-        // 3. Збираємо фінальний об'єкт для бази (тепер ми впевнені в кожному полі)
-        return infoCar;
     }
     public async update(car: ICar, body: ICarUpdateDto): Promise<ICar> {
         let editCount = car.editCount || 0;
@@ -92,7 +95,7 @@ class CarService {
         }
 
         // 2. Єдине оновлення в БД
-        const updatedCar = await carRepository.update(
+        const updatedCar = await carRepository.updateById(
             car._id.toString(),
             updateData,
         );
@@ -176,6 +179,53 @@ class CarService {
     //     // Повертаємо об'єкт з даними
     //     return { car, averagePrice };
     // }
+
+    public async uploadImage(
+        tokenPayload: ITokenPayload,
+        carId: string,
+        file: UploadedFile,
+    ): Promise<ICar> {
+        const car = await carRepository.getById(carId);
+
+        // Безпека: перевіряємо, чи цей юзер власник
+        if (car._userId.toString() !== tokenPayload.userId) {
+            throw new ApiError("You can only edit your own cars", 403);
+        }
+
+        const oldFilePath = car.image;
+        const image = await s3Service.uploadFile(
+            file,
+            FileItemTypeEnum.CAR, // додай CAR в свій Enum
+            car._id.toString(),
+            oldFilePath,
+        );
+
+        return carRepository.updateById(car._id.toString(), { image });
+    }
+
+    public async deleteCar(
+        carId: string,
+        tokenPayload: ITokenPayload,
+    ): Promise<void> {
+        const car = await carRepository.getById(carId);
+        if (!car) {
+            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
+        }
+        if (car._userId !== tokenPayload.userId) {
+            throw new ApiError(
+                "You can only delete images from your own cars",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (!car.image) {
+            throw new ApiError(
+                "Car does not have an image",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+        await s3Service.deleteFile(car.image);
+        await carRepository.updateById(car._id.toString(), { image: null });
+    }
 
     private async findManagerAndSendEmail(car: ICar, editCount: number) {
         const managers = await userRepository.findByRole(RoleEnum.MANAGER);

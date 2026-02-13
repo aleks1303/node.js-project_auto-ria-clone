@@ -27,7 +27,7 @@ class UserRepository {
 
         const sortOrder = query.order === "desc" ? -1 : 1;
 
-        return await Promise.all([
+        return Promise.all([
             User.find(filter)
                 .sort({ [query.orderBy]: sortOrder as any })
                 .skip(skip)

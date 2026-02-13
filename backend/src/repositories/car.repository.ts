@@ -64,7 +64,7 @@ class CarRepository {
         return createdCar.toObject({}) as unknown as ICar;
     }
 
-    public update(carId: string, car: ICarUpdateDb): Promise<ICar> {
+    public updateById(carId: string, car: ICarUpdateDb): Promise<ICar> {
         return Car.findByIdAndUpdate(carId, car, { new: true });
     }
 

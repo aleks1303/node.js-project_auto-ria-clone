@@ -8,7 +8,7 @@ class BrandRepository {
     public async getByBrandAndModel(
         brand: string,
         models: string,
-    ): Promise<IBrand> {
+    ): Promise<IBrand | null> {
         return Brand.findOne({ brand, models }).lean();
     }
 }

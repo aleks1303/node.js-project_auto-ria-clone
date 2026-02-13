@@ -37,6 +37,7 @@ export interface ICarUpdateDb extends ICarUpdateDto {
     editCount?: number;
     exchangeRate?: number;
     convertedPrices?: IConvertedPrices;
+    image?: string;
 }
 export type ICarCreateDb = Omit<
     ICar,
@@ -73,6 +74,7 @@ export interface ICarsResponseDto {
     _id: Types.ObjectId | string; // Прибираємо опціональність ?, бо id є завжди
     brand: string;
     model: string;
+    image: string;
     price: number;
     currency: CurrencyEnum;
     year: number;
