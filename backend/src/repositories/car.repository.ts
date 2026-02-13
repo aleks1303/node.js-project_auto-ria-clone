@@ -1,4 +1,4 @@
-import { FilterQuery, HydratedDocument } from "mongoose";
+import { FilterQuery } from "mongoose";
 
 import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
@@ -59,9 +59,9 @@ class CarRepository {
         return [entities as unknown as ICar[], total];
     }
 
-    public async create(car: ICarCreateDb): Promise<HydratedDocument<ICar>> {
+    public async create(car: ICarCreateDb): Promise<ICar> {
         const createdCar = await Car.create(car);
-        return createdCar as unknown as HydratedDocument<ICar>;
+        return createdCar.toObject({}) as unknown as ICar;
     }
 
     public update(carId: string, car: ICarUpdateDb): Promise<ICar> {

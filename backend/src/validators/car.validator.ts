@@ -5,8 +5,8 @@ import { CurrencyEnum } from "../enums/car-enum/currency.enum";
 import { OrderEnum } from "../enums/user-enum/order";
 
 export class CarValidator {
-    private static brand = Joi.string().min(2).max(30).trim();
-    private static model = Joi.string().min(1).max(30).trim();
+    private static brand = Joi.string().min(2).max(30).trim().uppercase();
+    private static model = Joi.string().min(1).max(30).trim().uppercase();
     private static year = Joi.number()
         .integer()
         .min(1900)

@@ -12,6 +12,7 @@ import {
     ICarListQuery,
     ICarUpdateDto,
 } from "../interfaces/car.interface";
+import { brandRepository } from "../repositories/brand.repository";
 import { carRepository } from "../repositories/car.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
@@ -22,6 +23,16 @@ class CarService {
     }
     public async create(body: ICarCreateDto, userId: string): Promise<ICar> {
         const user = await userRepository.getById(userId);
+        const isExistBrand = await brandRepository.getByBrandAndModel(
+            body.brand,
+            body.model,
+        );
+        if (!isExistBrand) {
+            throw new ApiError(
+                `Комбінація марки ${body.brand} та моделі ${body.model} не є валідною`,
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
         const carsCount = await carRepository.countByUserId(userId);
         if (user.accountType === accountTypeEnum.BASIS && carsCount >= 1) {
             throw new ApiError(
@@ -47,7 +58,7 @@ class CarService {
             views: [], // ініціалізуємо
         });
         // 3. Збираємо фінальний об'єкт для бази (тепер ми впевнені в кожному полі)
-        return infoCar.toObject() as ICar;
+        return infoCar;
     }
     public async update(car: ICar, body: ICarUpdateDto): Promise<ICar> {
         let editCount = car.editCount || 0;
