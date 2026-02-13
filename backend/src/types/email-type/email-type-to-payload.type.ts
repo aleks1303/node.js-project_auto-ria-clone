@@ -15,4 +15,8 @@ export type EmailTypeToPayload = {
         EmailPayloadCombined,
         "car" | "editCount"
     >;
+    [EmailTypeEnum.MISSING_BRAND]: PickRequired<
+        EmailPayloadCombined,
+        "userId" | "brandName" | "requestDate" | "name" | "email"
+    >;
 };

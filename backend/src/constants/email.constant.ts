@@ -13,4 +13,8 @@ export const EmailConstant = {
         subject: "Ad blocked due to violation",
         template: "blocked-car",
     },
+    [EmailTypeEnum.MISSING_BRAND]: {
+        subject: "Новий запит на додавання марки авто",
+        template: "missing-brand",
+    },
 };
