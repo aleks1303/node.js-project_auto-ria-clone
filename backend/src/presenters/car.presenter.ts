@@ -1,6 +1,6 @@
 import { config } from "../configs/config";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
-import { RoleEnum } from "../enums/user-enum/role.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import {
     ICar,
     ICarListQuery,
@@ -39,12 +39,12 @@ export class CarPresenter {
         entities: ICar[],
         total: number,
         query: ICarListQuery,
-        role?: RoleEnum,
+        permissions: PermissionsEnum[] = [],
         accountType?: accountTypeEnum,
     ) {
         return {
             data: entities.map((entity) =>
-                this.toPublicCarsResDto(entity, role, accountType),
+                this.toPublicCarsResDto(entity, permissions, accountType),
             ),
             total,
             page: query.page,
@@ -55,7 +55,7 @@ export class CarPresenter {
 
     public static toPublicCarsResDto(
         entity: ICar,
-        role?: RoleEnum,
+        permissions: PermissionsEnum[] = [],
         accountType?: accountTypeEnum,
         statistics?: ICarStatistics,
     ) {
@@ -74,12 +74,15 @@ export class CarPresenter {
             description: entity.description,
             createdAt: entity.createdAt,
         };
-        const isAdminOrManager = !!(
-            role && [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(role)
+        const canSeePrivateInfo = permissions.includes(
+            PermissionsEnum.CARS_SEE_DETAILS_ALL,
+        );
+        const canSeeStats = permissions.includes(
+            PermissionsEnum.STATS_SEE_PREMIUM,
         );
         const isPremium = accountType === accountTypeEnum.PREMIUM;
 
-        if (isAdminOrManager) {
+        if (canSeePrivateInfo) {
             response.status = entity.status;
             if (entity._userId && typeof entity._userId === "object") {
                 const user = entity._userId as unknown as IOwnerInfo; // Тут 'any' допустимо лише для приведення типу після populate
@@ -91,21 +94,8 @@ export class CarPresenter {
                 };
             }
         }
-        // 2. Якщо в токені accountType === "premium", додаємо поле statistics
-        // Поле entity.views вже має бути в моделі ICar у базі
-        // if (isPremium || isAdminOrManager) {
-        //     return {
-        //         ...response,
-        //         statistics: {
-        //             totalViews: entity.views || 0,
-        //             averagePrice: {
-        //                 value: averagePrice || 0,
-        //                 currency: "UAH",
-        //             },
-        //         },
-        //     };
-        // }
-        if ((isPremium || isAdminOrManager) && statistics) {
+
+        if ((isPremium || canSeeStats) && statistics) {
             response.statistics = statistics;
         }
         // 3. Якщо не преміум — повертаємо без статистики

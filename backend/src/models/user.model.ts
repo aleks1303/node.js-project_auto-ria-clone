@@ -2,7 +2,6 @@ import { model, Schema } from "mongoose";
 
 import { nameModel } from "../constants/model.constant";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum"; // Твій новий enum
-import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { IUser } from "../interfaces/user.interface";
 
@@ -22,11 +21,11 @@ const userSchema = new Schema(
             required: true,
             default: RoleEnum.BUYER,
         },
-        permissions: {
-            type: [String],
-            enum: Object.values(PermissionsEnum),
-            default: [],
-        },
+        // permissions: {
+        //     type: [String],
+        //     enum: Object.values(PermissionsEnum),
+        //     default: [],
+        // },
         accountType: {
             type: String,
             enum: Object.values(accountTypeEnum),

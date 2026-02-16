@@ -5,6 +5,7 @@ import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { EmailTypeEnum } from "../enums/user-enum/email-type.enum";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
 import { currencyHelper } from "../helpers/currency.helper";
@@ -23,8 +24,11 @@ import { emailService } from "./email.service";
 import { s3Service } from "./s3.service";
 
 class CarService {
-    public async getAll(query: ICarListQuery, role?: RoleEnum) {
-        return carRepository.getAll(query, role);
+    public async getAll(
+        query: ICarListQuery,
+        permissions: PermissionsEnum[] = [],
+    ) {
+        return carRepository.getAll(query, permissions);
     }
     public async create(body: ICarCreateDto, userId: string): Promise<ICar> {
         const user = await userRepository.getById(userId);
@@ -120,7 +124,11 @@ class CarService {
 
         return updatedCar;
     }
-    public async getById(carId: string, userId: string) {
+    public async getById(
+        carId: string,
+        userId: string,
+        userPermissions: PermissionsEnum[],
+    ) {
         // 1. Кожен вхід — це новий перегляд
         await carRepository.addView(carId);
 
@@ -132,7 +140,7 @@ class CarService {
         // 2. Перевірка на Premium (Пункт 4)
         if (
             user.accountType === accountTypeEnum.PREMIUM ||
-            user.role === RoleEnum.ADMIN
+            userPermissions.includes(PermissionsEnum.STATS_SEE_PREMIUM)
         ) {
             const now = Date.now();
             const day = 24 * 60 * 60 * 1000;

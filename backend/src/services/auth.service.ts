@@ -31,7 +31,7 @@ class AuthService {
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await this.isEmailExist(dto.email);
         const role = dto.role || RoleEnum.BUYER;
-        const permissions = rolePermissions[role];
+        const permissions = rolePermissions[role] || [];
         const checkRole = [RoleEnum.BUYER, RoleEnum.SELLER];
         if (!checkRole.includes(role)) {
             throw new ApiError(

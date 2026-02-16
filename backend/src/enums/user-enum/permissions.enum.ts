@@ -5,6 +5,8 @@ export enum PermissionsEnum {
     USERS_BAN = "users.ban",
     USERS_DELETE = "users.delete",
     USERS_UPDATE_ROLE = "users.update.role",
+    USERS_CREATE_MANAGER = "users.create.manager",
+    CARS_SEE_DETAILS_ALL = "cars.see.details.all",
 
     // ОГОЛОШЕННЯ / АВТО (CARS)
     CARS_CREATE = "cars.create",

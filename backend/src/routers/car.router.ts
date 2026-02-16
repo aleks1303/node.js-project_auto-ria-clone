@@ -49,5 +49,10 @@ router.put(
 );
 
 // car.router.ts
-router.get("/:carId", authMiddleware.checkAccessToken, carController.getById);
+router.get(
+    "/:carId",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(),
+    carController.getById,
+);
 export const carRouter = router;

@@ -17,10 +17,13 @@ export const rolePermissions: RolePermissions = {
     // 3. МЕНЕДЖЕР: банить, видаляє невалідні, перевіряє підозрілі
     [RoleEnum.MANAGER]: [
         PermissionsEnum.USERS_GET_ALL,
+        PermissionsEnum.USERS_GET_DETAILS,
         PermissionsEnum.USERS_BAN,
         PermissionsEnum.ADS_VALIDATE,
         PermissionsEnum.CARS_UPDATE_ALL,
         PermissionsEnum.CARS_DELETE_ALL,
+        PermissionsEnum.STATS_SEE_PREMIUM,
+        PermissionsEnum.CARS_SEE_DETAILS_ALL,
     ],
 
     // 4. АДМІНІСТРАТОР: може ВСЕ

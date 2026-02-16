@@ -1,4 +1,5 @@
 import { config } from "../configs/config";
+import { rolePermissions } from "../constants/permissions.constant";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
@@ -19,7 +20,7 @@ class UserPresenter {
             age: entity.age,
             phone: entity.phone,
             role: entity.role,
-            permissions: entity.permissions,
+            permissions: rolePermissions[entity.role] || [],
             accountType: entity.accountType,
             city: entity.city,
             region: entity.region,
@@ -38,8 +39,10 @@ class UserPresenter {
     ): IUserDetailsResponse {
         // 1. Базові поля, які бачать абсолютно всі
         const baseResponse = {
+            _id: user._id.toString(),
             name: user.name,
             surname: user.surname,
+            phone: user.phone,
             avatar: user.avatar
                 ? `${config.AWS_S3_ENDPOINT}/${user.avatar}`
                 : null,
@@ -63,7 +66,7 @@ class UserPresenter {
                 role: user.role,
                 age: user.age,
                 accountType: user.accountType,
-                permissions: user.permissions,
+                permissions: rolePermissions[user.role] || [],
                 isActive: user.isActive,
                 isVerified: user.isVerified,
                 isDeleted: user.isDeleted,

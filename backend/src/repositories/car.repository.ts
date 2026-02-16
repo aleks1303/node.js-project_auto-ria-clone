@@ -1,7 +1,7 @@
 import { FilterQuery } from "mongoose";
 
 import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
-import { RoleEnum } from "../enums/user-enum/role.enum";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import {
     ICar,
     ICarCreateDb,
@@ -13,19 +13,21 @@ import { Car } from "../models/car.model";
 class CarRepository {
     public async getAll(
         query: ICarListQuery,
-        role?: RoleEnum,
+        permissions: PermissionsEnum[] = [],
     ): Promise<[ICar[], number]> {
         const skip = (query.page - 1) * query.pageSize;
-        const adminRoles = [RoleEnum.ADMIN, RoleEnum.MANAGER];
         // Створюємо базовий фільтр
         const filter: FilterQuery<ICar> = {};
+        const canSeeAllStatuses = permissions.includes(
+            PermissionsEnum.CARS_SEE_DETAILS_ALL,
+        );
         const sortField =
             query.orderBy === "price" ? "convertedPrices.UAH" : query.orderBy;
         // Якщо це НЕ адмін і НЕ менеджер — показуємо тільки активні
-        if (!role || !adminRoles.includes(role)) {
+        if (!canSeeAllStatuses) {
+            // Звичайний юзер бачить ТІЛЬКИ активні
             filter.status = CarStatusEnum.ACTIVE;
         }
-
         // Додаємо всі фільтри з query, якщо вони існують
         if (query.brand) {
             filter.brand = query.brand;
@@ -69,7 +71,9 @@ class CarRepository {
     }
 
     public getById(carId: string): Promise<ICar> {
-        return Car.findById(carId);
+        return Car.findById(carId)
+            .populate("_userId")
+            .lean() as unknown as Promise<ICar>;
     }
 
     public async countByUserId(userId: string): Promise<number> {

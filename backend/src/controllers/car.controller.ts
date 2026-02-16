@@ -16,14 +16,18 @@ class CarController {
     public async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const query = res.locals.validatedQuery as ICarListQuery;
-            const { role, accountType } =
+            const permissions = res.locals.permissions || [];
+            const { accountType } =
                 (res.locals.tokenPayload as ITokenPayload) || {};
-            const [entities, total] = await carService.getAll(query, role);
+            const [entities, total] = await carService.getAll(
+                query,
+                permissions,
+            );
             const result = CarPresenter.toListResDto(
                 entities,
                 total,
                 query,
-                role,
+                permissions,
                 accountType,
             );
 
@@ -59,15 +63,19 @@ class CarController {
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
             const { carId } = req.params as { carId: string };
-            const { userId, role, accountType } = res.locals.tokenPayload;
-
-            const { car, statistics } = await carService.getById(carId, userId);
+            const { userId, accountType } = res.locals.tokenPayload;
+            const permissions = res.locals.permissions;
+            const { car, statistics } = await carService.getById(
+                carId,
+                userId,
+                permissions,
+            );
 
             const response = CarPresenter.toPublicCarsResDto(
                 car,
-                role,
-                accountType,
-                statistics,
+                permissions, // 2-й аргумент
+                accountType, // 3-й аргумент
+                statistics, // 4-й аргумент
             );
 
             res.status(StatusCodesEnum.OK).json(response);
