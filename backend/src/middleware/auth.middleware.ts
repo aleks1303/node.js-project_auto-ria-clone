@@ -69,22 +69,28 @@ class AuthMiddleware {
     ) {
         try {
             const authorizationHeader = req.headers.authorization;
-            if (!authorizationHeader) return next(); // Гість? Ок, йди далі.
+            if (!authorizationHeader) {
+                res.locals.permissions = [];
+                return next();
+            } // Гість? Ок, йди далі.
 
             const accessToken = authorizationHeader.split(" ")[1];
-            if (!accessToken) return next();
+            if (!accessToken) {
+                res.locals.permissions = [];
+                return next();
+            }
 
             // Якщо токен надіслали, перевіряємо його
-            res.locals.tokenPayload = tokenService.verifyToken(
+            const payload = tokenService.verifyToken(
                 accessToken,
                 TokenTypeEnum.ACCESS,
             );
-
+            res.locals.tokenPayload = payload;
             // Записуємо в locals, щоб Controller/Presenter знали, хто це
-
+            res.locals.permissions = rolePermissions[payload.role] || [];
             next();
         } catch {
-            // Якщо токен битий - ігноруємо його і пускаємо як гостя
+            res.locals.permissions = [];
             next();
         }
     }

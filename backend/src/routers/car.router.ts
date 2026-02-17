@@ -55,4 +55,11 @@ router.get(
     authMiddleware.checkPermission(),
     carController.getById,
 );
+
+router.delete(
+    "/:carId",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(),
+    carController.deleteCar,
+);
 export const carRouter = router;

@@ -130,9 +130,12 @@ class CarService {
         userPermissions: PermissionsEnum[],
     ) {
         // 1. Кожен вхід — це новий перегляд
-        await carRepository.addView(carId);
 
         const car = await carRepository.getById(carId);
+        if (!car) {
+            throw new ApiError("Авто не знайдено", StatusCodesEnum.NOT_FOUND);
+        }
+        await carRepository.addView(carId);
         const user = await userRepository.getById(userId);
 
         let statistics = null;
@@ -170,23 +173,35 @@ class CarService {
 
         return { car, statistics };
     }
-    // car.service.ts
-    // public async getById(carId: string, userId: string) {
-    //     const car = await carRepository.getById(carId);
-    //     const user = await userRepository.getById(userId);
-    //
-    //     let averagePrice = null;
-    //
-    //     if (user.accountType === accountTypeEnum.PREMIUM) {
-    //         averagePrice = await carRepository.getAveragePrice(
-    //             car.brand,
-    //             car.model,
-    //         );
-    //     }
-    //
-    //     // Повертаємо об'єкт з даними
-    //     return { car, averagePrice };
-    // }
+
+    public async deleteCar(
+        carId: string,
+        tokenPayload: ITokenPayload,
+    ): Promise<void> {
+        // 1. Шукаємо машину в базі
+        const car = await carRepository.getById(carId);
+
+        if (!car) {
+            throw new ApiError("Авто не знайдено", StatusCodesEnum.NOT_FOUND);
+        }
+
+        // 2. Перевіряємо права
+        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
+            tokenPayload.role as RoleEnum,
+        );
+        const carOwnerId = String(car._userId?.["_id"] || car._userId);
+        const isOwner = carOwnerId === tokenPayload.userId;
+
+        if (!isStaff && !isOwner) {
+            throw new ApiError(
+                "Ви не можете видалити чуже оголошення",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+
+        // Викликаємо наш новий спеціальний метод
+        await carRepository.softDelete(carId);
+    }
 
     public async uploadImage(
         tokenPayload: ITokenPayload,
@@ -211,7 +226,7 @@ class CarService {
         return carRepository.updateById(car._id.toString(), { image });
     }
 
-    public async deleteCar(
+    public async deleteImage(
         carId: string,
         tokenPayload: ITokenPayload,
     ): Promise<void> {

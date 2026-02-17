@@ -84,6 +84,7 @@ export class CarPresenter {
 
         if (canSeePrivateInfo) {
             response.status = entity.status;
+            response.isDeleted = entity.isDeleted;
             if (entity._userId && typeof entity._userId === "object") {
                 const user = entity._userId as unknown as IOwnerInfo; // Тут 'any' допустимо лише для приведення типу після populate
                 response.owner = {

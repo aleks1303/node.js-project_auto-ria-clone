@@ -83,31 +83,16 @@ class CarController {
             next(e);
         }
     }
-    // car.controller.ts
-    // public async getById(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const { role, accountType } = res.locals.tokenPayload;
-    //         const { carId } = req.params as { carId: string };
-    //         const { userId } = res.locals.tokenPayload;
-    //
-    //         const { car, averagePrice } = await carService.getById(
-    //             carId,
-    //             userId,
-    //         );
-    //
-    //         // Використовуємо Presenter тут
-    //         const response = CarPresenter.toPublicCarsResDto(
-    //             car,
-    //             role,
-    //             accountType,
-    //             averagePrice,
-    //         );
-    //
-    //         res.status(StatusCodesEnum.OK).json(response);
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
+    public async deleteCar(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { carId } = req.params as { carId: string };
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            await carService.deleteCar(carId, tokenPayload);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
+        } catch (e) {
+            next(e);
+        }
+    }
 
     public async uploadImage(req: Request, res: Response, next: NextFunction) {
         try {
@@ -130,7 +115,7 @@ class CarController {
         try {
             const { carId } = req.params as { carId: string };
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await carService.deleteCar(carId, tokenPayload);
+            await carService.deleteImage(carId, tokenPayload);
             res.status(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);

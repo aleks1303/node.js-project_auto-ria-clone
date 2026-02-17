@@ -83,6 +83,7 @@ export interface ICarsResponseDto {
     region: string;
     description: string;
     createdAt: Date;
+    isDeleted?: boolean;
     status?: CarStatusEnum;
     // В основному об'єкті ми не показуємо масив дат,
     // тому тут можна лишити як число для загальної кількості

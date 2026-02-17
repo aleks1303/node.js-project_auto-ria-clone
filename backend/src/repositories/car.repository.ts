@@ -69,13 +69,20 @@ class CarRepository {
     }
 
     public updateById(carId: string, car: ICarUpdateDb): Promise<ICar> {
-        return Car.findByIdAndUpdate(carId, car, { new: true });
+        return Car.findByIdAndUpdate(carId, car, {
+            new: true,
+        });
     }
 
-    public getById(carId: string): Promise<ICar> {
-        return Car.findById(carId)
+    public getById(carId: string): Promise<ICar | null> {
+        return Car.findOne({ _id: carId, isDeleted: false })
             .populate("_userId")
             .lean() as unknown as Promise<ICar>;
+    }
+
+    // car.repository.ts
+    public async softDelete(carId: string): Promise<void> {
+        await Car.updateOne({ _id: carId }, { $set: { isDeleted: true } });
     }
 
     public async countByUserId(userId: string): Promise<number> {
@@ -116,28 +123,5 @@ class CarRepository {
             region: stats[0].region[0]?.avg || 0,
         };
     }
-    // public async getAveragePrice(
-    //     brand: string,
-    //     model: string,
-    // ): Promise<number> {
-    //     const result = await Car.aggregate([
-    //         {
-    //             $match: {
-    //                 brand: brand,
-    //                 model: model,
-    //                 status: CarStatusEnum.ACTIVE, // Рахуємо тільки по актуальних авто
-    //             },
-    //         },
-    //         {
-    //             $group: {
-    //                 _id: null, // Нам не потрібне групування за полем, ми хочемо одне число
-    //                 averagePrice: { $avg: "$convertedPrices.UAH" }, // Рахуємо середнє в гривні
-    //             },
-    //         },
-    //     ]);
-    //
-    //     // Якщо база пуста — повертаємо 0, інакше округлюємо результат
-    //     return result.length > 0 ? Math.round(result[0].averagePrice) : 0;
-    // }
 }
 export const carRepository = new CarRepository();
