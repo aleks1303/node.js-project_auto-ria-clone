@@ -157,32 +157,6 @@ class AuthMiddleware {
         }
     }
 
-    // public checkPermission(...requiredPermissions: PermissionsEnum[]) {
-    //     return (req: Request, res: Response, next: NextFunction) => {
-    //         try {
-    //             const { role } = res.locals.tokenPayload as ITokenPayload;
-    //
-    //             const userPermissions = rolePermissions[role] || [];
-    //             res.locals.permissions = userPermissions;
-    //             // Перевіряємо, чи є у юзера хоча б один з дозволених пермішенів
-    //             const hasPermission = requiredPermissions.some((p) =>
-    //                 userPermissions.includes(p),
-    //             );
-    //
-    //             if (!hasPermission) {
-    //                 throw new ApiError(
-    //                     "Forbidden: You don't have the required permission",
-    //                     StatusCodesEnum.FORBIDDEN,
-    //                 );
-    //             }
-    //
-    //             next();
-    //         } catch (e) {
-    //             next(e);
-    //         }
-    //     };
-    // }
-
     public checkPermission(...requiredPermissions: PermissionsEnum[]) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -205,9 +179,6 @@ class AuthMiddleware {
                         );
                     }
                 }
-
-                // Якщо аргументів немає (як у getById), ми просто йдемо далі,
-                // але res.locals.permissions вже заповнені!
                 next();
             } catch (e) {
                 next(e);
@@ -230,23 +201,6 @@ class AuthMiddleware {
             }
         };
     }
-
-    // на видалення
-    // public isAdmin(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const { role } = req.res.locals.tokenPayload as ITokenPayload;
-    //
-    //         if (role !== RoleEnum.ADMIN) {
-    //             throw new ApiError(
-    //                 "No has permissions",
-    //                 StatusCodesEnum.FORBIDDEN,
-    //             );
-    //         }
-    //         next();
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
 }
 
 export const authMiddleware = new AuthMiddleware();

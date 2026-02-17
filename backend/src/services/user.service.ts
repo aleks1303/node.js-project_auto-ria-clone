@@ -4,7 +4,6 @@ import { rolePermissions } from "../constants/permissions.constant";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
-import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
@@ -62,7 +61,6 @@ class UserService {
         // Якщо це був Покупець, він стає Продавцем з правами
         if (user.role === RoleEnum.BUYER) {
             updateData.role = RoleEnum.SELLER;
-            updateData.permissions = this.getPermissionsByRole(RoleEnum.SELLER);
         }
 
         const updatedUser = await userRepository.updateById(userId, updateData);
@@ -127,8 +125,8 @@ class UserService {
         await userRepository.updateById(user._id, { avatar: null });
     }
 
-    private getPermissionsByRole(role: RoleEnum): PermissionsEnum[] {
-        return rolePermissions[role] || [];
-    }
+    // private getPermissionsByRole(role: RoleEnum): PermissionsEnum[] {
+    //     return rolePermissions[role] || [];
+    // }
 }
 export const userService = new UserService();

@@ -17,7 +17,7 @@ class CarRepository {
     ): Promise<[ICar[], number]> {
         const skip = (query.page - 1) * query.pageSize;
         // Створюємо базовий фільтр
-        const filter: FilterQuery<ICar> = {};
+        const filter: FilterQuery<ICar> = { isDeleted: false };
         const canSeeAllStatuses = permissions.includes(
             PermissionsEnum.CARS_SEE_DETAILS_ALL,
         );
@@ -27,6 +27,8 @@ class CarRepository {
         if (!canSeeAllStatuses) {
             // Звичайний юзер бачить ТІЛЬКИ активні
             filter.status = CarStatusEnum.ACTIVE;
+        } else {
+            delete filter.isDeleted;
         }
         // Додаємо всі фільтри з query, якщо вони існують
         if (query.brand) {
@@ -80,7 +82,8 @@ class CarRepository {
         // countDocuments — це вбудований метод Mongoose, який дуже швидко рахує записи
         return Car.countDocuments({
             _userId: userId,
-            status: CarStatusEnum.ACTIVE, // Рахуємо тільки ті, що зараз у продажу
+            // status: CarStatusEnum.ACTIVE, // Рахуємо тільки ті, що зараз у продажу
+            isDeleted: false,
         });
     }
 

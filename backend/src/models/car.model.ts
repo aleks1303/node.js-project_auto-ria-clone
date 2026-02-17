@@ -35,6 +35,7 @@ const carSchema = new Schema(
             default: CarStatusEnum.ACTIVE,
         },
         editCount: { type: Number, default: 0 },
+        isDeleted: { type: Boolean, default: false },
 
         // Зв'язок з юзером
         _userId: {

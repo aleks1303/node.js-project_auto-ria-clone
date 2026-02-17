@@ -23,6 +23,7 @@ export interface ICar extends IBase, ICurrencyInfo, ICarModeration {
     city: string;
     views: Date[];
     _userId: Types.ObjectId | string;
+    isDeleted: boolean;
 }
 
 export interface ICarUpdateDto {
@@ -38,11 +39,12 @@ export interface ICarUpdateDb extends ICarUpdateDto {
     exchangeRate?: number;
     convertedPrices?: IConvertedPrices;
     image?: string;
+    isDeleted?: boolean;
 }
 export type ICarCreateDb = Omit<
     ICar,
-    "_id" | "updatedAt" | "image" | "exchangeRate" | "createdAt"
->;
+    "_id" | "updatedAt" | "image" | "exchangeRate" | "createdAt" | "isDeleted"
+> & { isDeleted?: boolean };
 
 export type ICarResponse = Pick<
     ICar,

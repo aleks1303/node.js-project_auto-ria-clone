@@ -59,10 +59,8 @@ class UserPresenter {
         // 2. Якщо є доступ — розширюємо об'єкт повними даними
         if (hasFullAccess) {
             return {
-                _id: user._id.toString(),
                 ...baseResponse,
                 email: user.email,
-                phone: user.phone,
                 role: user.role,
                 age: user.age,
                 accountType: user.accountType,
