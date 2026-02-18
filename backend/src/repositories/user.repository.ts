@@ -1,11 +1,7 @@
 import { FilterQuery } from "mongoose";
 
 import { RoleEnum } from "../enums/user-enum/role.enum";
-import {
-    IUser,
-    IUserCreateDTO,
-    IUserListQuery,
-} from "../interfaces/user.interface";
+import { IUser, IUserListQuery } from "../interfaces/user.interface";
 import { User } from "../models/user.model";
 
 class UserRepository {
@@ -35,7 +31,7 @@ class UserRepository {
             User.countDocuments(filter),
         ]);
     }
-    public create(user: IUserCreateDTO): Promise<IUser> {
+    public create(user: Partial<IUser>): Promise<IUser> {
         return User.create(user);
     }
 

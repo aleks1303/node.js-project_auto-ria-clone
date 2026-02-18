@@ -9,10 +9,12 @@ import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUser,
+    IUserCreateDTO,
     IUserListQuery,
     IUserWithTokens,
 } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
+import { passwordService } from "./password.service";
 import { s3Service } from "./s3.service";
 import { tokenService } from "./token.service";
 
@@ -38,6 +40,57 @@ class UserService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
         return userRepository.updateById(userId, user);
+    }
+
+    public async userBan(
+        userId: string,
+        tokenPayload: ITokenPayload,
+    ): Promise<Partial<IUser>> {
+        const user = await userRepository.getById(userId);
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+        if (user._id.toString() === tokenPayload.userId) {
+            throw new ApiError(
+                "You cannot ban yourself.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (user.role === RoleEnum.ADMIN) {
+            throw new ApiError(
+                "You cannot ban an admin.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (
+            user.role === RoleEnum.MANAGER &&
+            tokenPayload.role !== RoleEnum.ADMIN
+        ) {
+            throw new ApiError(
+                "A manager cannot ban another manager",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        return userRepository.updateById(userId, { isBanned: true });
+    }
+
+    public async createManager(dto: IUserCreateDTO): Promise<IUser> {
+        const { email, password } = dto;
+        const isExistEmail = await userRepository.getByEmail(email);
+        if (isExistEmail) {
+            throw new ApiError(
+                "Email already is exist",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+        const hashPassword = await passwordService.hashPassword(password);
+        return userRepository.create({
+            ...dto,
+            password: hashPassword,
+            role: RoleEnum.MANAGER,
+            accountType: accountTypeEnum.PREMIUM,
+            isVerified: true,
+        });
     }
 
     public async buyPremiumAccount(userId: string): Promise<IUserWithTokens> {

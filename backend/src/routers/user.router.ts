@@ -47,11 +47,25 @@ router.delete(
     userController.deleteAvatar,
 );
 
+router.post(
+    "/manager",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(PermissionsEnum.USERS_CREATE_MANAGER),
+    commonMiddleware.isBodyValid(UserValidator.createManager),
+    userController.createManager,
+);
+
 router.get(
     "/:userId",
     authMiddleware.checkAccessToken,
     commonMiddleware.isIdValid("userId"),
     userController.getById,
+);
+router.patch(
+    "/:userId/ban",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(PermissionsEnum.USERS_BAN),
+    userController.userBan,
 );
 
 export const userRouter = router;

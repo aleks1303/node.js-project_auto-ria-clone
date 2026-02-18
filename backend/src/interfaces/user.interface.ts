@@ -18,6 +18,7 @@ export interface IUser extends IBase {
     permissions: PermissionsEnum[];
     accountType: accountTypeEnum;
     avatar?: string;
+    isBanned: boolean;
     isActive: boolean;
     isDeleted: boolean;
     isVerified: boolean;
@@ -25,12 +26,35 @@ export interface IUser extends IBase {
     region?: string;
 }
 
-export interface IUserDetailsResponse extends Partial<IUser> {
+// export interface IUserDetailsResponse extends Partial<IUser> {
+//     name: string;
+//     surname: string;
+//     city: string;
+//     region: string;
+//     avatar: string | null;
+// }
+
+export interface IUserDetailsResponse {
+    // Ці поля є ЗАВЖДИ (для всіх)
+    _id: string;
     name: string;
     surname: string;
+    phone: string;
     city: string;
     region: string;
     avatar: string | null;
+
+    // Ці поля з'являються ТІЛЬКИ якщо hasFullAccess === true
+    // Ми робимо їх опціональними, бо для "сторонніх" їх не буде
+    email?: string;
+    age?: number;
+    role?: RoleEnum;
+    permissions?: PermissionsEnum[];
+    accountType?: accountTypeEnum;
+    isBanned?: boolean;
+    isActive?: boolean;
+    isVerified?: boolean;
+    isDeleted?: boolean;
 }
 
 export type IUserCreateDTO = Pick<
@@ -61,6 +85,7 @@ export type IUserResponse = Pick<
     | "city"
     | "region"
     | "avatar"
+    | "isBanned"
     | "isActive"
     | "isVerified"
     | "isDeleted"

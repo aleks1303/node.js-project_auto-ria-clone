@@ -27,6 +27,7 @@ class UserPresenter {
             avatar: entity.avatar
                 ? `${config.AWS_S3_ENDPOINT}/${entity.avatar}`
                 : null,
+            isBanned: entity.isBanned,
             isActive: entity.isActive,
             isVerified: entity.isVerified,
             isDeleted: entity.isDeleted,
@@ -65,6 +66,7 @@ class UserPresenter {
                 age: user.age,
                 accountType: user.accountType,
                 permissions: rolePermissions[user.role] || [],
+                isBanned: user.isBanned,
                 isActive: user.isActive,
                 isVerified: user.isVerified,
                 isDeleted: user.isDeleted,

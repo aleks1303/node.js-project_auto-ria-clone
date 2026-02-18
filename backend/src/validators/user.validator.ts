@@ -38,6 +38,17 @@ export class UserValidator {
             .default(RoleEnum.BUYER),
     });
 
+    public static createManager = Joi.object({
+        name: this.name.required(),
+        surname: this.surname.required(),
+        age: this.age.required(),
+        email: this.email.required(),
+        password: this.password.required(),
+        phone: this.phone.required(),
+        city: this.city.optional(),
+        region: this.region.optional(),
+    });
+
     public static signIn = Joi.object({
         email: this.email.required(),
         password: this.password.required(),

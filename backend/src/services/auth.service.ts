@@ -93,6 +93,12 @@ class AuthService {
                 StatusCodesEnum.UNAUTHORIZED,
             );
         }
+        if (user.isBanned) {
+            throw new ApiError(
+                "Your account is banned. Please contact support.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
         const tokens = tokenService.generateTokens({
             userId: user._id,
             role: user.role,

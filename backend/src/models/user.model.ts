@@ -21,11 +21,6 @@ const userSchema = new Schema(
             required: true,
             default: RoleEnum.BUYER,
         },
-        // permissions: {
-        //     type: [String],
-        //     enum: Object.values(PermissionsEnum),
-        //     default: [],
-        // },
         accountType: {
             type: String,
             enum: Object.values(accountTypeEnum),
@@ -38,6 +33,7 @@ const userSchema = new Schema(
         age: { type: Number, required: true },
         avatar: { type: String, default: "" },
 
+        isBanned: { type: Boolean, default: false },
         isActive: { type: Boolean, default: true },
         isDeleted: { type: Boolean, default: false },
         isVerified: { type: Boolean, default: false },

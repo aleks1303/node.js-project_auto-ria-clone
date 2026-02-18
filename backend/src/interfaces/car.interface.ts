@@ -85,45 +85,10 @@ export interface ICarsResponseDto {
     createdAt: Date;
     isDeleted?: boolean;
     status?: CarStatusEnum;
-    // В основному об'єкті ми не показуємо масив дат,
-    // тому тут можна лишити як число для загальної кількості
     totalViews?: number;
     owner?: IOwnerInfo;
-    // Оновлюємо це поле:
     statistics?: ICarStatistics;
 }
-// export interface ICarsResponseDto {
-//     _id?: Types.ObjectId | string;
-//     brand: string;
-//     model: string;
-//     price: number;
-//     currency: CurrencyEnum;
-//     year: number;
-//     region: string;
-//     description: string;
-//     createdAt: Date;
-//     status?: CarStatusEnum;
-//     views?: number;
-//     owner?: IOwnerInfo;
-//     statistics?: {
-//         totalViews: number;
-//     };
-// }
-//  поки не потрібний
-// export type ICarsResponseDto = Pick<
-//     ICar,
-//     | "_id"
-//     | "brand"
-//     | "model"
-//     | "price"
-//     | "currency"
-//     | "year"
-//     | "region"
-//     | "description"
-//     | "createdAt"
-//     | "status"
-//     | "views"
-// >;
 
 export type ICarCreateDto = Pick<
     ICar,
