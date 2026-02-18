@@ -67,9 +67,16 @@ class CarService {
             views: [], // ініціалізуємо
         });
     }
-    public async update(car: ICar, body: ICarUpdateDto): Promise<ICar> {
+    public async update(
+        car: ICar,
+        body: ICarUpdateDto,
+        tokenPayload: ITokenPayload,
+    ): Promise<ICar> {
         let editCount = car.editCount || 0;
         const updateData: Partial<ICar> = { ...body };
+        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
+            tokenPayload.role,
+        );
         if (body.price || body.currency) {
             const { convertedPrices, exchangeRates } =
                 currencyHelper.convertAll(
@@ -83,8 +90,11 @@ class CarService {
         let hasBadWords = false;
         if (body.description !== undefined) {
             hasBadWords = moderationHelper.hasBadWords(body.description);
-
-            if (hasBadWords) {
+            if (isStaff) {
+                // Менеджер завжди робить активним і скидає лічильник
+                updateData.status = CarStatusEnum.ACTIVE;
+                updateData.editCount = 0;
+            } else if (hasBadWords) {
                 editCount += 1;
                 updateData.editCount = editCount;
                 if (editCount >= 3) {
@@ -105,7 +115,7 @@ class CarService {
         );
 
         // 3. Обробка наслідків модерації
-        if (hasBadWords) {
+        if (hasBadWords && !isStaff) {
             if (editCount >= 3) {
                 // Спочатку відправляємо лист (можна не чекати await, якщо налаштована черга)
                 await this.findManagerAndSendEmail(updatedCar, editCount);
@@ -201,6 +211,17 @@ class CarService {
 
         // Викликаємо наш новий спеціальний метод
         await carRepository.softDelete(carId);
+    }
+
+    public async validate(carId: string): Promise<void> {
+        const car = await carRepository.getById(carId);
+        if (!car) {
+            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
+        }
+        await carRepository.updateById(carId, {
+            status: CarStatusEnum.ACTIVE,
+            editCount: 0,
+        });
     }
 
     public async uploadImage(

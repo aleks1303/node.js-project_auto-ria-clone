@@ -62,4 +62,11 @@ router.delete(
     authMiddleware.checkPermission(),
     carController.deleteCar,
 );
+
+router.patch(
+    "/:carId/validate",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(PermissionsEnum.ADS_VALIDATE),
+    carController.validate,
+);
 export const carRouter = router;

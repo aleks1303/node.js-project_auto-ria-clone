@@ -52,7 +52,8 @@ class CarController {
         try {
             const car = res.locals.car as ICar;
             const body = req.body as ICarCreateDto;
-            const updatedCar = await carService.update(car, body);
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            const updatedCar = await carService.update(car, body, tokenPayload);
             const carResponse = CarPresenter.toPublicResCarDto(updatedCar);
             res.status(StatusCodesEnum.OK).json(carResponse);
         } catch (e) {
@@ -88,6 +89,16 @@ class CarController {
             const { carId } = req.params as { carId: string };
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             await carService.deleteCar(carId, tokenPayload);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async validate(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { carId } = req.params as { carId: string };
+            await carService.validate(carId);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
