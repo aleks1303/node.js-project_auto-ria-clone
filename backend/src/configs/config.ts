@@ -30,6 +30,8 @@ interface IConfig {
     AWS_S3_REGION: string;
     AWS_S3_ACL: ObjectCannedACL;
     AWS_S3_ENDPOINT: string;
+
+    ADMIN_KEY: string;
 }
 
 const config: IConfig = {
@@ -59,5 +61,7 @@ const config: IConfig = {
     AWS_S3_REGION: process.env.AWS_S3_REGION,
     AWS_S3_ACL: process.env.AWS_S3_ACL as ObjectCannedACL,
     AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT,
+
+    ADMIN_KEY: process.env.ADMIN_KEY,
 };
 export { config };

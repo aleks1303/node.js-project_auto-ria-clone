@@ -65,11 +65,22 @@ export type IUserCreateDTO = Pick<
     | "email"
     | "password"
     | "role"
-    | "permissions"
     | "phone"
     | "city"
     | "region"
 >;
+
+export type IAdminCreateDTO = Pick<
+    IUser,
+    | "name"
+    | "surname"
+    | "age"
+    | "email"
+    | "password"
+    | "phone"
+    | "city"
+    | "region"
+> & { key: string };
 
 export type IUserResponse = Pick<
     IUser,

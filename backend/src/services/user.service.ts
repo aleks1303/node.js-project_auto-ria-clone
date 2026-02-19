@@ -79,7 +79,7 @@ class UserService {
         const isExistEmail = await userRepository.getByEmail(email);
         if (isExistEmail) {
             throw new ApiError(
-                "Email already is exist",
+                "Email already exist",
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
