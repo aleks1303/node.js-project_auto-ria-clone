@@ -35,6 +35,14 @@ router.patch(
     authMiddleware.checkAccessToken,
     userController.changeRoleToSeller,
 );
+
+router.patch(
+    "/:userId/upgrade-role",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(PermissionsEnum.USERS_UPDATE_ROLE),
+    commonMiddleware.isBodyValid(UserValidator.upgradeRole),
+    userController.upgradeUserRole,
+);
 router.post(
     "/me/avatar",
     authMiddleware.checkAccessToken,

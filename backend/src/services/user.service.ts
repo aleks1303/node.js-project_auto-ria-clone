@@ -12,6 +12,7 @@ import {
     IUserCreateDTO,
     IUserListQuery,
     IUserWithTokens,
+    UpgradeUserDto,
 } from "../interfaces/user.interface";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
@@ -185,6 +186,21 @@ class UserService {
         });
 
         return { user: updatedUser, tokens };
+    }
+
+    public async upgradeUserRole(
+        userId: string,
+        body: UpgradeUserDto,
+    ): Promise<IUser> {
+        const user = await userRepository.getById(userId);
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+        const updatedUser = await userRepository.updateById(userId, body);
+        if (body.role || body.accountType) {
+            await tokenRepository.deleteManyByParams({ _userId: userId });
+        }
+        return updatedUser;
     }
 
     public async uploadAvatar(

@@ -1,5 +1,6 @@
 import Joi from "joi";
 
+import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { OrderEnum } from "../enums/user-enum/order";
 import { RegexEnum } from "../enums/user-enum/regex.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
@@ -23,6 +24,9 @@ export class UserValidator {
     private static city = Joi.string().min(2).max(30).trim();
     private static region = Joi.string().min(2).max(30).trim();
     private static role = Joi.string().valid(...Object.values(RoleEnum));
+    private static accountType = Joi.string().valid(
+        ...Object.values(accountTypeEnum),
+    );
 
     public static create = Joi.object({
         name: this.name.required(),
@@ -61,6 +65,11 @@ export class UserValidator {
         phone: this.phone,
         city: this.city,
         region: this.region,
+    }).min(1);
+
+    public static upgradeRole = Joi.object({
+        role: this.role.optional(),
+        accountType: this.accountType.optional(),
     }).min(1);
 
     public static verify = Joi.object({

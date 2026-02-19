@@ -26,14 +26,6 @@ export interface IUser extends IBase {
     region?: string;
 }
 
-// export interface IUserDetailsResponse extends Partial<IUser> {
-//     name: string;
-//     surname: string;
-//     city: string;
-//     region: string;
-//     avatar: string | null;
-// }
-
 export interface IUserDetailsResponse {
     // Ці поля є ЗАВЖДИ (для всіх)
     _id: string;
@@ -116,6 +108,7 @@ export type ForgotPasswordSend = Pick<IUser, "email">;
 export type ForgotPasswordSet = Pick<IUser, "password"> & {
     actionToken: string;
 };
+export type UpgradeUserDto = Partial<Pick<IUser, "role" | "accountType">>;
 
 export interface IUserListQuery {
     pageSize?: number;
@@ -130,7 +123,7 @@ export interface IUserListResponse {
     data: IUserResponse[];
     total: number;
     totalPages: number;
-    query: IUserListQuery; // Повертаємо вхідні параметри для фронтенду
+    query: IUserListQuery;
 }
 export interface IUserWithTokens {
     user: IUser;

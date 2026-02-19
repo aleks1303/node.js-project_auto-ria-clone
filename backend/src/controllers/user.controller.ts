@@ -7,6 +7,7 @@ import {
     IUserCreateDTO,
     IUserListQuery,
     IUserUpdateDto,
+    UpgradeUserDto,
 } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
@@ -135,6 +136,22 @@ class UserController {
                 user: presenter,
                 tokens: tokens,
             });
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async upgradeUserRole(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const { userId } = req.params as { userId: string };
+            const body = req.body as UpgradeUserDto;
+            const user = await userService.upgradeUserRole(userId, body);
+            const presenter = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
