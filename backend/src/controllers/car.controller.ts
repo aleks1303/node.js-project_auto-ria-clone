@@ -12,8 +12,7 @@ import { CarPresenter } from "../presenters/car.presenter";
 import { carService } from "../services/car.service";
 
 class CarController {
-    // car.controller.ts
-    public async getAll(req: Request, res: Response, next: NextFunction) {
+    public async getAll(_req: Request, res: Response, next: NextFunction) {
         try {
             const query = res.locals.validatedQuery as ICarListQuery;
             const permissions = res.locals.permissions || [];
@@ -23,7 +22,7 @@ class CarController {
                 query,
                 permissions,
             );
-            const result = CarPresenter.toListResDto(
+            const presenter = CarPresenter.toListResDto(
                 entities,
                 total,
                 query,
@@ -31,7 +30,7 @@ class CarController {
                 accountType,
             );
 
-            res.status(StatusCodesEnum.OK).json(result);
+            res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
@@ -41,8 +40,8 @@ class CarController {
             const body = req.body as ICarCreateDto;
             const { userId } = res.locals.tokenPayload as ITokenPayload;
             const car = await carService.create(body, userId);
-            const carResponse = CarPresenter.toPublicResCarDto(car);
-            res.status(StatusCodesEnum.OK).json(carResponse);
+            const presenter = CarPresenter.toPublicResCarDto(car);
+            res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
@@ -54,8 +53,8 @@ class CarController {
             const body = req.body as ICarCreateDto;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             const updatedCar = await carService.update(car, body, tokenPayload);
-            const carResponse = CarPresenter.toPublicResCarDto(updatedCar);
-            res.status(StatusCodesEnum.OK).json(carResponse);
+            const presenter = CarPresenter.toPublicResCarDto(updatedCar);
+            res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
@@ -72,14 +71,14 @@ class CarController {
                 permissions,
             );
 
-            const response = CarPresenter.toPublicCarsResDto(
+            const presenter = CarPresenter.toPublicCarsResDto(
                 car,
-                permissions, // 2-й аргумент
-                accountType, // 3-й аргумент
-                statistics, // 4-й аргумент
+                permissions,
+                accountType,
+                statistics,
             );
 
-            res.status(StatusCodesEnum.OK).json(response);
+            res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
@@ -116,8 +115,8 @@ class CarController {
                 carId,
                 image,
             );
-            // Тут можна використати carPresenter, якщо він є
-            res.status(201).json(car);
+            const presenter = CarPresenter.toPublicResCarDto(car);
+            res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
             next(e);
         }
@@ -135,26 +134,3 @@ class CarController {
 }
 
 export const carController = new CarController();
-
-//   public async uploadImage(req: Request, res: Response, next: NextFunction) {
-//     try {
-//         const { carId } = req.params;
-//         const file = req.files.image as UploadedFile;
-//         const car = await carService.getById(carId); // Знаходимо машину
-//
-//         // Викликаємо твій S3 сервіс
-//         const filePath = await s3Service.uploadFile(
-//             file,
-//             FileItemTypeEnum.CAR,
-//             carId,
-//             car.image // Передаємо старий шлях, щоб S3 його видалив
-//         );
-//
-//         // Оновлюємо шлях у базі даних
-//         const updatedCar = await carService.updateById(carId, { image: filePath });
-//
-//         res.json(updatedCar);
-//     } catch (e) {
-//         next(e);
-//     }
-// }

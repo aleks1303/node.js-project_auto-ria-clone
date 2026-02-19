@@ -6,7 +6,7 @@ import { BrandPresenter } from "../presenters/brand.presenter";
 import { brandService } from "../services/brand.service";
 
 class BrandController {
-    public async getAll(req: Request, res: Response, next: NextFunction) {
+    public async getAll(_req: Request, res: Response, next: NextFunction) {
         try {
             const brands = await brandService.getAll();
             const presenter = BrandPresenter.toResponseList(brands);
@@ -27,9 +27,9 @@ class BrandController {
 
             await brandService.missingBrand(userId, brandName);
 
-            res.status(200).json({
+            res.status(StatusCodesEnum.OK).json({
                 message:
-                    "Ваше повідомлення надіслано адміністрації. Дякуємо за допомогу!",
+                    "Your message has been sent to the administration. Thank you for your help!",
             });
         } catch (e) {
             next(e);

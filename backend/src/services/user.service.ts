@@ -13,6 +13,7 @@ import {
     IUserListQuery,
     IUserWithTokens,
 } from "../interfaces/user.interface";
+import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { passwordService } from "./password.service";
 import { s3Service } from "./s3.service";
@@ -40,6 +41,39 @@ class UserService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
         return userRepository.updateById(userId, user);
+    }
+
+    public async deleteById(
+        userId: string,
+        role: RoleEnum,
+        adminId: string,
+    ): Promise<void> {
+        const user = await userRepository.getById(userId);
+        if (!user) {
+            new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+        if (userId === adminId) {
+            throw new ApiError(
+                "You cannot delete your own account",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+        if (role === RoleEnum.MANAGER) {
+            if (
+                user.role === RoleEnum.ADMIN ||
+                user.role === RoleEnum.MANAGER
+            ) {
+                throw new ApiError(
+                    "A manager cannot remove other managers or admins",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+        }
+        await userRepository.updateById(userId, {
+            isDeleted: true,
+            isActive: false,
+        });
+        await tokenRepository.deleteManyByParams({ _userId: userId });
     }
 
     public async userBan(
@@ -177,9 +211,5 @@ class UserService {
         await s3Service.deleteFile(user.avatar);
         await userRepository.updateById(user._id, { avatar: null });
     }
-
-    // private getPermissionsByRole(role: RoleEnum): PermissionsEnum[] {
-    //     return rolePermissions[role] || [];
-    // }
 }
 export const userService = new UserService();

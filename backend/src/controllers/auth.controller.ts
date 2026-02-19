@@ -20,9 +20,9 @@ class AuthController {
         try {
             const body = req.body as IUserCreateDTO;
             const { user, tokens } = await authService.signUp(body);
-            const userResponse = userPresenter.toPublicResDto(user);
+            const presenter = userPresenter.toPublicResDto(user);
             res.status(StatusCodesEnum.CREATED).json({
-                user: userResponse,
+                user: presenter,
                 tokens,
             });
         } catch (e) {
@@ -34,9 +34,9 @@ class AuthController {
         try {
             const body = req.body as ISignInDTO;
             const { user, tokens } = await authService.signIn(body);
-            const userResponse = userPresenter.toPublicResDto(user);
+            const presenter = userPresenter.toPublicResDto(user);
             res.status(StatusCodesEnum.OK).json({
-                user: userResponse,
+                user: presenter,
                 tokens,
             });
         } catch (e) {
@@ -44,7 +44,7 @@ class AuthController {
         }
     }
 
-    public async refresh(req: Request, res: Response, next: NextFunction) {
+    public async refresh(_req: Request, res: Response, next: NextFunction) {
         try {
             const refreshToken = res.locals.refreshToken as string;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
@@ -108,7 +108,7 @@ class AuthController {
         }
     }
 
-    public async logout(req: Request, res: Response, next: NextFunction) {
+    public async logout(_req: Request, res: Response, next: NextFunction) {
         try {
             const { userId } = res.locals.tokenPayload;
             const { refreshToken } = res.locals.refreshToken;

@@ -68,4 +68,11 @@ router.patch(
     userController.userBan,
 );
 
+router.delete(
+    "/:userId",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkPermission(PermissionsEnum.USERS_DELETE),
+    userController.delete,
+);
+
 export const userRouter = router;

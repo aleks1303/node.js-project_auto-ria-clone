@@ -19,6 +19,7 @@ export const rolePermissions: RolePermissions = {
         PermissionsEnum.USERS_GET_ALL,
         PermissionsEnum.USERS_GET_DETAILS,
         PermissionsEnum.USERS_BAN,
+        PermissionsEnum.USERS_DELETE,
         PermissionsEnum.ADS_VALIDATE,
         PermissionsEnum.CARS_UPDATE_ALL,
         PermissionsEnum.CARS_DELETE_ALL,

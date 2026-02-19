@@ -77,7 +77,7 @@ class AuthService {
         dto: ISignInDTO,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         const user = await userRepository.getByEmail(dto.email);
-        if (!user) {
+        if (!user || user.isDeleted) {
             throw new ApiError(
                 "Invalid email or password",
                 StatusCodesEnum.UNAUTHORIZED,
@@ -229,14 +229,6 @@ class AuthService {
             _userId: tokenPayload.userId,
         });
     }
-    //
-    // public async logout(userId: string, refreshToken: string): Promise<void> {
-    //     const user = await userRepository.getById(userId);
-    //     if (!user) {
-    //         throw new ApiError("User not found", 404);
-    //     }
-    //     await tokenRepository.logout({ refreshToken });
-    // }
 
     public async logout(userId: string, refreshToken: string): Promise<void> {
         await tokenRepository.deleteByParams({ _userId: userId, refreshToken });

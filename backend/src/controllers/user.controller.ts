@@ -12,32 +12,44 @@ import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 
 class UserController {
-    public async getAll(req: Request, res: Response, next: NextFunction) {
+    public async getAll(_req: Request, res: Response, next: NextFunction) {
         try {
             const query = res.locals.validatedQuery as IUserListQuery;
             const [entities, total] = await userService.getAll(query);
-            const result = userPresenter.toListResDto(entities, total, query);
-            res.status(StatusCodesEnum.OK).json(result);
+            const presenter = userPresenter.toListResDto(
+                entities,
+                total,
+                query,
+            );
+            res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
     }
-    public async getMe(req: Request, res: Response, next: NextFunction) {
-        const { userId } = res.locals.tokenPayload as ITokenPayload;
-        const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+    public async getMe(_req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
 
-        const user = await userService.getById(userId);
-        const userResponse = userPresenter.toDetailsResDto(user, tokenPayload);
-        res.status(StatusCodesEnum.OK).json({ user: userResponse });
+            const user = await userService.getById(userId);
+            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
+            res.status(StatusCodesEnum.OK).json({ user: presenter });
+        } catch (e) {
+            next(e);
+        }
     }
 
     public async getById(req: Request, res: Response, next: NextFunction) {
-        const { userId } = req.params as { userId: string };
-        const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+        try {
+            const { userId } = req.params as { userId: string };
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
 
-        const user = await userService.getById(userId);
-        const userResponse = userPresenter.toDetailsResDto(user, tokenPayload);
-        res.status(StatusCodesEnum.OK).json({ user: userResponse });
+            const user = await userService.getById(userId);
+            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
+            res.status(StatusCodesEnum.OK).json({ user: presenter });
+        } catch (e) {
+            next(e);
+        }
     }
 
     public async updateMe(req: Request, res: Response, next: NextFunction) {
@@ -45,7 +57,19 @@ class UserController {
             const { userId } = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IUserUpdateDto;
             const user = await userService.updateMe(userId, dto);
-            res.json(user);
+            const presenter = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.OK).json(presenter);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = req.params as { userId: string };
+            const { userId: adminId, role } = res.locals
+                .tokenPayload as ITokenPayload;
+            await userService.deleteById(userId, role, adminId);
         } catch (e) {
             next(e);
         }
@@ -56,7 +80,7 @@ class UserController {
             const { userId } = req.params as { userId: string };
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             await userService.userBan(userId, tokenPayload);
-            res.sendStatus(StatusCodesEnum.OK);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
@@ -78,7 +102,7 @@ class UserController {
     }
 
     public async buyPremiumAccount(
-        req: Request,
+        _req: Request,
         res: Response,
         next: NextFunction,
     ) {
@@ -87,12 +111,9 @@ class UserController {
             const { user, tokens } = await userService.buyPremiumAccount(
                 tokenPayload.userId,
             );
-            const userResponse = userPresenter.toDetailsResDto(
-                user,
-                tokenPayload,
-            );
+            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({
-                user: userResponse,
+                user: presenter,
                 tokens: tokens,
             });
         } catch (e) {
@@ -100,7 +121,7 @@ class UserController {
         }
     }
     public async changeRoleToSeller(
-        req: Request,
+        _req: Request,
         res: Response,
         next: NextFunction,
     ) {
@@ -109,12 +130,9 @@ class UserController {
             const { user, tokens } = await userService.changeRoleToSeller(
                 tokenPayload.userId,
             );
-            const userResponse = userPresenter.toDetailsResDto(
-                user,
-                tokenPayload,
-            );
+            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({
-                user: userResponse,
+                user: presenter,
                 tokens: tokens,
             });
         } catch (e) {
@@ -127,18 +145,22 @@ class UserController {
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             const avatar = req.files.avatar as UploadedFile;
             const user = await userService.uploadAvatar(tokenPayload, avatar);
-            const result = userPresenter.toPublicResDto(user);
-            res.status(201).json(result);
+            const presenter = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
             next(e);
         }
     }
 
-    public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+    public async deleteAvatar(
+        _req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
         try {
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             await userService.deleteAvatar(tokenPayload);
-            res.sendStatus(204);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
