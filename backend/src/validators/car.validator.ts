@@ -22,7 +22,7 @@ export class CarValidator {
     public static query = Joi.object({
         page: Joi.number().integer().min(1).default(1),
         pageSize: Joi.number().integer().min(1).max(100).default(10),
-        brand: this.brand, // використовуємо твоє приватне поле
+        brand: this.brand,
         model: this.model,
         region: this.region,
         priceMin: Joi.number().positive(),
@@ -31,7 +31,7 @@ export class CarValidator {
             .valid(...Object.values(CarListOrderByEnum))
             .default(CarListOrderByEnum.CREATED_AT),
         order: Joi.string()
-            .valid(...Object.values(OrderEnum)) // Використовуємо твій OrderEnum тут
+            .valid(...Object.values(OrderEnum))
             .default(OrderEnum.DESC),
     });
 
