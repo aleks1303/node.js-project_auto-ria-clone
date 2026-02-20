@@ -3,7 +3,7 @@ import { ActionToken } from "../models/action-token.model";
 
 class ActionTokenRepository {
     public async create(dto: Partial<IActionToken>): Promise<IActionToken> {
-        return await ActionToken.create(dto);
+        return ActionToken.create(dto);
     }
     public getByToken(actionToken: string): Promise<IActionToken | null> {
         return ActionToken.findOne({ actionToken });

@@ -16,21 +16,17 @@ class CarRepository {
         permissions: PermissionsEnum[] = [],
     ): Promise<[ICar[], number]> {
         const skip = (query.page - 1) * query.pageSize;
-        // Створюємо базовий фільтр
         const filter: FilterQuery<ICar> = { isDeleted: false };
         const canSeeAllStatuses = permissions.includes(
             PermissionsEnum.CARS_SEE_DETAILS_ALL,
         );
         const sortField =
             query.orderBy === "price" ? "convertedPrices.UAH" : query.orderBy;
-        // Якщо це НЕ адмін і НЕ менеджер — показуємо тільки активні
         if (!canSeeAllStatuses) {
-            // Звичайний юзер бачить ТІЛЬКИ активні
             filter.status = CarStatusEnum.ACTIVE;
         } else {
             delete filter.isDeleted;
         }
-        // Додаємо всі фільтри з query, якщо вони існують
         if (query.brand) {
             filter.brand = query.brand;
         }
@@ -48,7 +44,6 @@ class CarRepository {
                 filter["convertedPrices.UAH"].$lte = query.priceMax;
         }
 
-        // Виконуємо пошук та підрахунок одночасно
         const [entities, total] = await Promise.all([
             Car.find(filter)
                 .populate("_userId", "name surname email role")
@@ -56,7 +51,6 @@ class CarRepository {
                 .limit(query.pageSize)
                 .sort({ [sortField]: query.order === "asc" ? 1 : -1 })
                 .lean(),
-            // Нові оголошення зверху
             Car.countDocuments(filter),
         ]);
 
@@ -80,7 +74,6 @@ class CarRepository {
             .lean() as unknown as Promise<ICar>;
     }
 
-    // car.repository.ts
     public async softDelete(carId: string): Promise<void> {
         await Car.updateOne({ _id: carId }, { $set: { isDeleted: true } });
     }
@@ -88,7 +81,6 @@ class CarRepository {
     public async countByUserId(userId: string): Promise<number> {
         return Car.countDocuments({
             _userId: userId,
-            // status: CarStatusEnum.ACTIVE, // Рахуємо тільки ті, що зараз у продажу
             isDeleted: false,
         });
     }

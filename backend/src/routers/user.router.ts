@@ -22,23 +22,27 @@ router.get("/me", authMiddleware.checkAccessToken, userController.getMe);
 router.put(
     "/me",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     commonMiddleware.isBodyValid(UserValidator.update),
     userController.updateMe,
 );
 router.patch(
     "/me/premium",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     userController.buyPremiumAccount,
 );
 router.patch(
     "/me/upgrade-seller",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     userController.changeRoleToSeller,
 );
 
 router.patch(
     "/:userId/upgrade-role",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.USERS_UPDATE_ROLE),
     commonMiddleware.isBodyValid(UserValidator.upgradeRole),
     userController.upgradeUserRole,
@@ -46,18 +50,21 @@ router.patch(
 router.post(
     "/me/avatar",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     fileMiddleware.isFileValid("avatar", avatarConfig),
     userController.uploadAvatar,
 );
 router.delete(
     "/avatar",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     userController.deleteAvatar,
 );
 
 router.post(
     "/manager",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.USERS_CREATE_MANAGER),
     commonMiddleware.isBodyValid(UserValidator.createManager),
     userController.createManager,
@@ -72,6 +79,7 @@ router.get(
 router.patch(
     "/:userId/ban",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.USERS_BAN),
     userController.userBan,
 );
@@ -79,6 +87,7 @@ router.patch(
 router.delete(
     "/:userId",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.USERS_DELETE),
     userController.delete,
 );

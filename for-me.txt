@@ -10,18 +10,3 @@ docker compose up   // іноді треба просто ця команда б
 docker compose down -v   // після видалення mongo.db
 docker compose up --build  //запускаємо docker
 docker-compose up -d db   // запустити базу для локальної розробки через npm start в root
-
-
-
-
-
-Швидкий спосіб знайти все (Search in Files):
-Натисни Ctrl + Shift + F (або Cmd + Shift + F на Mac) у VS Code і введи:
-
-role ===
-
-role !==
-
-.role
-
-RoleEnum

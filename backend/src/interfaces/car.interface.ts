@@ -68,8 +68,9 @@ export type ICarResponse = Pick<
 export interface IOwnerInfo {
     _id?: Types.ObjectId | string;
     name: string;
-    surname: string;
-    email: string;
+    surname?: string;
+    email?: string;
+    phone?: string;
 }
 
 export interface ICarsResponseDto {
@@ -124,4 +125,16 @@ export interface ICarStatistics {
         region: number;
         ukraine: number;
     };
+}
+export interface ICarShortResponseDto {
+    _id: Types.ObjectId | string;
+    brand: string;
+    model: string;
+    image: string;
+    price: number;
+    currency: CurrencyEnum;
+    year: number;
+    region: string;
+    city: string;
+    createdAt: Date;
 }

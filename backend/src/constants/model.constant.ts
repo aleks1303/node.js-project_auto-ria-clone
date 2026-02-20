@@ -1,6 +1,8 @@
 export const nameModel = {
-    USER: "users",
-    TOKEN: "tokens",
-    CAR: "cars",
-    BRAND: "brands",
+    USER: "user",
+    TOKEN: "token",
+    CAR: "car",
+    BRAND: "brand",
+    PASSWORD: "password",
+    ACTION_TOKEN: "actionToken",
 } as const;

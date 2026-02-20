@@ -19,6 +19,7 @@ router.get(
 router.post(
     "/create",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.CARS_CREATE),
     commonMiddleware.isBodyValid(CarValidator.create),
     carMiddleware.checkCarLimit,
@@ -28,17 +29,20 @@ router.post(
 router.post(
     "/:carId/image",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     fileMiddleware.isFileValid("image", carImageConfig),
     carController.uploadImage,
 );
 router.delete(
     "/:carId/image",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     carController.deleteImage,
 );
 router.put(
     "/:carId",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     commonMiddleware.isIdValid("carId"),
     authMiddleware.checkPermission(
         PermissionsEnum.CARS_UPDATE_OWN,
@@ -60,6 +64,7 @@ router.get(
 router.delete(
     "/:carId",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(),
     carController.deleteCar,
 );
@@ -67,6 +72,7 @@ router.delete(
 router.patch(
     "/:carId/validate",
     authMiddleware.checkAccessToken,
+    // authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.ADS_VALIDATE),
     carController.validate,
 );

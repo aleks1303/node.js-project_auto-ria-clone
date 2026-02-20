@@ -69,6 +69,7 @@ class UserController {
             const { userId: adminId, role } = res.locals
                 .tokenPayload as ITokenPayload;
             await userService.deleteById(userId, role, adminId);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }

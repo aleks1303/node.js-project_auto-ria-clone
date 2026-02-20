@@ -16,19 +16,11 @@ class CarController {
         try {
             const query = res.locals.validatedQuery as ICarListQuery;
             const permissions = res.locals.permissions || [];
-            const { accountType } =
-                (res.locals.tokenPayload as ITokenPayload) || {};
             const [entities, total] = await carService.getAll(
                 query,
                 permissions,
             );
-            const presenter = CarPresenter.toListResDto(
-                entities,
-                total,
-                query,
-                permissions,
-                accountType,
-            );
+            const presenter = CarPresenter.toListResDto(entities, total, query);
 
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
@@ -40,7 +32,7 @@ class CarController {
             const body = req.body as ICarCreateDto;
             const { userId } = res.locals.tokenPayload as ITokenPayload;
             const car = await carService.create(body, userId);
-            const presenter = CarPresenter.toPublicResCarDto(car);
+            const presenter = CarPresenter.toCreateResCarDto(car);
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
@@ -53,7 +45,7 @@ class CarController {
             const body = req.body as ICarCreateDto;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             const updatedCar = await carService.update(car, body, tokenPayload);
-            const presenter = CarPresenter.toPublicResCarDto(updatedCar);
+            const presenter = CarPresenter.toCreateResCarDto(updatedCar);
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
@@ -70,7 +62,7 @@ class CarController {
                 userId,
                 permissions,
             );
-            const presenter = CarPresenter.toPublicCarsResDto(
+            const presenter = CarPresenter.toDetailedCarResDto(
                 car,
                 permissions,
                 accountType,
@@ -112,7 +104,7 @@ class CarController {
                 carId,
                 image,
             );
-            const presenter = CarPresenter.toPublicResCarDto(car);
+            const presenter = CarPresenter.toCreateResCarDto(car);
             res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
             next(e);

@@ -23,7 +23,7 @@ class CarMiddleware {
             if (carCount >= 1) {
                 throw new ApiError(
                     "Basis account limit reached. Please upgrade to Premium to add more cars.",
-                    403,
+                    StatusCodesEnum.FORBIDDEN,
                 );
             }
             next();

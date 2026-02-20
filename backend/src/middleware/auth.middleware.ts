@@ -7,7 +7,7 @@ import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { TokenTypeEnum } from "../enums/user-enum/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { ForgotPasswordSet } from "../interfaces/user.interface";
+import { ForgotPasswordSet, IUser } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { tokenService } from "../services/token.service";
@@ -91,7 +91,10 @@ class AuthMiddleware {
         try {
             const header = req.headers.authorization;
             if (!header) {
-                throw new ApiError("Header is provided", 401);
+                throw new ApiError(
+                    "Header is provided",
+                    StatusCodesEnum.UNAUTHORIZED,
+                );
             }
             const refreshToken = header.split("Bearer ")[1];
             if (!refreshToken) {
@@ -140,7 +143,10 @@ class AuthMiddleware {
             const actionTokenEntity =
                 await actionTokenRepository.getByToken(actionToken);
             if (!actionTokenEntity) {
-                throw new ApiError("Token is not valid", 401);
+                throw new ApiError(
+                    "Token is not valid",
+                    StatusCodesEnum.UNAUTHORIZED,
+                );
             }
             res.locals.actionPayload = payload;
             next();
@@ -174,6 +180,25 @@ class AuthMiddleware {
                 next(e);
             }
         };
+    }
+    public async checkIsVerified(
+        _req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const { isVerified } = res.locals.user as IUser;
+
+            if (!isVerified) {
+                throw new ApiError(
+                    "Please confirm your email to create an ad.",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+            next();
+        } catch (e) {
+            next(e);
+        }
     }
 }
 

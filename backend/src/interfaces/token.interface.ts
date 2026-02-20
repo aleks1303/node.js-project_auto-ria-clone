@@ -20,4 +20,3 @@ export interface ITokenPayload {
 export type ITokenActionPayload = Pick<ITokenPayload, "userId">;
 
 export type ITokenPair = Pick<IToken, "accessToken" | "refreshToken">;
-export type IRefresh = Pick<IToken, "refreshToken">;
