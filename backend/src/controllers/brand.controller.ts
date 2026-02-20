@@ -24,9 +24,7 @@ class BrandController {
         try {
             const { brandName } = req.body;
             const { userId } = res.locals.tokenPayload as ITokenPayload;
-
             await brandService.missingBrand(userId, brandName);
-
             res.status(StatusCodesEnum.OK).json({
                 message:
                     "Your message has been sent to the administration. Thank you for your help!",

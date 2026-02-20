@@ -70,14 +70,12 @@ class CarController {
                 userId,
                 permissions,
             );
-
             const presenter = CarPresenter.toPublicCarsResDto(
                 car,
                 permissions,
                 accountType,
                 statistics,
             );
-
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
@@ -109,7 +107,6 @@ class CarController {
             const { carId } = req.params as { carId: string };
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             const image = req.files.image as UploadedFile;
-
             const car = await carService.uploadImage(
                 tokenPayload,
                 carId,

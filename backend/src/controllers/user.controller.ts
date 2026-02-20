@@ -31,7 +31,6 @@ class UserController {
         try {
             const { userId } = res.locals.tokenPayload as ITokenPayload;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-
             const user = await userService.getById(userId);
             const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({ user: presenter });
@@ -44,7 +43,6 @@ class UserController {
         try {
             const { userId } = req.params as { userId: string };
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-
             const user = await userService.getById(userId);
             const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({ user: presenter });
