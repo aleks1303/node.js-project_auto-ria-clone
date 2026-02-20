@@ -1,3 +1,4 @@
+import { config } from "../configs/config";
 import { rolePermissions } from "../constants/permissions.constant";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { ActionTokenTypeEnum } from "../enums/user-enum/action-token-type.enum";
@@ -34,7 +35,7 @@ class AuthService {
         const checkRole = [RoleEnum.BUYER, RoleEnum.SELLER];
         if (!checkRole.includes(role)) {
             throw new ApiError(
-                "Ви можете зареєструватися тільки як Покупець або Продавець",
+                "You can only register as a Buyer or Seller.",
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
@@ -118,7 +119,7 @@ class AuthService {
         const newPayload: ITokenPayload = {
             userId: payload.userId,
             role: payload.role,
-            accountType: payload.accountType, // Додай всі поля, які є у твоєму інтерфейсі
+            accountType: payload.accountType,
         };
         const tokens = tokenService.generateTokens(newPayload);
         await tokenRepository.create({
@@ -132,10 +133,13 @@ class AuthService {
     public async verifyEmail(dto: CheckEmail) {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) {
-            throw new ApiError("User not found", 404);
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
         if (user.isVerified) {
-            throw new ApiError("Email already verified", 400);
+            throw new ApiError(
+                "Email already verified",
+                StatusCodesEnum.CONFLICT,
+            );
         }
         await actionTokenRepository.deleteManyByParams({
             _userId: user._id,
@@ -178,7 +182,7 @@ class AuthService {
     public async forgotPasswordSendEmail(dto: CheckEmail): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) {
-            throw new ApiError("User not found", 404);
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
         const actionToken = tokenService.generateActionToken(
             { userId: user._id },
@@ -204,12 +208,12 @@ class AuthService {
         const usedPasswords = await passwordService.isPasswordValid(
             user._id,
             dto.password,
-            180,
+            config.PASSWORD_HISTORY_DAYS,
         );
         if (usedPasswords) {
             throw new ApiError(
-                "This password was used in the last 180 days",
-                400,
+                `This password was used in the last ${config.PASSWORD_HISTORY_DAYS} days`,
+                StatusCodesEnum.CONFLICT,
             );
         }
         const password = await passwordService.hashPassword(dto.password);

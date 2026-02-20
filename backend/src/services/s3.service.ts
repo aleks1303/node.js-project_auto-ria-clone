@@ -10,6 +10,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { config } from "../configs/config";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
+import { logger } from "../logger/logger";
 
 class S3Service {
     constructor(
@@ -44,7 +45,7 @@ class S3Service {
             );
             return filePath;
         } catch (error) {
-            console.error("Error upload", error);
+            logger.error("S3 Upload Error:", error);
         }
     }
 
@@ -57,7 +58,7 @@ class S3Service {
                 }),
             );
         } catch (error) {
-            console.error("Error upload", error);
+            logger.error("S3 Delete Error:", error);
         }
     }
     private buildPath(

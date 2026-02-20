@@ -1,6 +1,9 @@
+import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { EmailTypeEnum } from "../enums/user-enum/email-type.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
+import { ApiError } from "../errors/api.error";
 import { IBrand } from "../interfaces/brand.interface";
+import { logger } from "../logger/logger";
 import { brandRepository } from "../repositories/brand.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
@@ -9,25 +12,24 @@ class BrandService {
     public async getAll(): Promise<IBrand[]> {
         return brandRepository.getAll();
     }
-    // В BrandService
     public async missingBrand(
         userId: string,
         brandName: string,
     ): Promise<void> {
-        // 1. Знаходимо менеджерів (як ти робив у CarService)
         const user = await userRepository.getById(userId);
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
         const managers = await userRepository.findByRole(RoleEnum.MANAGER);
         const emails = managers.map((m) => m.email);
 
         if (!emails.length) {
-            console.warn("Менеджерів не знайдено для відправки звіту");
+            logger.warn(`MissingBrand request ignored: No managers found.`);
             return;
         }
-
-        // 2. Відправляємо лист усім менеджерам
         await emailService.sendMail(
-            EmailTypeEnum.MISSING_BRAND, // Треба додати в enum
-            emails.join(","), // Відправляємо всім одразу
+            EmailTypeEnum.MISSING_BRAND,
+            emails.join(","),
             {
                 userId,
                 brandName,

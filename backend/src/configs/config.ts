@@ -18,6 +18,7 @@ interface IConfig {
     JWT_ACTION_VERIFY_EXPIRATION: string;
 
     OLD_PASSWORD_EXPIRATION: string;
+    PASSWORD_HISTORY_DAYS: number;
 
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;
@@ -49,6 +50,7 @@ const config: IConfig = {
     JWT_ACTION_VERIFY_EXPIRATION: process.env.JWT_ACTION_VERIFY_EXPIRATION,
 
     OLD_PASSWORD_EXPIRATION: process.env.OLD_PASSWORD_EXPIRATION,
+    PASSWORD_HISTORY_DAYS: Number(process.env.PASSWORD_HISTORY_DAYS),
 
     EMAIL_USER: process.env.EMAIL_USER,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,

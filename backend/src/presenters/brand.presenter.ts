@@ -1,5 +1,3 @@
-// brand.presenter.ts
-
 import { IBrand } from "../interfaces/brand.interface";
 
 export class BrandPresenter {

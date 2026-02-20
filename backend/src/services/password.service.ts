@@ -36,7 +36,6 @@ class PasswordService {
                 return true;
             }
         }
-
         return false;
     }
 }

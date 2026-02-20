@@ -28,7 +28,7 @@ class UserService {
     public async getById(userId: string): Promise<IUser> {
         const user = await userRepository.getById(userId);
         if (!user) {
-            throw new ApiError("User not found", 404);
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
         return user;
     }
@@ -130,6 +130,9 @@ class UserService {
 
     public async buyPremiumAccount(userId: string): Promise<IUserWithTokens> {
         const user = await userRepository.getById(userId);
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
         if (user.accountType === accountTypeEnum.PREMIUM) {
             throw new ApiError(
                 "User already has a premium account",
@@ -139,26 +142,23 @@ class UserService {
         if (
             ![RoleEnum.BUYER, RoleEnum.SELLER].includes(user.role as RoleEnum)
         ) {
-            throw new ApiError("Ця роль не підтримує преміум-акаунт", 403);
+            throw new ApiError(
+                "This role does not support a premium account.",
+                StatusCodesEnum.FORBIDDEN,
+            );
         }
-
         const updateData: Partial<IUser> = {
             accountType: accountTypeEnum.PREMIUM,
         };
-
-        // Якщо це був Покупець, він стає Продавцем з правами
         if (user.role === RoleEnum.BUYER) {
             updateData.role = RoleEnum.SELLER;
         }
-
         const updatedUser = await userRepository.updateById(userId, updateData);
         const tokens = tokenService.generateTokens({
             userId: updatedUser._id,
             role: updatedUser.role,
             accountType: updatedUser.accountType,
         });
-
-        // Повертаємо об'єкт, який містить все необхідне
         return {
             user: updatedUser,
             tokens: tokens,
@@ -167,18 +167,19 @@ class UserService {
 
     public async changeRoleToSeller(userId: string): Promise<IUserWithTokens> {
         const user = await userRepository.getById(userId);
-
-        // Якщо він уже продавець або вище - нічого не робимо
-        if (user.role !== RoleEnum.BUYER) {
-            throw new ApiError("Ви вже маєте право продавати авто", 400);
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
-
+        if (user.role !== RoleEnum.BUYER) {
+            throw new ApiError(
+                "You already have the right to sell a car",
+                StatusCodesEnum.CONFLICT,
+            );
+        }
         const updatedUser = await userRepository.updateById(userId, {
             role: RoleEnum.SELLER,
             permissions: rolePermissions[RoleEnum.SELLER],
         });
-
-        // Обов'язково генеруємо НОВІ токени, щоб у Postman з'явилися права SELLER
         const tokens = tokenService.generateTokens({
             userId: updatedUser._id,
             role: updatedUser.role,
@@ -222,7 +223,10 @@ class UserService {
     public async deleteAvatar(jwtPayload: ITokenPayload): Promise<void> {
         const user = await userRepository.getById(jwtPayload.userId);
         if (!user.avatar) {
-            throw new ApiError("User not have an avatar", 400);
+            throw new ApiError(
+                "User not have an avatar",
+                StatusCodesEnum.BAD_REQUEST,
+            );
         }
         await s3Service.deleteFile(user.avatar);
         await userRepository.updateById(user._id, { avatar: null });
