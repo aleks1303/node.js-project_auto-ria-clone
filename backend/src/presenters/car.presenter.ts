@@ -66,6 +66,7 @@ export class CarPresenter {
             currency: entity.currency,
             year: entity.year,
             region: entity.region,
+            city: entity.city,
             description: entity.description,
             createdAt: entity.createdAt,
         };

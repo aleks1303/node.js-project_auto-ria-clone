@@ -72,8 +72,7 @@ export interface IOwnerInfo {
     email?: string;
     phone?: string;
 }
-
-export interface ICarsResponseDto {
+export interface ICarShortResponseDto {
     _id: Types.ObjectId | string;
     brand: string;
     model: string;
@@ -82,8 +81,12 @@ export interface ICarsResponseDto {
     currency: CurrencyEnum;
     year: number;
     region: string;
-    description: string;
+    city: string;
     createdAt: Date;
+}
+
+export interface ICarsResponseDto extends ICarShortResponseDto {
+    description: string;
     isDeleted?: boolean;
     status?: CarStatusEnum;
     totalViews?: number;
@@ -125,16 +128,4 @@ export interface ICarStatistics {
         region: number;
         ukraine: number;
     };
-}
-export interface ICarShortResponseDto {
-    _id: Types.ObjectId | string;
-    brand: string;
-    model: string;
-    image: string;
-    price: number;
-    currency: CurrencyEnum;
-    year: number;
-    region: string;
-    city: string;
-    createdAt: Date;
 }
