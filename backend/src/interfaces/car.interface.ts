@@ -73,7 +73,7 @@ export interface IOwnerInfo {
 }
 
 export interface ICarsResponseDto {
-    _id: Types.ObjectId | string; // Прибираємо опціональність ?, бо id є завжди
+    _id: Types.ObjectId | string;
     brand: string;
     model: string;
     image: string;

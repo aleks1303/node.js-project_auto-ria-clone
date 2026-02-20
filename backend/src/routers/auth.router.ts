@@ -23,11 +23,11 @@ router.post(
     authController.refresh,
 );
 router.post(
-    "/verify",
+    "/verify-email",
     commonMiddleware.isBodyValid(UserValidator.verify),
-    authController.verify,
+    authController.verifyEmail,
 );
-router.get("/verify/:token", authController.verifyEmail);
+router.get("/verify/:token", authController.verifyTokenFromEmail);
 
 router.post(
     "/forgot-password",

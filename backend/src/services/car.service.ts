@@ -31,7 +31,6 @@ class CarService {
         return carRepository.getAll(query, permissions);
     }
     public async create(body: ICarCreateDto, userId: string): Promise<ICar> {
-        const user = await userRepository.getById(userId);
         const isExistBrand = await brandRepository.getByBrandAndModel(
             body.brand,
             body.model,
@@ -42,29 +41,20 @@ class CarService {
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
-        const carsCount = await carRepository.countByUserId(userId);
-        if (user.accountType === accountTypeEnum.BASIS && carsCount >= 1) {
-            throw new ApiError(
-                "Basic аккаунт може створити лише 1 оголошення. Купіть Premium!",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        // 1. Обчислюємо ціни
         const { convertedPrices, exchangeRates } = currencyHelper.convertAll(
             body.price,
             body.currency,
         );
-        // 2. Перевіряємо на матюки
         const isClean = !moderationHelper.hasBadWords(body.description);
         const status = isClean ? CarStatusEnum.ACTIVE : CarStatusEnum.PENDING;
         return carRepository.create({
-            ...body, // тут тільки brand, model, year, price, currency, description, region
-            _userId: userId, // додаємо зверху
+            ...body,
+            _userId: userId,
             convertedPrices,
-            exchangeRates, // додаємо зверху
-            status, // додаємо зверху
+            exchangeRates,
+            status,
             editCount: 0,
-            views: [], // ініціалізуємо
+            views: [],
         });
     }
     public async update(

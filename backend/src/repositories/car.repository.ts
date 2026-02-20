@@ -86,7 +86,6 @@ class CarRepository {
     }
 
     public async countByUserId(userId: string): Promise<number> {
-        // countDocuments — це вбудований метод Mongoose, який дуже швидко рахує записи
         return Car.countDocuments({
             _userId: userId,
             // status: CarStatusEnum.ACTIVE, // Рахуємо тільки ті, що зараз у продажу

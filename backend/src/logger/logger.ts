@@ -3,7 +3,6 @@ import winston from "winston";
 const { combine, timestamp, printf, colorize, errors, json } = winston.format;
 
 const isProd = process.env.NODE_ENV === "production";
-
 const consoleFormat = printf(({ level, message, timestamp, stack }) => {
     return stack
         ? `${timestamp} [${level}]: ${message}\n${stack}`
@@ -21,7 +20,6 @@ export const logger = winston.createLogger({
         new winston.transports.Console({
             format: isProd ? json() : combine(colorize(), consoleFormat),
         }),
-
         ...(isProd
             ? [
                   new winston.transports.File({

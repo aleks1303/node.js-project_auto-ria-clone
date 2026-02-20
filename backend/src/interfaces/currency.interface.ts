@@ -3,7 +3,7 @@ import { CurrencyEnum } from "../enums/car-enum/currency.enum";
 export interface IExchangeRates {
     USD?: number;
     EUR?: number;
-    UAH?: number; // зазвичай 1, але можна додати для стабільності
+    UAH?: number;
 }
 export interface IConvertedPrices {
     USD: number;

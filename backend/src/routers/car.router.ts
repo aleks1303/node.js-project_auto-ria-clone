@@ -21,6 +21,7 @@ router.post(
     authMiddleware.checkAccessToken,
     authMiddleware.checkPermission(PermissionsEnum.CARS_CREATE),
     commonMiddleware.isBodyValid(CarValidator.create),
+    carMiddleware.checkCarLimit,
     carController.create,
 );
 

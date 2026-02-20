@@ -27,7 +27,6 @@ export interface IUser extends IBase {
 }
 
 export interface IUserDetailsResponse {
-    // Ці поля є ЗАВЖДИ (для всіх)
     _id: string;
     name: string;
     surname: string;
@@ -35,9 +34,6 @@ export interface IUserDetailsResponse {
     city: string;
     region: string;
     avatar: string | null;
-
-    // Ці поля з'являються ТІЛЬКИ якщо hasFullAccess === true
-    // Ми робимо їх опціональними, бо для "сторонніх" їх не буде
     email?: string;
     age?: number;
     role?: RoleEnum;
@@ -103,8 +99,7 @@ export interface IUserUpdateDto {
     region?: string;
 }
 export type ISignInDTO = Pick<IUser, "email" | "password">;
-export type IVerifyType = Pick<IUser, "email">;
-export type ForgotPasswordSend = Pick<IUser, "email">;
+export type CheckEmail = Pick<IUser, "email">;
 export type ForgotPasswordSet = Pick<IUser, "password"> & {
     actionToken: string;
 };

@@ -10,12 +10,11 @@ import {
     ITokenPayload,
 } from "../interfaces/token.interface";
 import {
-    ForgotPasswordSend,
+    CheckEmail,
     ForgotPasswordSet,
     ISignInDTO,
     IUser,
     IUserCreateDTO,
-    IVerifyType,
 } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { passwordRepository } from "../repositories/password.repository";
@@ -130,7 +129,7 @@ class AuthService {
         return tokens;
     }
 
-    public async verify(dto: IVerifyType) {
+    public async verifyEmail(dto: CheckEmail) {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) {
             throw new ApiError("User not found", 404);
@@ -159,7 +158,7 @@ class AuthService {
         });
     }
 
-    public async verifyTokenEmail(token: string): Promise<void> {
+    public async verifyTokenFromEmail(token: string): Promise<void> {
         const tokenData = await actionTokenRepository.findByParams({
             actionToken: token,
             type: ActionTokenTypeEnum.VERIFY_EMAIL,
@@ -176,9 +175,7 @@ class AuthService {
         await actionTokenRepository.deleteManyByParams({ actionToken: token });
     }
 
-    public async forgotPasswordSendEmail(
-        dto: ForgotPasswordSend,
-    ): Promise<void> {
+    public async forgotPasswordSendEmail(dto: CheckEmail): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) {
             throw new ApiError("User not found", 404);

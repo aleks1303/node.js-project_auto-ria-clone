@@ -6,11 +6,10 @@ import {
     ITokenPayload,
 } from "../interfaces/token.interface";
 import {
-    ForgotPasswordSend,
+    CheckEmail,
     ForgotPasswordSet,
     ISignInDTO,
     IUserCreateDTO,
-    IVerifyType,
 } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { authService } from "../services/auth.service";
@@ -59,20 +58,24 @@ class AuthController {
         }
     }
 
-    public async verify(req: Request, res: Response, next: NextFunction) {
+    public async verifyEmail(req: Request, res: Response, next: NextFunction) {
         try {
-            const dto = req.body as IVerifyType;
-            await authService.verify(dto);
+            const dto = req.body as CheckEmail;
+            await authService.verifyEmail(dto);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
     }
 
-    public async verifyEmail(req: Request, res: Response, next: NextFunction) {
+    public async verifyTokenFromEmail(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
         try {
             const { token } = req.params as { token: string };
-            await authService.verifyTokenEmail(token);
+            await authService.verifyTokenFromEmail(token);
             res.sendStatus(StatusCodesEnum.OK);
         } catch (e) {
             next(e);
@@ -84,7 +87,7 @@ class AuthController {
         next: NextFunction,
     ) {
         try {
-            const dto = req.body as ForgotPasswordSend;
+            const dto = req.body as CheckEmail;
             await authService.forgotPasswordSendEmail(dto);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
