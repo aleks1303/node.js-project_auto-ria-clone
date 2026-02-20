@@ -46,7 +46,6 @@ class CarRepository {
 
         const [entities, total] = await Promise.all([
             Car.find(filter)
-                .populate("_userId", "name surname email role")
                 .skip(skip)
                 .limit(query.pageSize)
                 .sort({ [sortField]: query.order === "asc" ? 1 : -1 })
@@ -70,7 +69,7 @@ class CarRepository {
 
     public getById(carId: string): Promise<ICar | null> {
         return Car.findOne({ _id: carId, isDeleted: false })
-            .populate("_userId")
+            .populate("_userId", "name phone email surname")
             .lean() as unknown as Promise<ICar>;
     }
 
