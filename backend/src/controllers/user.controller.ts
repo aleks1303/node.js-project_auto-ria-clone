@@ -147,8 +147,14 @@ class UserController {
     ) {
         try {
             const { userId } = req.params as { userId: string };
+            const { userId: adminId } = res.locals
+                .tokenPayload as ITokenPayload;
             const body = req.body as UpgradeUserDto;
-            const user = await userService.upgradeUserRole(userId, body);
+            const user = await userService.upgradeUserRole(
+                adminId,
+                userId,
+                body,
+            );
             const presenter = userPresenter.toPublicResDto(user);
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {

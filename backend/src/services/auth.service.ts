@@ -30,6 +30,7 @@ class AuthService {
         dto: IUserCreateDTO,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await this.isEmailExist(dto.email);
+        await this.isPhoneExist(dto.phone);
         const role = dto.role || RoleEnum.BUYER;
         const permissions = rolePermissions[role] || [];
         const checkRole = [RoleEnum.BUYER, RoleEnum.SELLER];
@@ -238,10 +239,13 @@ class AuthService {
     public async isEmailExist(email: string): Promise<void> {
         const user = await userRepository.getByEmail(email);
         if (user) {
-            throw new ApiError(
-                "Email is already exist",
-                StatusCodesEnum.CONFLICT,
-            );
+            throw new ApiError("Email already exist", StatusCodesEnum.CONFLICT);
+        }
+    }
+    public async isPhoneExist(phone: string): Promise<void> {
+        const user = await userRepository.getByPhone(phone);
+        if (user) {
+            throw new ApiError("Phone already exist", StatusCodesEnum.CONFLICT);
         }
     }
 }

@@ -19,8 +19,14 @@ export class UserValidator {
         .trim();
     private static age = Joi.number().min(18).max(120);
     private static email = Joi.string().email().lowercase().trim();
-    private static password = Joi.string().regex(RegexEnum.PASSWORD);
-    private static phone = Joi.string().regex(RegexEnum.PHONE);
+    private static password = Joi.string().regex(RegexEnum.PASSWORD).messages({
+        "string.pattern.base":
+            "Password must be 6-16 chars with numbers, uppercase, lowercase and special symbols.",
+    });
+    private static phone = Joi.string().regex(RegexEnum.PHONE).messages({
+        "string.pattern.base":
+            "Phone must start with +380 and have 9 digits (e.g., +380931234567).",
+    });
     private static city = Joi.string().min(2).max(30).trim();
     private static region = Joi.string().min(2).max(30).trim();
     private static role = Joi.string().valid(...Object.values(RoleEnum));
@@ -45,17 +51,6 @@ export class UserValidator {
             }),
     });
 
-    public static createManager = Joi.object({
-        name: this.name.required(),
-        surname: this.surname.required(),
-        age: this.age.required(),
-        email: this.email.required(),
-        password: this.password.required(),
-        phone: this.phone.required(),
-        city: this.city.optional(),
-        region: this.region.optional(),
-    });
-
     public static signIn = Joi.object({
         email: this.email.required(),
         password: this.password.required(),
@@ -71,7 +66,12 @@ export class UserValidator {
     }).min(1);
 
     public static upgradeRole = Joi.object({
-        role: this.role.optional(),
+        role: this.role
+            .valid(RoleEnum.BUYER, RoleEnum.SELLER)
+            .optional()
+            .messages({
+                "any.only": "You can only change role to Buyer or Seller.",
+            }),
         accountType: this.accountType.optional(),
     }).min(1);
 
@@ -82,6 +82,30 @@ export class UserValidator {
     public static setForgotPassword = Joi.object({
         password: this.password,
         actionToken: Joi.string().trim().required(),
+    });
+
+    public static createManager = Joi.object({
+        name: this.name.required(),
+        surname: this.surname.required(),
+        age: this.age.required(),
+        email: this.email.required(),
+        password: this.password.required(),
+        phone: this.phone.required(),
+        role: Joi.string().valid(RoleEnum.MANAGER).default(RoleEnum.MANAGER),
+        city: this.city.optional(),
+        region: this.region.optional(),
+    });
+
+    public static createAdmin = Joi.object({
+        name: this.name.required(),
+        surname: this.surname.required(),
+        age: this.age.required(),
+        email: this.email.required(),
+        password: this.password.required(),
+        phone: this.phone.required(),
+        city: this.city.optional(),
+        region: this.region.optional(),
+        key: Joi.string().required().trim(),
     });
 
     public static query = Joi.object({

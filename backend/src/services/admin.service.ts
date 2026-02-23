@@ -6,6 +6,7 @@ import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
 import { IAdminCreateDTO, IUser } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
+import { authService } from "./auth.service";
 import { passwordService } from "./password.service";
 
 class AdminService {
@@ -17,6 +18,8 @@ class AdminService {
                 StatusCodesEnum.FORBIDDEN,
             );
         }
+        await authService.isEmailExist(dto.email);
+        await authService.isPhoneExist(dto.phone);
         const hashPassword = await passwordService.hashPassword(password);
         return userRepository.create({
             ...rest,

@@ -16,6 +16,7 @@ import {
 } from "../interfaces/user.interface";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { authService } from "./auth.service";
 import { passwordService } from "./password.service";
 import { s3Service } from "./s3.service";
 import { tokenService } from "./token.service";
@@ -110,17 +111,13 @@ class UserService {
     }
 
     public async createManager(dto: IUserCreateDTO): Promise<IUser> {
-        const { email, password } = dto;
-        const isExistEmail = await userRepository.getByEmail(email);
-        if (isExistEmail) {
-            throw new ApiError(
-                "Email already exist",
-                StatusCodesEnum.BAD_REQUEST,
-            );
-        }
+        const { email, password, ...rest } = dto;
+        await authService.isEmailExist(email);
+        await authService.isPhoneExist(dto.phone);
         const hashPassword = await passwordService.hashPassword(password);
         return userRepository.create({
-            ...dto,
+            ...rest,
+            email,
             password: hashPassword,
             role: RoleEnum.MANAGER,
             accountType: accountTypeEnum.PREMIUM,
@@ -190,9 +187,16 @@ class UserService {
     }
 
     public async upgradeUserRole(
+        adminId: string,
         userId: string,
         body: UpgradeUserDto,
     ): Promise<IUser> {
+        if (adminId === userId) {
+            throw new ApiError(
+                "Admins cannot change their own role to prevent losing access.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
         const user = await userRepository.getById(userId);
         if (!user) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);

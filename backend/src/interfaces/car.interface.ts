@@ -45,7 +45,7 @@ export type ICarCreateDb = Omit<
     ICar,
     "_id" | "updatedAt" | "image" | "exchangeRate" | "createdAt" | "isDeleted"
 > & { isDeleted?: boolean };
-
+export type ICarPopulated = ICar & { owner: IOwnerInfo };
 export type ICarResponse = Pick<
     ICar,
     | "_id"

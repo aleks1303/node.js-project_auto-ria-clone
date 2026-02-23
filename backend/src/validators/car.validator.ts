@@ -12,8 +12,8 @@ export class CarValidator {
         .min(1900)
         .max(new Date().getFullYear());
     private static description = Joi.string().min(10).max(1000);
-    private static region = Joi.string();
-    private static city = Joi.string();
+    private static region = Joi.string().min(2).max(50).trim();
+    private static city = Joi.string().min(2).max(50).trim();
     private static price = Joi.number().positive();
     private static currency = Joi.string().valid(
         ...Object.values(CurrencyEnum),

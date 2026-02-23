@@ -6,7 +6,7 @@ import { IBrand } from "../interfaces/brand.interface";
 const brandSchema = new Schema(
     {
         brand: { type: String, unique: true, required: true, trim: true },
-        model: { type: [String], default: [] },
+        models: { type: [String], default: [] },
     },
     {
         timestamps: true,

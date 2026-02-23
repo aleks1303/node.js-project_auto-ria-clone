@@ -35,8 +35,11 @@ class UserRepository {
         return User.create(user);
     }
 
-    public getByEmail(email: string): Promise<IUser> {
+    public getByEmail(email: string): Promise<IUser | null> {
         return User.findOne({ email });
+    }
+    public getByPhone(phone: string): Promise<IUser | null> {
+        return User.findOne({ phone });
     }
     public findByRole(role: RoleEnum): Promise<IUser[]> {
         return User.find({ role });

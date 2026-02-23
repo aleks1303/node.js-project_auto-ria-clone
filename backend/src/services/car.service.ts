@@ -15,6 +15,7 @@ import {
     ICarCreateDto,
     ICarListQuery,
     ICarUpdateDto,
+    IOwnerInfo,
 } from "../interfaces/car.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { brandRepository } from "../repositories/brand.repository";
@@ -37,7 +38,7 @@ class CarService {
         );
         if (!isExistBrand) {
             throw new ApiError(
-                `Комбінація марки ${body.brand} та моделі ${body.model} не є валідною`,
+                `Brand combination ${body.brand} and model ${body.model} is not valid`,
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
@@ -73,7 +74,6 @@ class CarService {
                     body.price || car.price,
                     body.currency || car.currency,
                 );
-            // Додаємо ці дані в об'єкт для оновлення
             updateData.convertedPrices = convertedPrices;
             updateData.exchangeRates = exchangeRates;
         }
@@ -81,7 +81,6 @@ class CarService {
         if (body.description !== undefined) {
             hasBadWords = moderationHelper.hasBadWords(body.description);
             if (isStaff) {
-                // Менеджер завжди робить активним і скидає лічильник
                 updateData.status = CarStatusEnum.ACTIVE;
                 updateData.editCount = 0;
             } else if (hasBadWords) {
@@ -90,34 +89,28 @@ class CarService {
                 if (editCount >= 3) {
                     updateData.status = CarStatusEnum.INACTIVE;
                 } else {
-                    updateData.status = CarStatusEnum.PENDING; // або залишаємо як було, якщо хочеш
+                    updateData.status = CarStatusEnum.PENDING;
                 }
             } else {
-                // Якщо опис чистий — активуємо
                 updateData.status = CarStatusEnum.ACTIVE;
             }
         }
 
-        // 2. Єдине оновлення в БД
         const updatedCar = await carRepository.updateById(
             car._id.toString(),
             updateData,
         );
 
-        // 3. Обробка наслідків модерації
         if (hasBadWords && !isStaff) {
             if (editCount >= 3) {
-                // Спочатку відправляємо лист (можна не чекати await, якщо налаштована черга)
                 await this.findManagerAndSendEmail(updatedCar, editCount);
-
                 throw new ApiError(
-                    "Оголошення заблоковано та відправлено менеджеру на перевірку",
+                    "The ad has been blocked and sent to the manager for review.",
                     StatusCodesEnum.FORBIDDEN,
                 );
             }
-
             throw new ApiError(
-                `Опис містить нецензурні слова. Залишилось спроб: ${3 - editCount}`,
+                `The description contains obscene language. Attempts remaining: ${3 - editCount}`,
                 StatusCodesEnum.BAD_REQUEST,
             );
         }
@@ -129,18 +122,15 @@ class CarService {
         userId: string,
         userPermissions: PermissionsEnum[],
     ) {
-        // 1. Кожен вхід — це новий перегляд
-
         const car = await carRepository.getById(carId);
         if (!car) {
-            throw new ApiError("Авто не знайдено", StatusCodesEnum.NOT_FOUND);
+            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
         }
         await carRepository.addView(carId);
         const user = await userRepository.getById(userId);
 
         let statistics = null;
 
-        // 2. Перевірка на Premium (Пункт 4)
         if (
             user.accountType === accountTypeEnum.PREMIUM ||
             userPermissions.includes(PermissionsEnum.STATS_SEE_PREMIUM)
@@ -178,14 +168,12 @@ class CarService {
         carId: string,
         tokenPayload: ITokenPayload,
     ): Promise<void> {
-        // 1. Шукаємо машину в базі
         const car = await carRepository.getById(carId);
 
         if (!car) {
-            throw new ApiError("Авто не знайдено", StatusCodesEnum.NOT_FOUND);
+            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        // 2. Перевіряємо права
         const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
             tokenPayload.role as RoleEnum,
         );
@@ -194,12 +182,11 @@ class CarService {
 
         if (!isStaff && !isOwner) {
             throw new ApiError(
-                "Ви не можете видалити чуже оголошення",
+                "You cannot delete someone else's ad.",
                 StatusCodesEnum.FORBIDDEN,
             );
         }
 
-        // Викликаємо наш новий спеціальний метод
         await carRepository.softDelete(carId);
     }
 
@@ -219,17 +206,27 @@ class CarService {
         carId: string,
         file: UploadedFile,
     ): Promise<ICar> {
-        const car = await carRepository.getById(carId);
-
-        // Безпека: перевіряємо, чи цей юзер власник
-        if (car._userId.toString() !== tokenPayload.userId) {
-            throw new ApiError("You can only edit your own cars", 403);
+        const car = (await carRepository.getById(carId)) as ICar & {
+            owner: IOwnerInfo;
+        };
+        if (!car) {
+            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
+        }
+        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
+            tokenPayload.role,
+        );
+        const carOwner = car.owner._id.toString();
+        if (carOwner !== tokenPayload.userId && !isStaff) {
+            throw new ApiError(
+                "You can only edit your own cars",
+                StatusCodesEnum.FORBIDDEN,
+            );
         }
 
         const oldFilePath = car.image;
         const image = await s3Service.uploadFile(
             file,
-            FileItemTypeEnum.CAR, // додай CAR в свій Enum
+            FileItemTypeEnum.CAR,
             car._id.toString(),
             oldFilePath,
         );
@@ -275,5 +272,53 @@ class CarService {
             },
         );
     }
+    // private async getOrThrow(carId: string): Promise<ICarPopulated> {
+    //     const car = await carRepository.getById(carId);
+    //     if (!car) {
+    //         throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
+    //     }
+    //     return car as ICarPopulated;
+    // }
+    //
+    // // 2. Перевірка доступу
+    // private checkAccess(
+    //     car: ICarPopulated,
+    //     tokenPayload: ITokenPayload,
+    //     message: string,
+    // ): void {
+    //     const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
+    //         tokenPayload.role,
+    //     );
+    //     const isOwner = car.owner._id.toString() === tokenPayload.userId;
+    //     if (!isOwner && !isStaff) {
+    //         throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
+    //     }
+    // }
+
+    // private async getCarOrThrow(carId: string): Promise<ICarPopulated> {
+    //     const car = await carRepository.getById(carId);
+    //     if (!car) {
+    //         throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
+    //     }
+    //     return car as ICarPopulated;
+    // }
+    //
+    // // 2. Перевірка доступу
+    // private checkAccess(
+    //     car: ICarPopulated,
+    //     tokenPayload: ITokenPayload,
+    //     message: string,
+    // ): void {
+    //     const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
+    //         tokenPayload.role,
+    //     );
+    //     const carOwnerId = car.owner?._id ? String(car.owner._id) : null;
+    //
+    //     const isOwner = carOwnerId === tokenPayload.userId;
+    //     if (!isOwner && !isStaff) {
+    //         throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
+    //     }
+    //     console.log("Hello");
+    // }
 }
 export const carService = new CarService();
