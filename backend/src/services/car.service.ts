@@ -215,8 +215,7 @@ class CarService {
         const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
             tokenPayload.role,
         );
-        const carOwner = car.owner._id.toString();
-        if (carOwner !== tokenPayload.userId && !isStaff) {
+        if (car._userId !== tokenPayload.userId && !isStaff) {
             throw new ApiError(
                 "You can only edit your own cars",
                 StatusCodesEnum.FORBIDDEN,
