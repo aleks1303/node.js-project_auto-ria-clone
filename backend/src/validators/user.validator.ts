@@ -39,7 +39,10 @@ export class UserValidator {
         region: this.region.optional(),
         role: this.role
             .valid(RoleEnum.BUYER, RoleEnum.SELLER)
-            .default(RoleEnum.BUYER),
+            .default(RoleEnum.BUYER)
+            .messages({
+                "any.only": "You can only register as a Buyer or Seller.",
+            }),
     });
 
     public static createManager = Joi.object({

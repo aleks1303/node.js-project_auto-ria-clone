@@ -29,7 +29,12 @@ class CommonMiddleware {
                 req.body = await validator.validateAsync(req.body);
                 next();
             } catch (e) {
-                next(e);
+                next(
+                    new ApiError(
+                        e.details[0].message,
+                        StatusCodesEnum.BAD_REQUEST,
+                    ),
+                );
             }
         };
     }
