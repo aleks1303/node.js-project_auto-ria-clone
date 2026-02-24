@@ -4,6 +4,7 @@ import { UploadedFile } from "express-fileupload";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
+    IUser,
     IUserCreateDTO,
     IUserListQuery,
     IUserUpdateDto,
@@ -29,9 +30,8 @@ class UserController {
     }
     public async getMe(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const user = res.locals.user as IUser;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            const user = await userService.getById(userId);
             const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({ user: presenter });
         } catch (e) {
@@ -39,12 +39,15 @@ class UserController {
         }
     }
 
-    public async getById(req: Request, res: Response, next: NextFunction) {
+    public async getById(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = req.params as { userId: string };
+            const user = res.locals.user as IUser;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            const user = await userService.getById(userId);
-            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
+            const getUser = await userService.getById(user);
+            const presenter = userPresenter.toDetailsResDto(
+                getUser,
+                tokenPayload,
+            );
             res.status(StatusCodesEnum.OK).json({ user: presenter });
         } catch (e) {
             next(e);
@@ -53,33 +56,33 @@ class UserController {
 
     public async updateMe(req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const user = res.locals.user as IUser;
             const dto = req.body as IUserUpdateDto;
-            const user = await userService.updateMe(userId, dto);
-            const presenter = userPresenter.toPublicResDto(user);
+            const updatedUser = await userService.updateMe(user, dto);
+            const presenter = userPresenter.toPublicResDto(updatedUser);
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
         }
     }
 
-    public async delete(req: Request, res: Response, next: NextFunction) {
+    public async delete(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = req.params as { userId: string };
+            const user = res.locals.user as IUser;
             const { userId: adminId, role } = res.locals
                 .tokenPayload as ITokenPayload;
-            await userService.deleteById(userId, role, adminId);
+            await userService.deleteById(user, role, adminId);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
     }
 
-    public async userBan(req: Request, res: Response, next: NextFunction) {
+    public async userBan(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = req.params as { userId: string };
+            const user = res.locals.user as IUser;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await userService.userBan(userId, tokenPayload);
+            await userService.userBan(user, tokenPayload);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
@@ -107,11 +110,14 @@ class UserController {
         next: NextFunction,
     ) {
         try {
+            const user = res.locals.user as IUser;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            const { user, tokens } = await userService.buyPremiumAccount(
-                tokenPayload.userId,
+            const { user: updatedUser, tokens } =
+                await userService.buyPremiumAccount(user);
+            const presenter = userPresenter.toDetailsResDto(
+                updatedUser,
+                tokenPayload,
             );
-            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({
                 user: presenter,
                 tokens: tokens,
@@ -126,11 +132,13 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            const { user, tokens } = await userService.changeRoleToSeller(
-                tokenPayload.userId,
+            const user = res.locals.user as IUser;
+            const { user: updatedUser, tokens } =
+                await userService.changeRoleToSeller(user);
+            const presenter = userPresenter.toDetailsResDto(
+                updatedUser,
+                res.locals.tokenPayload,
             );
-            const presenter = userPresenter.toDetailsResDto(user, tokenPayload);
             res.status(StatusCodesEnum.OK).json({
                 user: presenter,
                 tokens: tokens,
@@ -146,16 +154,16 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const { userId } = req.params as { userId: string };
+            const user = res.locals.user as IUser;
             const { userId: adminId } = res.locals
                 .tokenPayload as ITokenPayload;
             const body = req.body as UpgradeUserDto;
-            const user = await userService.upgradeUserRole(
+            const updatedUser = await userService.upgradeUserRole(
                 adminId,
-                userId,
+                user,
                 body,
             );
-            const presenter = userPresenter.toPublicResDto(user);
+            const presenter = userPresenter.toPublicResDto(updatedUser);
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
             next(e);
@@ -164,10 +172,10 @@ class UserController {
 
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            const user = res.locals.user as IUser;
             const avatar = req.files.avatar as UploadedFile;
-            const user = await userService.uploadAvatar(userId, avatar);
-            const presenter = userPresenter.toPublicResDto(user);
+            const updatedUser = await userService.uploadAvatar(user, avatar);
+            const presenter = userPresenter.toPublicResDto(updatedUser);
             res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
             next(e);
@@ -180,8 +188,8 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
-            await userService.deleteAvatar(userId);
+            const user = res.locals.user as IUser;
+            await userService.deleteAvatar(user);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);

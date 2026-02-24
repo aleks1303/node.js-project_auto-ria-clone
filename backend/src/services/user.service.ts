@@ -26,35 +26,20 @@ class UserService {
         return userRepository.getAll(query);
     }
 
-    public async getById(userId: string): Promise<IUser> {
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
+    public async getById(user: IUser): Promise<IUser> {
         return user;
     }
 
-    public async updateMe(
-        userId: string,
-        user: Partial<IUser>,
-    ): Promise<IUser> {
-        const data = await userRepository.getById(userId);
-        if (!data) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
-        return userRepository.updateById(userId, user);
+    public async updateMe(user: IUser, dto: Partial<IUser>): Promise<IUser> {
+        return userRepository.updateById(user._id, dto);
     }
 
     public async deleteById(
-        userId: string,
+        user: IUser,
         role: RoleEnum,
         adminId: string,
     ): Promise<void> {
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
-        if (userId === adminId) {
+        if (user._id.toString() === adminId) {
             throw new ApiError(
                 "You cannot delete your own account",
                 StatusCodesEnum.BAD_REQUEST,
@@ -71,21 +56,17 @@ class UserService {
                 );
             }
         }
-        await userRepository.updateById(userId, {
+        await userRepository.updateById(user._id, {
             isDeleted: true,
             isActive: false,
         });
-        await tokenRepository.deleteManyByParams({ _userId: userId });
+        await tokenRepository.deleteManyByParams({ _userId: user._id });
     }
 
     public async userBan(
-        userId: string,
+        user: IUser,
         tokenPayload: ITokenPayload,
-    ): Promise<Partial<IUser>> {
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
+    ): Promise<void> {
         if (user._id.toString() === tokenPayload.userId) {
             throw new ApiError(
                 "You cannot ban yourself.",
@@ -107,7 +88,8 @@ class UserService {
                 StatusCodesEnum.FORBIDDEN,
             );
         }
-        return userRepository.updateById(userId, { isBanned: true });
+        await userRepository.updateById(user._id, { isBanned: true });
+        await tokenRepository.deleteManyByParams({ _userId: user._id });
     }
 
     public async createManager(dto: IManagerCreateDTO): Promise<IUser> {
@@ -125,11 +107,7 @@ class UserService {
         });
     }
 
-    public async buyPremiumAccount(userId: string): Promise<IUserWithTokens> {
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
+    public async buyPremiumAccount(user: IUser): Promise<IUserWithTokens> {
         if (user.accountType === accountTypeEnum.PREMIUM) {
             throw new ApiError(
                 "User already has a premium account",
@@ -150,11 +128,19 @@ class UserService {
         if (user.role === RoleEnum.BUYER) {
             updateData.role = RoleEnum.SELLER;
         }
-        const updatedUser = await userRepository.updateById(userId, updateData);
+        const updatedUser = await userRepository.updateById(
+            user._id,
+            updateData,
+        );
         const tokens = tokenService.generateTokens({
             userId: updatedUser._id,
             role: updatedUser.role,
             accountType: updatedUser.accountType,
+        });
+        await tokenRepository.deleteManyByParams({ _userId: user._id });
+        await tokenRepository.create({
+            refreshToken: tokens.refreshToken,
+            _userId: user._id,
         });
         return {
             user: updatedUser,
@@ -162,18 +148,14 @@ class UserService {
         };
     }
 
-    public async changeRoleToSeller(userId: string): Promise<IUserWithTokens> {
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
+    public async changeRoleToSeller(user: IUser): Promise<IUserWithTokens> {
         if (user.role !== RoleEnum.BUYER) {
             throw new ApiError(
                 "You already have the right to sell a car",
                 StatusCodesEnum.CONFLICT,
             );
         }
-        const updatedUser = await userRepository.updateById(userId, {
+        const updatedUser = await userRepository.updateById(user._id, {
             role: RoleEnum.SELLER,
             permissions: rolePermissions[RoleEnum.SELLER],
         });
@@ -182,37 +164,34 @@ class UserService {
             role: updatedUser.role,
             accountType: updatedUser.accountType,
         });
+        await tokenRepository.deleteManyByParams({ _userId: user._id });
+        await tokenRepository.create({
+            refreshToken: tokens.refreshToken,
+            _userId: user._id,
+        });
 
         return { user: updatedUser, tokens };
     }
 
     public async upgradeUserRole(
         adminId: string,
-        userId: string,
+        user: IUser,
         body: UpgradeUserDto,
     ): Promise<IUser> {
-        if (adminId === userId) {
+        if (adminId === user._id.toString()) {
             throw new ApiError(
                 "Admins cannot change their own role to prevent losing access.",
                 StatusCodesEnum.FORBIDDEN,
             );
         }
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
-        const updatedUser = await userRepository.updateById(userId, body);
+        const updatedUser = await userRepository.updateById(user._id, body);
         if (body.role || body.accountType) {
-            await tokenRepository.deleteManyByParams({ _userId: userId });
+            await tokenRepository.deleteManyByParams({ _userId: user._id });
         }
         return updatedUser;
     }
 
-    public async uploadAvatar(
-        userId: string,
-        file: UploadedFile,
-    ): Promise<IUser> {
-        const user = await userRepository.getById(userId);
+    public async uploadAvatar(user: IUser, file: UploadedFile): Promise<IUser> {
         const oldFilePath = user.avatar;
         const avatar = await s3Service.uploadFile(
             file,
@@ -224,8 +203,7 @@ class UserService {
         return userRepository.updateById(user._id, { avatar });
     }
 
-    public async deleteAvatar(userId: string): Promise<void> {
-        const user = await userRepository.getById(userId);
+    public async deleteAvatar(user: IUser): Promise<void> {
         if (!user.avatar) {
             throw new ApiError(
                 "User not have an avatar",

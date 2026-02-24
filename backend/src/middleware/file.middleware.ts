@@ -16,6 +16,12 @@ class FileMiddleware {
                     );
                 }
                 const file = req.files[fieldName] as UploadedFile;
+                if (!file) {
+                    throw new ApiError(
+                        `Field '${fieldName}' is missing`,
+                        StatusCodesEnum.NOT_FOUND,
+                    );
+                }
                 if (Array.isArray(file)) {
                     throw new ApiError(
                         "Please upload files one by one or update middleware",
