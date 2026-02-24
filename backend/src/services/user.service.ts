@@ -26,85 +26,8 @@ class UserService {
         return userRepository.getAll(query);
     }
 
-    public async getById(user: IUser): Promise<IUser> {
-        return user;
-    }
-
     public async updateMe(user: IUser, dto: Partial<IUser>): Promise<IUser> {
         return userRepository.updateById(user._id, dto);
-    }
-
-    public async deleteById(
-        user: IUser,
-        role: RoleEnum,
-        adminId: string,
-    ): Promise<void> {
-        if (user._id.toString() === adminId) {
-            throw new ApiError(
-                "You cannot delete your own account",
-                StatusCodesEnum.BAD_REQUEST,
-            );
-        }
-        if (role === RoleEnum.MANAGER) {
-            if (
-                user.role === RoleEnum.ADMIN ||
-                user.role === RoleEnum.MANAGER
-            ) {
-                throw new ApiError(
-                    "A manager cannot remove other managers or admins",
-                    StatusCodesEnum.FORBIDDEN,
-                );
-            }
-        }
-        await userRepository.updateById(user._id, {
-            isDeleted: true,
-            isActive: false,
-        });
-        await tokenRepository.deleteManyByParams({ _userId: user._id });
-    }
-
-    public async userBan(
-        user: IUser,
-        tokenPayload: ITokenPayload,
-    ): Promise<void> {
-        if (user._id.toString() === tokenPayload.userId) {
-            throw new ApiError(
-                "You cannot ban yourself.",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        if (user.role === RoleEnum.ADMIN) {
-            throw new ApiError(
-                "You cannot ban an admin.",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        if (
-            user.role === RoleEnum.MANAGER &&
-            tokenPayload.role !== RoleEnum.ADMIN
-        ) {
-            throw new ApiError(
-                "A manager cannot ban another manager",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        await userRepository.updateById(user._id, { isBanned: true });
-        await tokenRepository.deleteManyByParams({ _userId: user._id });
-    }
-
-    public async createManager(dto: IManagerCreateDTO): Promise<IUser> {
-        const { email, password, ...rest } = dto;
-        await authService.isEmailExist(email);
-        await authService.isPhoneExist(dto.phone);
-        const hashPassword = await passwordService.hashPassword(password);
-        return userRepository.create({
-            ...rest,
-            email,
-            password: hashPassword,
-            role: RoleEnum.MANAGER,
-            accountType: accountTypeEnum.PREMIUM,
-            isVerified: true,
-        });
     }
 
     public async buyPremiumAccount(user: IUser): Promise<IUserWithTokens> {
@@ -173,24 +96,6 @@ class UserService {
         return { user: updatedUser, tokens };
     }
 
-    public async upgradeUserRole(
-        adminId: string,
-        user: IUser,
-        body: UpgradeUserDto,
-    ): Promise<IUser> {
-        if (adminId === user._id.toString()) {
-            throw new ApiError(
-                "Admins cannot change their own role to prevent losing access.",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        const updatedUser = await userRepository.updateById(user._id, body);
-        if (body.role || body.accountType) {
-            await tokenRepository.deleteManyByParams({ _userId: user._id });
-        }
-        return updatedUser;
-    }
-
     public async uploadAvatar(user: IUser, file: UploadedFile): Promise<IUser> {
         const oldFilePath = user.avatar;
         const avatar = await s3Service.uploadFile(
@@ -212,6 +117,101 @@ class UserService {
         }
         await s3Service.deleteFile(user.avatar);
         await userRepository.updateById(user._id, { avatar: null });
+    }
+
+    public async createManager(dto: IManagerCreateDTO): Promise<IUser> {
+        const { email, password, ...rest } = dto;
+        await authService.isEmailExist(email);
+        await authService.isPhoneExist(dto.phone);
+        const hashPassword = await passwordService.hashPassword(password);
+        return userRepository.create({
+            ...rest,
+            email,
+            password: hashPassword,
+            role: RoleEnum.MANAGER,
+            accountType: accountTypeEnum.PREMIUM,
+            isVerified: true,
+        });
+    }
+
+    public async upgradeUserRole(
+        adminId: string,
+        user: IUser,
+        body: UpgradeUserDto,
+    ): Promise<IUser> {
+        if (adminId === user._id.toString()) {
+            throw new ApiError(
+                "Admins cannot change their own role to prevent losing access.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        const updatedUser = await userRepository.updateById(user._id, body);
+        if (body.role || body.accountType) {
+            await tokenRepository.deleteManyByParams({ _userId: user._id });
+        }
+        return updatedUser;
+    }
+
+    public async getById(user: IUser): Promise<IUser> {
+        return user;
+    }
+
+    public async userBan(
+        user: IUser,
+        tokenPayload: ITokenPayload,
+    ): Promise<void> {
+        if (user._id.toString() === tokenPayload.userId) {
+            throw new ApiError(
+                "You cannot ban yourself.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (user.role === RoleEnum.ADMIN) {
+            throw new ApiError(
+                "You cannot ban an admin.",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (
+            user.role === RoleEnum.MANAGER &&
+            tokenPayload.role !== RoleEnum.ADMIN
+        ) {
+            throw new ApiError(
+                "A manager cannot ban another manager",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        await userRepository.updateById(user._id, { isBanned: true });
+        await tokenRepository.deleteManyByParams({ _userId: user._id });
+    }
+
+    public async deleteById(
+        user: IUser,
+        role: RoleEnum,
+        adminId: string,
+    ): Promise<void> {
+        if (user._id.toString() === adminId) {
+            throw new ApiError(
+                "You cannot delete your own account",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+        if (role === RoleEnum.MANAGER) {
+            if (
+                user.role === RoleEnum.ADMIN ||
+                user.role === RoleEnum.MANAGER
+            ) {
+                throw new ApiError(
+                    "A manager cannot remove other managers or admins",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+        }
+        await userRepository.updateById(user._id, {
+            isDeleted: true,
+            isActive: false,
+        });
+        await tokenRepository.deleteManyByParams({ _userId: user._id });
     }
 }
 export const userService = new UserService();
