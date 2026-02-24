@@ -45,7 +45,9 @@ export type ICarCreateDb = Omit<
     ICar,
     "_id" | "updatedAt" | "image" | "exchangeRate" | "createdAt" | "isDeleted"
 > & { isDeleted?: boolean };
-export type ICarPopulated = ICar & { owner: IOwnerInfo };
+export interface ICarPopulated extends Omit<ICar, "_userId"> {
+    _userId: IOwnerInfo;
+}
 export type ICarResponse = Pick<
     ICar,
     | "_id"

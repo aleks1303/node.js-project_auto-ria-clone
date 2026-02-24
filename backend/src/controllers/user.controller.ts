@@ -164,9 +164,9 @@ class UserController {
 
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
         try {
-            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
             const avatar = req.files.avatar as UploadedFile;
-            const user = await userService.uploadAvatar(tokenPayload, avatar);
+            const user = await userService.uploadAvatar(userId, avatar);
             const presenter = userPresenter.toPublicResDto(user);
             res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
@@ -180,8 +180,8 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await userService.deleteAvatar(tokenPayload);
+            const { userId } = res.locals.tokenPayload as ITokenPayload;
+            await userService.deleteAvatar(userId);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);

@@ -3,9 +3,9 @@ import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import {
-    ICar,
     ICarCreateDto,
     ICarListQuery,
+    ICarPopulated,
 } from "../interfaces/car.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { CarPresenter } from "../presenters/car.presenter";
@@ -41,7 +41,7 @@ class CarController {
 
     public async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const car = res.locals.car as ICar;
+            const car = res.locals.car as ICarPopulated;
             const body = req.body as ICarCreateDto;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             const updatedCar = await carService.update(car, body, tokenPayload);
@@ -52,13 +52,13 @@ class CarController {
         }
     }
 
-    public async getById(req: Request, res: Response, next: NextFunction) {
+    public async getById(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { carId } = req.params as { carId: string };
+            const car = res.locals.car as ICarPopulated;
             const { userId, accountType } = res.locals.tokenPayload;
             const permissions = res.locals.permissions;
-            const { car, statistics } = await carService.getById(
-                carId,
+            const { statistics } = await carService.getById(
+                car,
                 userId,
                 permissions,
             );
@@ -73,21 +73,21 @@ class CarController {
             next(e);
         }
     }
-    public async deleteCar(req: Request, res: Response, next: NextFunction) {
+    public async deleteCar(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { carId } = req.params as { carId: string };
+            const car = res.locals.car as ICarPopulated;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await carService.deleteCar(carId, tokenPayload);
+            await carService.deleteCar(car, tokenPayload);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
     }
 
-    public async validate(req: Request, res: Response, next: NextFunction) {
+    public async validate(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { carId } = req.params as { carId: string };
-            await carService.validate(carId);
+            const car = res.locals.car as ICarPopulated;
+            await carService.validate(car._id.toString());
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
@@ -96,25 +96,25 @@ class CarController {
 
     public async uploadImage(req: Request, res: Response, next: NextFunction) {
         try {
-            const { carId } = req.params as { carId: string };
+            const car = res.locals.car as ICarPopulated;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             const image = req.files.image as UploadedFile;
-            const car = await carService.uploadImage(
+            const carToRes = await carService.uploadImage(
                 tokenPayload,
-                carId,
+                car,
                 image,
             );
-            const presenter = CarPresenter.toCreateResCarDto(car);
+            const presenter = CarPresenter.toCreateResCarDto(carToRes);
             res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
             next(e);
         }
     }
-    public async deleteImage(req: Request, res: Response, next: NextFunction) {
+    public async deleteImage(_req: Request, res: Response, next: NextFunction) {
         try {
-            const { carId } = req.params as { carId: string };
+            const car = res.locals.car as ICarPopulated;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await carService.deleteImage(carId, tokenPayload);
+            await carService.deleteImage(car, tokenPayload);
             res.status(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);

@@ -5,6 +5,7 @@ import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { ApiError } from "../errors/api.error";
+import { ICarPopulated } from "../interfaces/car.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { carRepository } from "../repositories/car.repository";
 
@@ -53,6 +54,25 @@ class CarMiddleware {
                     "You are not the owner of this car",
                     StatusCodesEnum.FORBIDDEN,
                 );
+            }
+            res.locals.car = car;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
+    public async getByIdOrThrow(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const { carId } = req.params as { carId: string };
+            const car = (await carRepository.getById(
+                carId,
+            )) as unknown as ICarPopulated;
+            if (!car) {
+                throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
             }
             res.locals.car = car;
             next();

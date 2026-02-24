@@ -4,6 +4,7 @@ import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import {
     ICar,
     ICarListQuery,
+    ICarPopulated,
     ICarResponse,
     ICarShortResponseDto,
     ICarsResponseDto,
@@ -41,7 +42,7 @@ export class CarPresenter {
     }
 
     public static toDetailedCarResDto(
-        entity: ICar,
+        entity: ICarPopulated,
         permissions: PermissionsEnum[] = [],
         accountType?: accountTypeEnum,
         statistics?: ICarStatistics,
@@ -69,13 +70,17 @@ export class CarPresenter {
             city: entity.city,
             description: entity.description,
             createdAt: entity.createdAt,
-        };
-        if (user && typeof user === "object") {
-            response.owner = {
+            owner: {
                 name: user.name,
                 phone: user.phone,
-            };
-        }
+            },
+        };
+        // if (user && typeof user === "object") {
+        //     response.owner = {
+        //         name: user.name,
+        //         phone: user.phone,
+        //     };
+        // }
 
         if (canSeePrivateInfo) {
             response.status = entity.status;

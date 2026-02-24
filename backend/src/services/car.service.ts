@@ -14,8 +14,8 @@ import {
     ICar,
     ICarCreateDto,
     ICarListQuery,
+    ICarPopulated,
     ICarUpdateDto,
-    IOwnerInfo,
 } from "../interfaces/car.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { brandRepository } from "../repositories/brand.repository";
@@ -59,10 +59,15 @@ class CarService {
         });
     }
     public async update(
-        car: ICar,
+        car: ICarPopulated,
         body: ICarUpdateDto,
         tokenPayload: ITokenPayload,
     ): Promise<ICar> {
+        this.checkAccess(
+            car,
+            tokenPayload,
+            "Access denied. You can only edit your own cars.",
+        );
         let editCount = car.editCount || 0;
         const updateData: Partial<ICar> = { ...body };
         const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
@@ -118,26 +123,18 @@ class CarService {
         return updatedCar;
     }
     public async getById(
-        carId: string,
-        userId: string,
+        car: ICarPopulated,
+        accountType: string,
         userPermissions: PermissionsEnum[],
     ) {
-        const car = await carRepository.getById(carId);
-        if (!car) {
-            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-        }
-        await carRepository.addView(carId);
-        const user = await userRepository.getById(userId);
-
+        await carRepository.addView(car._id.toString());
         let statistics = null;
-
         if (
-            user.accountType === accountTypeEnum.PREMIUM ||
+            accountType === accountTypeEnum.PREMIUM ||
             userPermissions.includes(PermissionsEnum.STATS_SEE_PREMIUM)
         ) {
             const now = Date.now();
             const day = 24 * 60 * 60 * 1000;
-
             const avgPrices = await carRepository.getAveragePrices(
                 car.brand,
                 car.model,
@@ -165,36 +162,19 @@ class CarService {
     }
 
     public async deleteCar(
-        carId: string,
+        car: ICarPopulated,
         tokenPayload: ITokenPayload,
     ): Promise<void> {
-        const car = await carRepository.getById(carId);
-
-        if (!car) {
-            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-        }
-
-        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
-            tokenPayload.role as RoleEnum,
+        this.checkAccess(
+            car,
+            tokenPayload,
+            "Forbidden. You do not have permission to delete this car.",
         );
-        const carOwnerId = String(car._userId?.["_id"] || car._userId);
-        const isOwner = carOwnerId === tokenPayload.userId;
 
-        if (!isStaff && !isOwner) {
-            throw new ApiError(
-                "You cannot delete someone else's ad.",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-
-        await carRepository.softDelete(carId);
+        await carRepository.softDelete(car._id.toString());
     }
 
     public async validate(carId: string): Promise<void> {
-        const car = await carRepository.getById(carId);
-        if (!car) {
-            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-        }
         await carRepository.updateById(carId, {
             status: CarStatusEnum.ACTIVE,
             editCount: 0,
@@ -203,25 +183,14 @@ class CarService {
 
     public async uploadImage(
         tokenPayload: ITokenPayload,
-        carId: string,
+        car: ICarPopulated,
         file: UploadedFile,
     ): Promise<ICar> {
-        const car = (await carRepository.getById(carId)) as ICar & {
-            owner: IOwnerInfo;
-        };
-        if (!car) {
-            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-        }
-        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
-            tokenPayload.role,
+        this.checkAccess(
+            car,
+            tokenPayload,
+            "Access denied. You cannot upload images to this car.",
         );
-        if (car._userId !== tokenPayload.userId && !isStaff) {
-            throw new ApiError(
-                "You can only edit your own cars",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-
         const oldFilePath = car.image;
         const image = await s3Service.uploadFile(
             file,
@@ -234,19 +203,14 @@ class CarService {
     }
 
     public async deleteImage(
-        carId: string,
+        car: ICarPopulated,
         tokenPayload: ITokenPayload,
     ): Promise<void> {
-        const car = await carRepository.getById(carId);
-        if (!car) {
-            throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-        }
-        if (car._userId !== tokenPayload.userId) {
-            throw new ApiError(
-                "You can only delete images from your own cars",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
+        this.checkAccess(
+            car,
+            tokenPayload,
+            "Access denied. You cannot delete this car's image.",
+        );
         if (!car.image) {
             throw new ApiError(
                 "Car does not have an image",
@@ -271,53 +235,20 @@ class CarService {
             },
         );
     }
-    // private async getOrThrow(carId: string): Promise<ICarPopulated> {
-    //     const car = await carRepository.getById(carId);
-    //     if (!car) {
-    //         throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-    //     }
-    //     return car as ICarPopulated;
-    // }
-    //
-    // // 2. Перевірка доступу
-    // private checkAccess(
-    //     car: ICarPopulated,
-    //     tokenPayload: ITokenPayload,
-    //     message: string,
-    // ): void {
-    //     const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
-    //         tokenPayload.role,
-    //     );
-    //     const isOwner = car.owner._id.toString() === tokenPayload.userId;
-    //     if (!isOwner && !isStaff) {
-    //         throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
-    //     }
-    // }
 
-    // private async getCarOrThrow(carId: string): Promise<ICarPopulated> {
-    //     const car = await carRepository.getById(carId);
-    //     if (!car) {
-    //         throw new ApiError("Car not found", StatusCodesEnum.NOT_FOUND);
-    //     }
-    //     return car as ICarPopulated;
-    // }
-    //
-    // // 2. Перевірка доступу
-    // private checkAccess(
-    //     car: ICarPopulated,
-    //     tokenPayload: ITokenPayload,
-    //     message: string,
-    // ): void {
-    //     const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
-    //         tokenPayload.role,
-    //     );
-    //     const carOwnerId = car.owner?._id ? String(car.owner._id) : null;
-    //
-    //     const isOwner = carOwnerId === tokenPayload.userId;
-    //     if (!isOwner && !isStaff) {
-    //         throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
-    //     }
-    //     console.log("Hello");
-    // }
+    private checkAccess(
+        car: ICarPopulated,
+        tokenPayload: ITokenPayload,
+        message: string,
+    ): void {
+        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
+            tokenPayload.role,
+        );
+        const carOwnerId = car._userId._id.toString();
+        const isOwner = carOwnerId === tokenPayload.userId;
+        if (!isOwner && !isStaff) {
+            throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
+        }
+    }
 }
 export const carService = new CarService();

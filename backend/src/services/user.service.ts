@@ -209,10 +209,10 @@ class UserService {
     }
 
     public async uploadAvatar(
-        tokenPayload: ITokenPayload,
+        userId: string,
         file: UploadedFile,
     ): Promise<IUser> {
-        const user = await userRepository.getById(tokenPayload.userId);
+        const user = await userRepository.getById(userId);
         const oldFilePath = user.avatar;
         const avatar = await s3Service.uploadFile(
             file,
@@ -224,8 +224,8 @@ class UserService {
         return userRepository.updateById(user._id, { avatar });
     }
 
-    public async deleteAvatar(jwtPayload: ITokenPayload): Promise<void> {
-        const user = await userRepository.getById(jwtPayload.userId);
+    public async deleteAvatar(userId: string): Promise<void> {
+        const user = await userRepository.getById(userId);
         if (!user.avatar) {
             throw new ApiError(
                 "User not have an avatar",
