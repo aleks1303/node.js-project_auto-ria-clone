@@ -13,7 +13,6 @@ class UserMiddleware {
     ) {
         try {
             const { userId } = res.locals.tokenPayload as ITokenPayload;
-
             const user = await userRepository.getById(userId);
             if (!user) {
                 throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
