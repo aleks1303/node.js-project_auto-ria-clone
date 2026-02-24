@@ -59,17 +59,7 @@ export type IUserCreateDTO = Pick<
 >;
 export type IManagerCreateDTO = Omit<IUserCreateDTO, "role">;
 
-export type IAdminCreateDTO = Pick<
-    IUser,
-    | "name"
-    | "surname"
-    | "age"
-    | "email"
-    | "password"
-    | "phone"
-    | "city"
-    | "region"
-> & { key: string };
+export type IAdminCreateDTO = Omit<IUserCreateDTO, "role"> & { key: string };
 
 export type IUserResponse = Pick<
     IUser,

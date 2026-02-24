@@ -51,7 +51,6 @@ router.put(
         PermissionsEnum.CARS_UPDATE_OWN,
         PermissionsEnum.CARS_UPDATE_ALL,
     ),
-    carMiddleware.checkOwnerOrManagerCar,
     commonMiddleware.isBodyValid(CarValidator.update),
     carController.update,
 );
