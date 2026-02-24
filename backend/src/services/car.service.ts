@@ -140,7 +140,6 @@ class CarService {
                 car.model,
                 car.region,
             );
-
             statistics = {
                 views: {
                     day: car.views.filter((v) => now - v.getTime() < day)
@@ -157,7 +156,6 @@ class CarService {
                 },
             };
         }
-
         return { car, statistics };
     }
 
@@ -244,8 +242,7 @@ class CarService {
         const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
             tokenPayload.role,
         );
-        const carOwnerId = car._userId._id.toString();
-        const isOwner = carOwnerId === tokenPayload.userId;
+        const isOwner = car._userId._id.toString() === tokenPayload.userId;
         if (!isOwner && !isStaff) {
             throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
         }

@@ -57,6 +57,7 @@ export type IUserCreateDTO = Pick<
     | "city"
     | "region"
 >;
+export type IManagerCreateDTO = Omit<IUserCreateDTO, "role">;
 
 export type IAdminCreateDTO = Pick<
     IUser,

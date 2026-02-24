@@ -12,6 +12,7 @@ router.get("/", brandController.getAll);
 router.post(
     "/report",
     authMiddleware.checkAccessToken,
+    authMiddleware.checkIsVerified,
     commonMiddleware.isBodyValid(BrandValidator.report),
     brandController.missingBrand,
 );

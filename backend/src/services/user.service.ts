@@ -8,8 +8,8 @@ import { RoleEnum } from "../enums/user-enum/role.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
+    IManagerCreateDTO,
     IUser,
-    IUserCreateDTO,
     IUserListQuery,
     IUserWithTokens,
     UpgradeUserDto,
@@ -110,7 +110,7 @@ class UserService {
         return userRepository.updateById(userId, { isBanned: true });
     }
 
-    public async createManager(dto: IUserCreateDTO): Promise<IUser> {
+    public async createManager(dto: IManagerCreateDTO): Promise<IUser> {
         const { email, password, ...rest } = dto;
         await authService.isEmailExist(email);
         await authService.isPhoneExist(dto.phone);

@@ -91,7 +91,6 @@ export class UserValidator {
         email: this.email.required(),
         password: this.password.required(),
         phone: this.phone.required(),
-        role: Joi.string().valid(RoleEnum.MANAGER).default(RoleEnum.MANAGER),
         city: this.city.optional(),
         region: this.region.optional(),
     });

@@ -1,4 +1,5 @@
 import { config } from "../configs/config";
+import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import {
@@ -24,8 +25,14 @@ export class CarPresenter {
         };
     }
 
-    public static toShortCarResDto(entity: ICar): ICarShortResponseDto {
-        return {
+    public static toShortCarResDto(
+        entity: ICar,
+        permissions: PermissionsEnum[] = [],
+    ): ICarShortResponseDto & { isDeleted?: boolean; status?: CarStatusEnum } {
+        const canSeePrivateInfo = permissions.includes(
+            PermissionsEnum.CARS_SEE_DETAILS_ALL,
+        );
+        const response = {
             _id: entity._id,
             brand: entity.brand,
             model: entity.model,
@@ -38,7 +45,15 @@ export class CarPresenter {
             region: entity.region,
             city: entity.city,
             createdAt: entity.createdAt,
+        } as ICarShortResponseDto & {
+            isDeleted?: boolean;
+            status?: CarStatusEnum;
         };
+        if (canSeePrivateInfo) {
+            response.isDeleted = entity.isDeleted;
+            response.status = entity.status;
+        }
+        return response;
     }
 
     public static toDetailedCarResDto(
@@ -104,9 +119,12 @@ export class CarPresenter {
         entities: ICar[],
         total: number,
         query: ICarListQuery,
+        permissions: PermissionsEnum[] = [],
     ) {
         return {
-            data: entities.map((entity) => this.toShortCarResDto(entity)),
+            data: entities.map((entity) =>
+                this.toShortCarResDto(entity, permissions),
+            ),
             total,
             page: query.page,
             pageSize: query.pageSize,

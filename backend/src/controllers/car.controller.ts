@@ -20,7 +20,12 @@ class CarController {
                 query,
                 permissions,
             );
-            const presenter = CarPresenter.toListResDto(entities, total, query);
+            const presenter = CarPresenter.toListResDto(
+                entities,
+                total,
+                query,
+                permissions,
+            );
 
             res.status(StatusCodesEnum.OK).json(presenter);
         } catch (e) {
