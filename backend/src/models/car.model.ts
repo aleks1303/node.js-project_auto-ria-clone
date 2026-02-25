@@ -20,6 +20,7 @@ const carSchema = new Schema(
             USD: { type: Number },
             EUR: { type: Number },
         },
+
         convertedPrices: {
             USD: { type: Number, required: true },
             EUR: { type: Number, required: true },

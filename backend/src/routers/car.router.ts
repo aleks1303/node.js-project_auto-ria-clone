@@ -30,6 +30,7 @@ router.post(
     "/:carId/image",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
+    commonMiddleware.isIdValid("carId"),
     carMiddleware.getByIdOrThrow,
     fileMiddleware.isFileValid("image", carImageConfig),
     carController.uploadImage,
@@ -38,15 +39,26 @@ router.delete(
     "/:carId/image",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
+    commonMiddleware.isIdValid("carId"),
     carMiddleware.getByIdOrThrow,
     carController.deleteImage,
 );
+
+router.get(
+    "/:carId",
+    authMiddleware.checkAccessToken,
+    commonMiddleware.isIdValid("carId"),
+    carMiddleware.getByIdOrThrow,
+    authMiddleware.checkPermission(),
+    carController.getById,
+);
+
 router.put(
     "/:carId",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
-    carMiddleware.getByIdOrThrow,
     commonMiddleware.isIdValid("carId"),
+    carMiddleware.getByIdOrThrow,
     authMiddleware.checkPermission(
         PermissionsEnum.CARS_UPDATE_OWN,
         PermissionsEnum.CARS_UPDATE_ALL,
@@ -55,18 +67,11 @@ router.put(
     carController.update,
 );
 
-router.get(
-    "/:carId",
-    authMiddleware.checkAccessToken,
-    carMiddleware.getByIdOrThrow,
-    authMiddleware.checkPermission(),
-    carController.getById,
-);
-
 router.delete(
     "/:carId",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
+    commonMiddleware.isIdValid("carId"),
     carMiddleware.getByIdOrThrow,
     authMiddleware.checkPermission(),
     carController.deleteCar,
@@ -76,6 +81,7 @@ router.patch(
     "/:carId/validate",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
+    commonMiddleware.isIdValid("carId"),
     carMiddleware.getByIdOrThrow,
     authMiddleware.checkPermission(PermissionsEnum.ADS_VALIDATE),
     carController.validate,

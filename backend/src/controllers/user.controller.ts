@@ -185,6 +185,17 @@ class UserController {
         }
     }
 
+    public async userUnBan(_req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = res.locals.user as IUser;
+            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
+            await userService.userUnBan(user, tokenPayload);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     public async delete(_req: Request, res: Response, next: NextFunction) {
         try {
             const user = res.locals.user as IUser;

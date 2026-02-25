@@ -100,6 +100,16 @@ router.patch(
     userController.userBan,
 );
 
+router.patch(
+    "/:userId/unban",
+    authMiddleware.checkAccessToken,
+    authMiddleware.checkIsVerified,
+    authMiddleware.checkPermission(PermissionsEnum.USERS_BAN),
+    commonMiddleware.isIdValid("userId"),
+    userMiddleware.getByIdOrThrow,
+    userController.userUnBan,
+);
+
 router.delete(
     "/:userId",
     authMiddleware.checkAccessToken,

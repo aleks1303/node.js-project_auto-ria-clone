@@ -94,15 +94,32 @@ class CarRepository {
         region: string,
     ) {
         const stats = await Car.aggregate([
-            { $match: { brand, model, status: "active" } },
+            {
+                $match: {
+                    brand,
+                    model,
+                    status: CarStatusEnum.ACTIVE,
+                    isDeleted: false,
+                },
+            },
             {
                 $facet: {
                     ukraine: [
-                        { $group: { _id: null, avg: { $avg: "$price" } } },
+                        {
+                            $group: {
+                                _id: null,
+                                avg: { $avg: "$convertedPrices.USD" },
+                            },
+                        },
                     ],
                     region: [
                         { $match: { region } },
-                        { $group: { _id: null, avg: { $avg: "$price" } } },
+                        {
+                            $group: {
+                                _id: null,
+                                avg: { $avg: "$convertedPrices.USD" },
+                            },
+                        },
                     ],
                 },
             },

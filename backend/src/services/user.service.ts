@@ -160,29 +160,17 @@ class UserService {
         user: IUser,
         tokenPayload: ITokenPayload,
     ): Promise<void> {
-        if (user._id.toString() === tokenPayload.userId) {
-            throw new ApiError(
-                "You cannot ban yourself.",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        if (user.role === RoleEnum.ADMIN) {
-            throw new ApiError(
-                "You cannot ban an admin.",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
-        if (
-            user.role === RoleEnum.MANAGER &&
-            tokenPayload.role !== RoleEnum.ADMIN
-        ) {
-            throw new ApiError(
-                "A manager cannot ban another manager",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
+        this.checkModerationRights(user, tokenPayload, "ban");
         await userRepository.updateById(user._id, { isBanned: true });
         await tokenRepository.deleteManyByParams({ _userId: user._id });
+    }
+
+    public async userUnBan(
+        user: IUser,
+        tokenPayload: ITokenPayload,
+    ): Promise<void> {
+        this.checkModerationRights(user, tokenPayload, "unban");
+        await userRepository.updateById(user._id, { isBanned: false });
     }
 
     public async deleteById(
@@ -212,6 +200,34 @@ class UserService {
             isActive: false,
         });
         await tokenRepository.deleteManyByParams({ _userId: user._id });
+    }
+
+    private checkModerationRights(
+        user: IUser,
+        tokenPayload: ITokenPayload,
+        action: "ban" | "unban",
+    ): void {
+        if (user._id.toString() === tokenPayload.userId) {
+            throw new ApiError(
+                `You cannot ${action} yourself.`,
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (user.role === RoleEnum.ADMIN) {
+            throw new ApiError(
+                `You cannot ${action} an admin.`,
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        if (
+            user.role === RoleEnum.MANAGER &&
+            tokenPayload.role !== RoleEnum.ADMIN
+        ) {
+            throw new ApiError(
+                `A manager cannot ${action} another manager`,
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
     }
 }
 export const userService = new UserService();

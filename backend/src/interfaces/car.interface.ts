@@ -129,5 +129,6 @@ export interface ICarStatistics {
     averagePrice: {
         region: number;
         ukraine: number;
+        currency: string;
     };
 }

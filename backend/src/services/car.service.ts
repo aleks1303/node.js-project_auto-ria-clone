@@ -140,6 +140,7 @@ class CarService {
                 car.model,
                 car.region,
             );
+            const currentRate = car.price / (car.convertedPrices?.USD || 1);
             statistics = {
                 views: {
                     day: car.views.filter((v) => now - v.getTime() < day)
@@ -151,8 +152,9 @@ class CarService {
                     total: car.views.length,
                 },
                 averagePrice: {
-                    region: Math.round(avgPrices.region),
-                    ukraine: Math.round(avgPrices.ukraine),
+                    region: Math.round(avgPrices.region * currentRate),
+                    ukraine: Math.round(avgPrices.ukraine * currentRate),
+                    currency: car.currency,
                 },
             };
         }

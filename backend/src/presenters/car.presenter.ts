@@ -90,13 +90,6 @@ export class CarPresenter {
                 phone: user.phone,
             },
         };
-        // if (user && typeof user === "object") {
-        //     response.owner = {
-        //         name: user.name,
-        //         phone: user.phone,
-        //     };
-        // }
-
         if (canSeePrivateInfo) {
             response.status = entity.status;
             response.isDeleted = entity.isDeleted;

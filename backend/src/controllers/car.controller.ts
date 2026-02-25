@@ -60,11 +60,11 @@ class CarController {
     public async getById(_req: Request, res: Response, next: NextFunction) {
         try {
             const car = res.locals.car as ICarPopulated;
-            const { userId, accountType } = res.locals.tokenPayload;
+            const { accountType } = res.locals.tokenPayload;
             const permissions = res.locals.permissions;
             const { statistics } = await carService.getById(
                 car,
-                userId,
+                accountType,
                 permissions,
             );
             const presenter = CarPresenter.toDetailedCarResDto(

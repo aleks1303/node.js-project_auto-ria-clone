@@ -10,7 +10,7 @@ class CommonMiddleware {
         return (req: Request, _res: Response, next: NextFunction) => {
             try {
                 const id = req.params[key];
-                if (!isObjectIdOrHexString) {
+                if (!isObjectIdOrHexString(id)) {
                     throw new ApiError(
                         `${key}: ${id} invalid Id`,
                         StatusCodesEnum.BAD_REQUEST,
@@ -45,7 +45,8 @@ class CommonMiddleware {
                 );
                 next();
             } catch (e) {
-                next(e);
+                const message = e.details ? e.details[0].message : e.message;
+                next(new ApiError(message, StatusCodesEnum.BAD_REQUEST));
             }
         };
     }
