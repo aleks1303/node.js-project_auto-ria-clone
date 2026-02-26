@@ -1,8 +1,7 @@
-import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { EmailTypeEnum } from "../enums/user-enum/email-type.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
-import { ApiError } from "../errors/api.error";
 import { IBrand } from "../interfaces/brand.interface";
+import { IUser } from "../interfaces/user.interface";
 import { logger } from "../logger/logger";
 import { brandRepository } from "../repositories/brand.repository";
 import { userRepository } from "../repositories/user.repository";
@@ -12,14 +11,7 @@ class BrandService {
     public async getAll(): Promise<IBrand[]> {
         return brandRepository.getAll();
     }
-    public async missingBrand(
-        userId: string,
-        brandName: string,
-    ): Promise<void> {
-        const user = await userRepository.getById(userId);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
+    public async missingBrand(user: IUser, brand: string): Promise<void> {
         const managers = await userRepository.findByRole(RoleEnum.MANAGER);
         const emails = managers.map((m) => m.email);
 
@@ -31,13 +23,23 @@ class BrandService {
             EmailTypeEnum.MISSING_BRAND,
             emails.join(","),
             {
-                userId,
-                brandName,
+                userId: user._id.toString(),
+                brand,
                 name: user.name,
                 email: user.email,
                 requestDate: new Date().toLocaleDateString("uk-UA"),
             },
         );
+    }
+
+    public async addBrandAndModels(
+        brandName: string,
+        newModels: string[],
+    ): Promise<IBrand> {
+        const brandToAdd = brandName.trim().toUpperCase();
+        const modelsToAdd = newModels.map((m) => m.trim().toUpperCase());
+
+        return brandRepository.addBrandAndModels(brandToAdd, modelsToAdd);
     }
 }
 export const brandService = new BrandService();

@@ -6,7 +6,7 @@ export type EmailPayloadCombined = {
     actionToken?: string;
     car?: ICar;
     editCount?: number;
-    brandName?: string;
+    brand?: string;
     userId?: string;
     requestDate?: string | Date;
 };

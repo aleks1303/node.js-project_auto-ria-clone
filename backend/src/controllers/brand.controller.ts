@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
-import { ITokenPayload } from "../interfaces/token.interface";
+import { IBrand } from "../interfaces/brand.interface";
+import { IUser } from "../interfaces/user.interface";
 import { BrandPresenter } from "../presenters/brand.presenter";
 import { brandService } from "../services/brand.service";
 
@@ -22,13 +23,30 @@ class BrandController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { brandName } = req.body;
-            const { userId } = res.locals.tokenPayload as ITokenPayload;
-            await brandService.missingBrand(userId, brandName);
+            const { brand } = req.body;
+            const user = res.locals.user as IUser;
+            await brandService.missingBrand(user, brand);
             res.status(StatusCodesEnum.OK).json({
                 message:
                     "Your message has been sent to the administration. Thank you for your help!",
             });
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async addBrandAndModels(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const { brand, models } = req.body as IBrand;
+            const updatedBrand = await brandService.addBrandAndModels(
+                brand,
+                models,
+            );
+            res.status(StatusCodesEnum.OK).json(updatedBrand);
         } catch (e) {
             next(e);
         }

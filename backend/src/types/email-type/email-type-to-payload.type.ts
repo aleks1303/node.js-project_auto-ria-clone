@@ -17,6 +17,6 @@ export type EmailTypeToPayload = {
     >;
     [EmailTypeEnum.MISSING_BRAND]: PickRequired<
         EmailPayloadCombined,
-        "userId" | "brandName" | "requestDate" | "name" | "email"
+        "userId" | "brand" | "requestDate" | "name" | "email"
     >;
 };

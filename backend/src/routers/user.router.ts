@@ -14,16 +14,12 @@ const router = Router();
 router.get(
     "/",
     authMiddleware.checkAccessToken,
+    authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.USERS_GET_ALL),
     commonMiddleware.query(UserValidator.query),
     userController.getAll,
 );
-router.get(
-    "/me",
-    authMiddleware.checkAccessToken,
-    userMiddleware.getMeOrThrow,
-    userController.getMe,
-);
+router.get("/me", authMiddleware.checkAccessToken, userController.getMe);
 
 router.put(
     "/me",
@@ -36,14 +32,12 @@ router.patch(
     "/me/premium",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
-    userMiddleware.getMeOrThrow,
     userController.buyPremiumAccount,
 );
 router.patch(
     "/me/upgrade-seller",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
-    userMiddleware.getMeOrThrow,
     userController.changeRoleToSeller,
 );
 router.post(
@@ -51,7 +45,6 @@ router.post(
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
     fileMiddleware.isFileValid("avatar", avatarConfig),
-    userMiddleware.getMeOrThrow,
     userController.uploadAvatar,
 );
 
@@ -59,7 +52,6 @@ router.delete(
     "/avatar",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
-    userMiddleware.getMeOrThrow,
     userController.deleteAvatar,
 );
 

@@ -1,7 +1,7 @@
 import { config } from "../configs/config";
 import { rolePermissions } from "../constants/permissions.constant";
+import { PermissionsEnum } from "../enums/user-enum/permissions.enum";
 import { RoleEnum } from "../enums/user-enum/role.enum";
-import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUser,
     IUserDetailsResponse,
@@ -35,38 +35,38 @@ class UserPresenter {
     }
 
     public toDetailsResDto(
+        targetUser: IUser,
         user: IUser,
-        tokenPayload?: ITokenPayload,
     ): IUserDetailsResponse {
         const baseResponse = {
-            _id: user._id.toString(),
-            name: user.name,
-            surname: user.surname,
-            phone: user.phone,
-            avatar: user.avatar
-                ? `${config.AWS_S3_ENDPOINT}/${user.avatar}`
+            _id: targetUser._id.toString(),
+            name: targetUser.name,
+            surname: targetUser.surname,
+            phone: targetUser.phone,
+            avatar: targetUser.avatar
+                ? `${config.AWS_S3_ENDPOINT}/${targetUser.avatar}`
                 : null,
-            region: user.region,
-            city: user.city,
+            region: targetUser.region,
+            city: targetUser.city,
         };
+        const userPermissions = rolePermissions[user.role as RoleEnum] || [];
+        const isOwner = user._id.toString() === targetUser._id.toString();
+        const hasAdminAccess = userPermissions.includes(
+            PermissionsEnum.USERS_GET_DETAILS,
+        );
 
-        const hasFullAccess =
-            tokenPayload?.role === RoleEnum.MANAGER ||
-            tokenPayload?.role === RoleEnum.ADMIN ||
-            tokenPayload?.userId === user._id.toString();
-
-        if (hasFullAccess) {
+        if (isOwner || hasAdminAccess) {
             return {
                 ...baseResponse,
-                email: user.email,
-                role: user.role,
-                age: user.age,
-                accountType: user.accountType,
-                permissions: rolePermissions[user.role] || [],
-                isBanned: user.isBanned,
-                isActive: user.isActive,
-                isVerified: user.isVerified,
-                isDeleted: user.isDeleted,
+                email: targetUser.email,
+                role: targetUser.role,
+                age: targetUser.age,
+                accountType: targetUser.accountType,
+                permissions: rolePermissions[targetUser.role] || [],
+                isBanned: targetUser.isBanned,
+                isActive: targetUser.isActive,
+                isVerified: targetUser.isVerified,
+                isDeleted: targetUser.isDeleted,
             };
         }
         return baseResponse;

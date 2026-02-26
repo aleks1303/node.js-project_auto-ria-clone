@@ -22,6 +22,7 @@ export const rolePermissions: RolePermissions = {
         PermissionsEnum.CARS_DELETE_ALL,
         PermissionsEnum.STATS_SEE_PREMIUM,
         PermissionsEnum.CARS_SEE_DETAILS_ALL,
+        PermissionsEnum.BRAND_AND_MODELS_ADD,
     ],
 
     [RoleEnum.ADMIN]: Object.values(PermissionsEnum),

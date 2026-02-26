@@ -152,10 +152,6 @@ class UserService {
         return updatedUser;
     }
 
-    public async getById(user: IUser): Promise<IUser> {
-        return user;
-    }
-
     public async userBan(
         user: IUser,
         tokenPayload: ITokenPayload,

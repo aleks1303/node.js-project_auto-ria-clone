@@ -5,13 +5,15 @@ export enum PermissionsEnum {
     USERS_DELETE = "users.delete",
     USERS_UPDATE_ROLE = "users.update.role",
     USERS_CREATE_MANAGER = "users.create.manager",
-    CARS_SEE_DETAILS_ALL = "cars.see.details.all",
 
+    CARS_SEE_DETAILS_ALL = "cars.see.details.all",
     CARS_CREATE = "cars.create",
     CARS_UPDATE_OWN = "cars.update.own",
     CARS_UPDATE_ALL = "cars.update.all",
     CARS_DELETE_OWN = "cars.delete.own",
     CARS_DELETE_ALL = "cars.delete.all",
+
+    BRAND_AND_MODELS_ADD = "brand.and.models.add",
 
     ADS_VALIDATE = "ads.validate",
 
