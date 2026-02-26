@@ -83,7 +83,7 @@ class UserController {
                 await userService.changeRoleToSeller(user);
             const presenter = userPresenter.toDetailsResDto(
                 updatedUser,
-                res.locals.tokenPayload,
+                updatedUser,
             );
             res.status(StatusCodesEnum.OK).json({
                 user: presenter,

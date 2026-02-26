@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import path from "node:path";
 
@@ -9,7 +8,9 @@ import * as mongoose from "mongoose";
 import { config } from "./configs/config";
 import { runnerCrones } from "./cron";
 import { ApiError } from "./errors/api.error";
+import { logger } from "./logger/logger";
 import { apiRouter } from "./routers/api.router";
+import { seedBrands } from "./seeds/brand.seed";
 
 const app = express();
 app.use(express.json());
@@ -25,7 +26,7 @@ app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
 });
 
 process.on("uncaughtException", (error) => {
-    console.log("uncaughtException", error);
+    logger.error("uncaughtException", error);
     process.exit(1);
 });
 
@@ -37,13 +38,14 @@ const dbConnection = async () => {
 
     while (!dbCon) {
         try {
-            console.log("Connection to DB...");
+            logger.info("Connecting to DB...");
 
             await mongoose.connect(mongoDb);
             dbCon = true;
-            console.log("Database available!!!");
+            logger.info("Database available!!!");
+            await seedBrands();
         } catch (e) {
-            console.log("Database unavailable, wait 3 seconds");
+            logger.info("Database unavailable, wait 3 seconds");
             await new Promise((resolve) => setTimeout(resolve, 3000));
         }
     }
@@ -53,11 +55,11 @@ const start = async () => {
     try {
         await dbConnection();
         app.listen(port, () => {
-            console.log(`Server listening on port ${port}`);
+            logger.info(`Server listening on port ${port}`);
             runnerCrones();
         });
     } catch (e) {
-        console.log(e.message);
+        logger.info(e.message);
     }
 };
 start();

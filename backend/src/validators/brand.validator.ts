@@ -5,7 +5,7 @@ export class BrandValidator {
     private static model = Joi.string().min(1).max(50).trim().uppercase();
 
     public static report = Joi.object({
-        brande: this.brand.required(),
+        brand: this.brand.required(),
     });
     public static addBrandAndModel = Joi.object({
         brand: this.brand.required(),

@@ -15,7 +15,7 @@ class BrandRepository {
         brandName: string,
         models: string[],
     ): Promise<IBrand> {
-        return Brand.findByIdAndUpdate(
+        return Brand.findOneAndUpdate(
             { brand: brandName },
             {
                 $addToSet: { models: { $each: models } },
