@@ -19,7 +19,7 @@ app.use(fileUpload());
 app.use("/media", express.static(path.join(process.cwd(), "upload")));
 app.use("/", apiRouter);
 
-app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
+app.use((err: ApiError, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || 500;
     const message = err.message ?? "Something went wrong";
     res.status(status).json({ status, message });

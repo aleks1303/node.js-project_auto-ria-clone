@@ -7,12 +7,9 @@ export const seedBrands = async () => {
         const count = await Brand.countDocuments();
         if (count === 0) {
             await Brand.insertMany(brands);
-            console.log("✅ Brands seeded successfully");
-            logger.info(
-                "Database seeding: Brand collection has been initialized with default data.",
-            );
+            logger.info("Brands seeded successfully");
         }
     } catch (e) {
-        console.error("❌ Seeding error:", e);
+        logger.error("Seeding error:", e);
     }
 };
