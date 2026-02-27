@@ -1,6 +1,7 @@
 import { UploadedFile } from "express-fileupload";
 
 import { rolePermissions } from "../constants/permissions.constant";
+import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
 import { FileItemTypeEnum } from "../enums/user-enum/file-item-type.enum";
@@ -14,6 +15,7 @@ import {
     IUserWithTokens,
     UpgradeUserDto,
 } from "../interfaces/user.interface";
+import { carRepository } from "../repositories/car.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { authService } from "./auth.service";
@@ -169,26 +171,31 @@ class UserService {
     }
 
     public async deleteById(
-        targetUser: IUser,
         adminUser: IUser,
+        targetUser: IUser,
     ): Promise<void> {
+        const isOwner = targetUser._id.toString() === adminUser._id.toString();
         const userPermissions = rolePermissions[adminUser.role] || [];
-        if (targetUser._id.toString() === adminUser._id.toString()) {
+        const targetUserPermissions = rolePermissions[targetUser.role] || [];
+        const isStaff = targetUserPermissions.includes(
+            PermissionsEnum.USERS_DELETE,
+        );
+        if (isOwner && isStaff) {
             throw new ApiError(
-                "You cannot delete your own account",
-                StatusCodesEnum.BAD_REQUEST,
-            );
-        }
-        if (!userPermissions.includes(PermissionsEnum.USERS_DELETE)) {
-            throw new ApiError(
-                "No permission to delete users",
+                "Administrative accounts cannot be self-deleted. Contact another manager.",
                 StatusCodesEnum.FORBIDDEN,
             );
         }
-        if (adminUser.role === RoleEnum.MANAGER) {
-            if ([RoleEnum.ADMIN, RoleEnum.MANAGER].includes(targetUser.role)) {
+        if (!isOwner) {
+            if (!userPermissions.includes(PermissionsEnum.USERS_DELETE)) {
                 throw new ApiError(
-                    "A manager cannot remove other staff members (Managers/Admins)",
+                    "You don't have permission to delete users.",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+            if (isStaff) {
+                throw new ApiError(
+                    "You cannot delete another staff member.",
                     StatusCodesEnum.FORBIDDEN,
                 );
             }
@@ -197,6 +204,10 @@ class UserService {
             isDeleted: true,
             isActive: false,
         });
+        await carRepository.updateManyByParams(
+            { _userId: targetUser._id },
+            { status: CarStatusEnum.INACTIVE, isDeleted: true },
+        );
         await tokenRepository.deleteManyByParams({ _userId: targetUser._id });
     }
 

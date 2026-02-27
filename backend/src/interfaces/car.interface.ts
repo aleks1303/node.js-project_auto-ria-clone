@@ -117,6 +117,8 @@ export interface ICarListQuery {
     priceMax?: number;
     orderBy: CarListOrderByEnum;
     order: OrderEnum;
+    status?: string;
+    isDeleted?: boolean;
 }
 
 export interface ICarStatistics {

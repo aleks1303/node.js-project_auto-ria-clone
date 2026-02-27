@@ -7,8 +7,9 @@ import { User } from "../models/user.model";
 class UserRepository {
     public async getAll(query: IUserListQuery): Promise<[IUser[], number]> {
         const skip = (query.page - 1) * query.pageSize;
-        const filter: FilterQuery<IUser> = { isDeleted: false };
-
+        const filter: FilterQuery<IUser> = {
+            isDeleted: query.isDeleted,
+        };
         if (query.search) {
             filter.$or = [
                 { name: { $regex: query.search, $options: "i" } },

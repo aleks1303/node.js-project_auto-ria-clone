@@ -16,16 +16,20 @@ class CarRepository {
         permissions: PermissionsEnum[] = [],
     ): Promise<[ICar[], number]> {
         const skip = (query.page - 1) * query.pageSize;
-        const filter: FilterQuery<ICar> = { isDeleted: false };
+        const filter: FilterQuery<ICar> = {};
         const canSeeAllStatuses = permissions.includes(
             PermissionsEnum.CARS_SEE_DETAILS_ALL,
         );
         const sortField =
             query.orderBy === "price" ? "convertedPrices.UAH" : query.orderBy;
-        if (!canSeeAllStatuses) {
-            filter.status = CarStatusEnum.ACTIVE;
+        if (canSeeAllStatuses) {
+            filter.isDeleted = query.isDeleted === true;
+            if (query.status) {
+                filter.status = query.status;
+            }
         } else {
-            delete filter.isDeleted;
+            filter.isDeleted = false;
+            filter.status = CarStatusEnum.ACTIVE;
         }
         if (query.brand) {
             filter.brand = query.brand;
@@ -74,7 +78,23 @@ class CarRepository {
     }
 
     public async softDelete(carId: string): Promise<void> {
-        await Car.updateOne({ _id: carId }, { $set: { isDeleted: true } });
+        await Car.updateOne(
+            { _id: carId },
+            {
+                $set: {
+                    isDeleted: true,
+                    status: CarStatusEnum.INACTIVE,
+                    updatedAt: new Date(),
+                },
+            },
+        );
+    }
+
+    public async updateManyByParams(
+        filter: FilterQuery<ICar>,
+        update: Partial<ICar>,
+    ): Promise<void> {
+        await Car.updateMany(filter, { $set: update });
     }
 
     public async countByUserId(userId: string): Promise<number> {

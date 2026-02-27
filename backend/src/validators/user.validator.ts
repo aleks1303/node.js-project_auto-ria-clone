@@ -120,5 +120,6 @@ export class UserValidator {
         role: Joi.string()
             .valid(...Object.values(RoleEnum))
             .optional(),
+        isDeleted: Joi.boolean().default(false),
     });
 }

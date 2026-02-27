@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 import { CarListOrderByEnum } from "../enums/car-enum/car-list-order-by.enum";
+import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
 import { CurrencyEnum } from "../enums/car-enum/currency.enum";
 import { OrderEnum } from "../enums/user-enum/order";
 
@@ -33,6 +34,10 @@ export class CarValidator {
         order: Joi.string()
             .valid(...Object.values(OrderEnum))
             .default(OrderEnum.DESC),
+        status: Joi.string()
+            .valid(...Object.values(CarStatusEnum))
+            .optional(),
+        isDeleted: Joi.boolean().default(false),
     });
 
     public static create = Joi.object({

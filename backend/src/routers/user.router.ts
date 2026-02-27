@@ -106,7 +106,6 @@ router.delete(
     "/:userId",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
-    authMiddleware.checkPermission(PermissionsEnum.USERS_DELETE),
     commonMiddleware.isIdValid("userId"),
     userMiddleware.getByIdOrThrow,
     userController.delete,

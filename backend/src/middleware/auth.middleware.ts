@@ -191,7 +191,7 @@ class AuthMiddleware {
 
             if (!isVerified) {
                 throw new ApiError(
-                    "Please confirm your email to create an ad.",
+                    "Please confirm your email. If the link has expired, use the 'Resend verification' option.",
                     StatusCodesEnum.FORBIDDEN,
                 );
             }

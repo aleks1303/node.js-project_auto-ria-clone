@@ -103,6 +103,7 @@ export interface IUserListQuery {
     order?: OrderEnum;
     orderBy?: UserListOrderByEnum;
     role?: string;
+    isDeleted?: boolean;
 }
 
 export interface IUserListResponse {
