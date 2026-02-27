@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
-import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUser,
     IUserCreateDTO,
@@ -141,13 +140,12 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const user = res.locals.targetUser as IUser;
-            const { userId: adminId } = res.locals
-                .tokenPayload as ITokenPayload;
+            const targetUser = res.locals.targetUser as IUser;
+            const adminUser = res.locals.user as IUser;
             const body = req.body as UpgradeUserDto;
             const updatedUser = await userService.upgradeUserRole(
-                adminId,
-                user,
+                adminUser,
+                targetUser,
                 body,
             );
             const presenter = userPresenter.toPublicResDto(updatedUser);
@@ -170,9 +168,9 @@ class UserController {
 
     public async userBan(_req: Request, res: Response, next: NextFunction) {
         try {
-            const user = res.locals.targetUser as IUser;
-            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await userService.userBan(user, tokenPayload);
+            const targetUser = res.locals.targetUser as IUser;
+            const adminUser = res.locals.user as IUser;
+            await userService.userBan(targetUser, adminUser);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
@@ -181,9 +179,9 @@ class UserController {
 
     public async userUnBan(_req: Request, res: Response, next: NextFunction) {
         try {
-            const user = res.locals.targetUser as IUser;
-            const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-            await userService.userUnBan(user, tokenPayload);
+            const targetUser = res.locals.targetUser as IUser;
+            const adminUser = res.locals.user as IUser;
+            await userService.userUnBan(targetUser, adminUser);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
@@ -192,10 +190,9 @@ class UserController {
 
     public async delete(_req: Request, res: Response, next: NextFunction) {
         try {
-            const user = res.locals.targetUser as IUser;
-            const { userId: adminId, role } = res.locals
-                .tokenPayload as ITokenPayload;
-            await userService.deleteById(user, role, adminId);
+            const targetUser = res.locals.targetUser as IUser;
+            const adminUser = res.locals.user as IUser;
+            await userService.deleteById(adminUser, targetUser);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);

@@ -1,5 +1,6 @@
 import { UploadedFile } from "express-fileupload";
 
+import { rolePermissions } from "../constants/permissions.constant";
 import { CarStatusEnum } from "../enums/car-enum/car-status.enum";
 import { StatusCodesEnum } from "../enums/error-enum/status-codes.enum";
 import { accountTypeEnum } from "../enums/user-enum/account-type.enum";
@@ -66,13 +67,13 @@ class CarService {
         this.checkAccess(
             car,
             tokenPayload,
+            PermissionsEnum.CARS_UPDATE_ALL,
             "Access denied. You can only edit your own cars.",
         );
+        const userPermissions = rolePermissions[tokenPayload.role] || [];
         let editCount = car.editCount || 0;
         const updateData: Partial<ICar> = { ...body };
-        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
-            tokenPayload.role,
-        );
+        const isStaff = userPermissions.includes(PermissionsEnum.ADS_VALIDATE);
         if (body.price || body.currency) {
             const { convertedPrices, exchangeRates } =
                 currencyHelper.convertAll(
@@ -98,6 +99,7 @@ class CarService {
                 }
             } else {
                 updateData.status = CarStatusEnum.ACTIVE;
+                updateData.editCount = 0;
             }
         }
 
@@ -168,6 +170,7 @@ class CarService {
         this.checkAccess(
             car,
             tokenPayload,
+            PermissionsEnum.CARS_DELETE_ALL,
             "Forbidden. You do not have permission to delete this car.",
         );
 
@@ -189,6 +192,7 @@ class CarService {
         this.checkAccess(
             car,
             tokenPayload,
+            PermissionsEnum.CARS_UPDATE_ALL,
             "Access denied. You cannot upload images to this car.",
         );
         const oldFilePath = car.image;
@@ -209,6 +213,7 @@ class CarService {
         this.checkAccess(
             car,
             tokenPayload,
+            PermissionsEnum.CARS_UPDATE_ALL,
             "Access denied. You cannot delete this car's image.",
         );
         if (!car.image) {
@@ -239,11 +244,11 @@ class CarService {
     private checkAccess(
         car: ICarPopulated,
         tokenPayload: ITokenPayload,
+        permissions: PermissionsEnum,
         message: string,
     ): void {
-        const isStaff = [RoleEnum.ADMIN, RoleEnum.MANAGER].includes(
-            tokenPayload.role,
-        );
+        const userPermissions = rolePermissions[tokenPayload.role] || [];
+        const isStaff = userPermissions.includes(permissions);
         const isOwner = car._userId._id.toString() === tokenPayload.userId;
         if (!isOwner && !isStaff) {
             throw new ApiError(message, StatusCodesEnum.FORBIDDEN);
