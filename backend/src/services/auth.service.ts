@@ -133,8 +133,11 @@ class AuthService {
 
     public async verifyEmail(dto: CheckEmail) {
         const user = await userRepository.getByEmail(dto.email);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        if (!user || user.isDeleted || user.isBanned) {
+            throw new ApiError(
+                "User not found or account is disabled",
+                StatusCodesEnum.NOT_FOUND,
+            );
         }
         if (user.isVerified) {
             throw new ApiError(
@@ -174,6 +177,15 @@ class AuthService {
                 StatusCodesEnum.UNAUTHORIZED,
             );
         }
+        const user = await userRepository.getById(tokenData._userId);
+
+        if (!user || user.isDeleted || user.isBanned) {
+            await actionTokenRepository.deleteManyByParams({
+                _userId: tokenData._userId,
+            });
+
+            throw new ApiError("Account no longer exists or is disabled", 403);
+        }
         await userRepository.updateById(tokenData._userId, {
             isVerified: true,
         });
@@ -182,8 +194,11 @@ class AuthService {
 
     public async forgotPasswordSendEmail(dto: CheckEmail): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        if (!user || user.isDeleted || user.isBanned) {
+            throw new ApiError(
+                "User not found or account is disabled",
+                StatusCodesEnum.NOT_FOUND,
+            );
         }
         const actionToken = tokenService.generateActionToken(
             { userId: user._id },
@@ -248,7 +263,7 @@ class AuthService {
 
             if (user.isDeleted) {
                 throw new ApiError(
-                    "Account with this email was deleted. Please contact support.",
+                    "This email is unavailable for registration. Please use a different email or contact our support team.",
                     StatusCodesEnum.CONFLICT,
                 );
             }

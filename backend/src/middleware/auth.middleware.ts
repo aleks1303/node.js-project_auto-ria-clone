@@ -99,6 +99,7 @@ class AuthMiddleware {
             next();
         } catch {
             res.locals.permissions = [];
+            res.locals.user = null;
             next();
         }
     }
