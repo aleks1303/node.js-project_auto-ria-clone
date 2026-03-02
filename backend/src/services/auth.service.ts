@@ -239,12 +239,37 @@ class AuthService {
     public async isEmailExist(email: string): Promise<void> {
         const user = await userRepository.getByEmail(email);
         if (user) {
+            if (user.isBanned) {
+                throw new ApiError(
+                    "Your account is banned. Please contact support.",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+
+            if (user.isDeleted) {
+                throw new ApiError(
+                    "Account with this email was deleted. Please contact support.",
+                    StatusCodesEnum.CONFLICT,
+                );
+            }
             throw new ApiError("Email already exist", StatusCodesEnum.CONFLICT);
         }
     }
     public async isPhoneExist(phone: string): Promise<void> {
         const user = await userRepository.getByPhone(phone);
         if (user) {
+            if (user.isBanned) {
+                throw new ApiError(
+                    "Your account is banned. Please contact support.",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+            if (user.isDeleted) {
+                throw new ApiError(
+                    "This phone number is linked to a deleted account.",
+                    StatusCodesEnum.CONFLICT,
+                );
+            }
             throw new ApiError("Phone already exist", StatusCodesEnum.CONFLICT);
         }
     }

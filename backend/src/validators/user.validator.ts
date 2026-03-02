@@ -121,5 +121,6 @@ export class UserValidator {
             .valid(...Object.values(RoleEnum))
             .optional(),
         isDeleted: Joi.boolean().default(false),
+        isBanned: Joi.boolean().default(false),
     });
 }

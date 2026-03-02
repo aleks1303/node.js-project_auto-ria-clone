@@ -9,6 +9,7 @@ class UserRepository {
         const skip = (query.page - 1) * query.pageSize;
         const filter: FilterQuery<IUser> = {
             isDeleted: query.isDeleted,
+            isBanned: query.isBanned,
         };
         if (query.search) {
             filter.$or = [

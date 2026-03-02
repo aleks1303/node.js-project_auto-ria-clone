@@ -104,6 +104,7 @@ export interface IUserListQuery {
     orderBy?: UserListOrderByEnum;
     role?: string;
     isDeleted?: boolean;
+    isBanned?: boolean;
 }
 
 export interface IUserListResponse {

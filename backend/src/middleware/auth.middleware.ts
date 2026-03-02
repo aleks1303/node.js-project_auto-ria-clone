@@ -47,6 +47,18 @@ class AuthMiddleware {
                     StatusCodesEnum.FORBIDDEN,
                 );
             }
+            if (user.isBanned) {
+                throw new ApiError(
+                    "Your account is banned. Please contact support.",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+            if (user.isDeleted) {
+                throw new ApiError(
+                    "This account has been deleted",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
             res.locals.tokenPayload = tokenPayload;
             res.locals.user = user;
             next();
@@ -74,7 +86,15 @@ class AuthMiddleware {
                 accessToken,
                 TokenTypeEnum.ACCESS,
             );
+            const user = await userRepository.getById(payload.userId);
+
+            if (!user || user.isBanned || user.isDeleted) {
+                res.locals.permissions = [];
+                res.locals.user = null;
+                return next();
+            }
             res.locals.tokenPayload = payload;
+            res.locals.user = user;
             res.locals.permissions = rolePermissions[payload.role] || [];
             next();
         } catch {
