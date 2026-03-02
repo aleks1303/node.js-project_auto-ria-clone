@@ -256,7 +256,7 @@ class AuthService {
         if (user) {
             if (user.isBanned) {
                 throw new ApiError(
-                    "Your account is banned. Please contact support.",
+                    "Registration failed. This email is already in use.",
                     StatusCodesEnum.FORBIDDEN,
                 );
             }
@@ -275,13 +275,13 @@ class AuthService {
         if (user) {
             if (user.isBanned) {
                 throw new ApiError(
-                    "Your account is banned. Please contact support.",
+                    "This phone number is already registered.",
                     StatusCodesEnum.FORBIDDEN,
                 );
             }
             if (user.isDeleted) {
                 throw new ApiError(
-                    "This phone number is linked to a deleted account.",
+                    "This phone number is already registered.",
                     StatusCodesEnum.CONFLICT,
                 );
             }
