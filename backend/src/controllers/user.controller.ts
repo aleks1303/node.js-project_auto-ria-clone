@@ -187,8 +187,17 @@ class UserController {
             next(e);
         }
     }
+    public async deleteMe(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.res.locals.user;
+            await userService.deleteById(user, user);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
+        } catch (e) {
+            next(e);
+        }
+    }
 
-    public async delete(_req: Request, res: Response, next: NextFunction) {
+    public async deleteById(_req: Request, res: Response, next: NextFunction) {
         try {
             const targetUser = res.locals.targetUser as IUser;
             const adminUser = res.locals.user as IUser;
