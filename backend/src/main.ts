@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload";
 import * as mongoose from "mongoose";
 
 import { config } from "./configs/config";
+import { swaggerDocument, swaggerUi } from "./configs/swagger.config";
 import { runnerCrones } from "./cron";
 import { ApiError } from "./errors/api.error";
 import { logger } from "./logger/logger";
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 app.use("/media", express.static(path.join(process.cwd(), "upload")));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/", apiRouter);
 
 app.use((err: ApiError, req: Request, res: Response, _next: NextFunction) => {
