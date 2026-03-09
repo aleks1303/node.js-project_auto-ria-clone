@@ -9,7 +9,11 @@ import { userMiddleware } from "../middleware/user.middleware";
 import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
-router.post("/create", adminController.createAdmin);
+router.post(
+    "/create",
+    commonMiddleware.isBodyValid(UserValidator.createAdmin),
+    adminController.createAdmin,
+);
 
 router.post(
     "/manager",

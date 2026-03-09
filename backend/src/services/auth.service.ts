@@ -27,7 +27,7 @@ import { tokenService } from "./token.service";
 
 class AuthService {
     public async signUp(
-        dto: IUserCreateDTO,
+        dto: IUserCreateDTO = {} as IUserCreateDTO,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await this.isEmailExist(dto.email);
         await this.isPhoneExist(dto.phone);
@@ -75,7 +75,7 @@ class AuthService {
     }
 
     public async signIn(
-        dto: ISignInDTO,
+        dto: ISignInDTO = {} as ISignInDTO,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         const user = await userRepository.getByEmail(dto.email);
         if (!user || user.isDeleted) {
@@ -131,7 +131,7 @@ class AuthService {
         return tokens;
     }
 
-    public async verifyEmail(dto: CheckEmail) {
+    public async verifyEmail(dto: CheckEmail = {} as CheckEmail) {
         const user = await userRepository.getByEmail(dto.email);
         if (!user || user.isDeleted || user.isBanned) {
             throw new ApiError(
@@ -192,7 +192,9 @@ class AuthService {
         await actionTokenRepository.deleteManyByParams({ actionToken: token });
     }
 
-    public async forgotPasswordSendEmail(dto: CheckEmail): Promise<void> {
+    public async forgotPasswordSendEmail(
+        dto: CheckEmail = {} as CheckEmail,
+    ): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
         if (!user || user.isDeleted || user.isBanned) {
             throw new ApiError(
@@ -217,8 +219,8 @@ class AuthService {
     }
 
     public async forgotPasswordSet(
-        dto: ForgotPasswordSet,
-        tokenPayload: ITokenActionPayload,
+        dto: ForgotPasswordSet = {} as ForgotPasswordSet,
+        tokenPayload: ITokenActionPayload = {} as ITokenActionPayload,
     ) {
         const user = await userRepository.getById(tokenPayload.userId);
         const usedPasswords = await passwordService.isPasswordValid(

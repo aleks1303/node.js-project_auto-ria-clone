@@ -142,7 +142,7 @@ class UserController {
         try {
             const targetUser = res.locals.targetUser as IUser;
             const adminUser = res.locals.user as IUser;
-            const body = req.body as UpgradeUserDto;
+            const body = (req.body as UpgradeUserDto) || {};
             const updatedUser = await userService.upgradeUserRole(
                 adminUser,
                 targetUser,

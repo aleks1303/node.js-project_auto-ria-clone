@@ -52,7 +52,10 @@ const swaggerDocument: OpenAPIV3.Document = {
                                     phone: { type: "string" },
                                     city: { type: "string" },
                                     region: { type: "string" },
-                                    key: { type: "string" },
+                                    key: {
+                                        type: "string",
+                                        example: "super-secret-key-123",
+                                    },
                                 },
                             },
                         },
@@ -65,6 +68,37 @@ const swaggerDocument: OpenAPIV3.Document = {
                             "application/json": {
                                 schema: {
                                     $ref: "#/components/schemas/UserResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description:
+                            "Validation error (e.g., age < 18, invalid email format)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden. Invalid initialization key.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "409": {
+                        description: "Email or phone already exist",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
                                 },
                             },
                         },
@@ -114,6 +148,37 @@ const swaggerDocument: OpenAPIV3.Document = {
                             "application/json": {
                                 schema: {
                                     $ref: "#/components/schemas/UserResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description:
+                            "Validation error (e.g., age < 18, invalid email format)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "409": {
+                        description: "Email or phone already exist",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
                                 },
                             },
                         },
@@ -308,6 +373,213 @@ const swaggerDocument: OpenAPIV3.Document = {
                 responses: { "201": { description: "Created" } },
             },
         },
+        "/auth/sign-up": {
+            post: {
+                tags: ["Auth"],
+                summary: "Register a new user",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application-json": {
+                            schema: {
+                                type: "object",
+                                required: [
+                                    "name",
+                                    "surname",
+                                    "age",
+                                    "email",
+                                    "password",
+                                    "phone",
+                                ],
+                                properties: {
+                                    name: {
+                                        type: "string",
+                                        example: "Alexander",
+                                    },
+                                    surname: {
+                                        type: "string",
+                                        example: "Novak",
+                                    },
+                                    age: {
+                                        type: "integer",
+                                        example: 34,
+                                    },
+                                    email: {
+                                        type: "string",
+                                        example: "alex@gmail.com",
+                                    },
+                                    password: {
+                                        type: "string",
+                                        example: "Password1234$",
+                                    },
+                                    phone: {
+                                        type: "string",
+                                        example: "+3809.......",
+                                    },
+                                    city: {
+                                        type: "string",
+                                        example: "Lviv",
+                                    },
+                                    region: {
+                                        type: "string",
+                                        example: "Lviv",
+                                    },
+                                    role: {
+                                        type: "string",
+                                        enum: ["buyer", "seller"],
+                                        default: "buyer",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "User registered successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/AuthResponse",
+                                },
+                            },
+                        },
+                    },
+                    "409": { description: "Email or Phone already exists" },
+                },
+            },
+        },
+        "/auth/sign-in": {
+            post: {
+                tags: ["Auth"],
+                summary: "Login to account",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: ["email", "password"],
+                                properties: {
+                                    email: { type: "string" },
+                                    password: { type: "string" },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Logged in successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/AuthResponse",
+                                },
+                            },
+                        },
+                    },
+                    "401": { description: "Invalid email or password" },
+                },
+            },
+        },
+        "/auth/refresh": {
+            post: {
+                tags: ["Auth"],
+                summary: "Refresh tokens",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "201": {
+                        description: "Tokens refreshed successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/TokenPair",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/auth/verify-email": {
+            post: {
+                tags: ["Auth"],
+                summary: "Send verification email again",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: { email: { type: "string" } },
+                            },
+                        },
+                    },
+                },
+                responses: { "204": { description: "No Content" } },
+            },
+        },
+        "/auth/verify/{token}": {
+            get: {
+                tags: ["Auth"],
+                summary: "Confirm email via token",
+                parameters: [
+                    {
+                        name: "token",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: { "200": { description: "Email verified" } },
+            },
+        },
+        "/auth/forgot-password": {
+            post: {
+                tags: ["Auth"],
+                summary: "Send forgot password email",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: { email: { type: "string" } },
+                            },
+                        },
+                    },
+                },
+                responses: { "204": { description: "No Content" } },
+            },
+            put: {
+                tags: ["Auth"],
+                summary: "Set new password",
+                security: [{ bearerAuth: [] }], // Тут перевіряється actionToken
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: { password: { type: "string" } },
+                            },
+                        },
+                    },
+                },
+                responses: { "204": { description: "No Content" } },
+            },
+        },
+        "/auth/logout": {
+            post: {
+                tags: ["Auth"],
+                summary: "Logout user",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "204": { description: "Logged out successfully" },
+                },
+            },
+        },
     },
     components: {
         securitySchemes: {
@@ -378,6 +650,31 @@ const swaggerDocument: OpenAPIV3.Document = {
                 example: {
                     role: "seller",
                     accountType: "premium",
+                },
+            },
+            TokenPair: {
+                type: "object",
+                properties: {
+                    accessToken: { type: "string", example: "eyJhbG..." },
+                    refreshToken: { type: "string", example: "eyJhbG..." },
+                },
+            },
+            AuthResponse: {
+                type: "object",
+                properties: {
+                    user: { $ref: "#/components/schemas/UserResponse" },
+                    tokens: { $ref: "#/components/schemas/TokenPair" },
+                },
+            },
+            ApiError: {
+                type: "object",
+                properties: {
+                    status: {
+                        type: "integer",
+                    },
+                    message: {
+                        type: "string",
+                    },
                 },
             },
         },

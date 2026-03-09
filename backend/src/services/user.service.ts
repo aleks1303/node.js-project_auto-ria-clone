@@ -28,7 +28,10 @@ class UserService {
         return userRepository.getAll(query);
     }
 
-    public async updateMe(user: IUser, dto: Partial<IUser>): Promise<IUser> {
+    public async updateMe(
+        user: IUser,
+        dto: Partial<IUser> = {} as Partial<IUser>,
+    ): Promise<IUser> {
         return userRepository.updateById(user._id, dto);
     }
 
@@ -139,7 +142,7 @@ class UserService {
     public async upgradeUserRole(
         adminUser: IUser,
         targetUser: IUser,
-        body: UpgradeUserDto,
+        body: UpgradeUserDto = {},
     ): Promise<IUser> {
         if (adminUser._id.toString() === targetUser._id.toString()) {
             throw new ApiError(
@@ -151,11 +154,12 @@ class UserService {
             targetUser._id,
             body,
         );
-        if (body.role || body.accountType) {
+        if (body?.role || body?.accountType) {
             await tokenRepository.deleteManyByParams({
                 _userId: targetUser._id,
             });
         }
+
         return updatedUser;
     }
 

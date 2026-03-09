@@ -32,7 +32,10 @@ class CarService {
     ) {
         return carRepository.getAll(query, permissions);
     }
-    public async create(body: ICarCreateDto, userId: string): Promise<ICar> {
+    public async create(
+        body: ICarCreateDto = {} as ICarCreateDto,
+        userId: string,
+    ): Promise<ICar> {
         const isExistBrand = await brandRepository.getByBrandAndModel(
             body.brand,
             body.model,
@@ -61,7 +64,7 @@ class CarService {
     }
     public async update(
         car: ICarPopulated,
-        body: ICarUpdateDto,
+        body: ICarUpdateDto = {},
         tokenPayload: ITokenPayload,
     ): Promise<ICar> {
         this.checkAccess(

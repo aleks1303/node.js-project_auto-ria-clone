@@ -26,7 +26,7 @@ class CommonMiddleware {
     public isBodyValid(validator: ObjectSchema) {
         return async (req: Request, _res: Response, next: NextFunction) => {
             try {
-                req.body = await validator.validateAsync(req.body);
+                req.body = await validator.validateAsync(req.body || {});
                 next();
             } catch (e) {
                 let message = e.details[0].message;
