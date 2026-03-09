@@ -13,7 +13,7 @@ import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 router.get(
-    "/",
+    "/users",
     authMiddleware.checkAccessToken,
     authMiddleware.checkIsVerified,
     authMiddleware.checkPermission(PermissionsEnum.USERS_GET_ALL),

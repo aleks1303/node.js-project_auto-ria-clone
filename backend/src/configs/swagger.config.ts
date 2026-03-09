@@ -18,8 +18,8 @@ const swaggerDocument: OpenAPIV3.Document = {
         { name: "Admin", description: "Admin endpoints" },
         { name: "Management", description: "Management endpoints" },
         { name: "Auth", description: "Authentication endpoints" },
-        { name: "Users", description: "User profile endpoints" },
-        { name: "Cars", description: "Car listings endpoints" },
+        { name: "Users", description: "Users endpoints" },
+        { name: "Cars", description: "Cars endpoints" },
     ],
     paths: {
         "/admin/create": {
@@ -165,6 +165,149 @@ const swaggerDocument: OpenAPIV3.Document = {
                 },
             },
         },
+        "/management/users": {
+            get: {
+                tags: ["Management"],
+                summary: "Get all users with filters",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "page",
+                        in: "query",
+                        schema: { type: "integer", default: 1 },
+                    },
+                    {
+                        name: "pageSize",
+                        in: "query",
+                        schema: { type: "integer", default: 10 },
+                    },
+                    { name: "search", in: "query", schema: { type: "string" } },
+                    {
+                        name: "orderBy",
+                        in: "query",
+                        schema: {
+                            type: "string",
+                            enum: ["name", "age"],
+                            default: "name",
+                        },
+                    },
+                    {
+                        name: "order",
+                        in: "query",
+                        schema: {
+                            type: "string",
+                            enum: ["asc", "desc"],
+                            default: "asc",
+                        },
+                    },
+                    {
+                        name: "role",
+                        in: "query",
+                        schema: {
+                            type: "string",
+                            enum: ["buyer", "seller", "manager", "admin"],
+                        },
+                    },
+                    {
+                        name: "isBanned",
+                        in: "query",
+                        schema: { type: "boolean", default: false },
+                    },
+                    {
+                        name: "isDeleted",
+                        in: "query",
+                        schema: { type: "boolean", default: false },
+                    },
+                ],
+                responses: {
+                    "200": {
+                        description: "List of users",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/UserListResponse",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/management/{userId}/ban": {
+            patch: {
+                tags: ["Management"],
+                summary: "Ban user",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "userId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: { "200": { description: "Banned" } },
+            },
+        },
+        "/management/{userId}/unban": {
+            patch: {
+                tags: ["Management"],
+                summary: "Unban user",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "userId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: { "200": { description: "Unbanned" } },
+            },
+        },
+        "/management/{carId}/validate": {
+            patch: {
+                tags: ["Management"],
+                summary: "Validate car listing",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "carId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: { "200": { description: "Validated" } },
+            },
+        },
+        "/management/brand-models": {
+            post: {
+                tags: ["Management"],
+                summary: "Add brand and models",
+                security: [{ bearerAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: ["brand", "models"],
+                                properties: {
+                                    brand: { type: "string", example: "BMW" },
+                                    models: {
+                                        type: "array",
+                                        items: { type: "string" },
+                                        example: ["X5", "M3"],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: { "201": { description: "Created" } },
+            },
+        },
     },
     components: {
         securitySchemes: {
@@ -175,6 +318,26 @@ const swaggerDocument: OpenAPIV3.Document = {
             },
         },
         schemas: {
+            UserListResponse: {
+                type: "object",
+                properties: {
+                    data: {
+                        type: "array",
+                        items: { $ref: "#/components/schemas/UserResponse" },
+                    },
+                    total: { type: "integer" },
+                    totalPages: { type: "integer" },
+                    query: {
+                        type: "object",
+                        properties: {
+                            pageSize: { type: "integer" },
+                            page: { type: "integer" },
+                            orderBy: { type: "string" },
+                            order: { type: "string" },
+                        },
+                    },
+                },
+            },
             UserResponse: {
                 type: "object",
                 properties: {
