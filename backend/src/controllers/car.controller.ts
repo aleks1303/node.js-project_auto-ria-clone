@@ -38,7 +38,7 @@ class CarController {
             const { userId } = res.locals.tokenPayload as ITokenPayload;
             const car = await carService.create(body, userId);
             const presenter = CarPresenter.toCreateResCarDto(car);
-            res.status(StatusCodesEnum.OK).json(presenter);
+            res.status(StatusCodesEnum.CREATED).json(presenter);
         } catch (e) {
             next(e);
         }
@@ -93,7 +93,7 @@ class CarController {
         try {
             const car = res.locals.car as ICarPopulated;
             await carService.validate(car._id.toString());
-            res.sendStatus(StatusCodesEnum.NO_CONTENT);
+            res.sendStatus(StatusCodesEnum.OK);
         } catch (e) {
             next(e);
         }

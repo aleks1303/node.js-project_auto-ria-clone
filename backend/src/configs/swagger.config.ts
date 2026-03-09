@@ -173,6 +173,17 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
+                    "403": {
+                        description:
+                            "Forbidden: You don't have the required permission",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                     "409": {
                         description: "Email or phone already exist",
                         content: {
@@ -221,12 +232,48 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
-                    "400": { description: "Invalid role or account type" },
+                    "400": {
+                        description:
+                            "Bad request: Invalid role or account type or userId",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                     "403": {
                         description:
                             "Forbidden. Reasons: 1. Insufficient permissions. 2. Admins cannot change their own role.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
                     },
-                    "404": { description: "User not found" },
+                    "404": {
+                        description: "User not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -295,6 +342,26 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -311,7 +378,40 @@ const swaggerDocument: OpenAPIV3.Document = {
                         schema: { type: "string" },
                     },
                 ],
-                responses: { "200": { description: "Banned" } },
+                responses: {
+                    "200": { description: "Banned" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Reasons: 1. You cannot ban yourself, 2. Manager cannot ban an admin. 3. Forbidden: You don't have the required permission",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/management/{userId}/unban": {
@@ -327,7 +427,98 @@ const swaggerDocument: OpenAPIV3.Document = {
                         schema: { type: "string" },
                     },
                 ],
-                responses: { "200": { description: "Unbanned" } },
+                responses: {
+                    "200": { description: "Unbanned" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "User not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "management/{userId}": {
+            delete: {
+                tags: ["Management"],
+                summary: "Delete user",
+                security: [{ bearerAut: [] }],
+                parameters: [
+                    {
+                        name: "userId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: {
+                    "204": { description: "No content" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Reasons: 1. You don't have permission to delete users. 2. Administrative accounts cannot be self-deleted",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "User not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/management/{carId}/validate": {
@@ -343,7 +534,50 @@ const swaggerDocument: OpenAPIV3.Document = {
                         schema: { type: "string" },
                     },
                 ],
-                responses: { "200": { description: "Validated" } },
+                responses: {
+                    "200": { description: "Validated" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden: You don't have the required permission",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "Car not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/management/brand-models": {
@@ -370,7 +604,66 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                 },
-                responses: { "201": { description: "Created" } },
+                responses: {
+                    "201": {
+                        description: "Brand and models successfully added",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    allOf: [
+                                        {
+                                            $ref: "#/components/schemas/BrandConfig",
+                                        },
+                                        {
+                                            type: "object",
+                                            properties: {
+                                                createdAt: {
+                                                    type: "string",
+                                                    format: "date-time",
+                                                },
+                                                updatedAt: {
+                                                    type: "string",
+                                                    format: "date-time",
+                                                },
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden: You don't have the required permission",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/auth/sign-up": {
@@ -664,6 +957,21 @@ const swaggerDocument: OpenAPIV3.Document = {
                 properties: {
                     user: { $ref: "#/components/schemas/UserResponse" },
                     tokens: { $ref: "#/components/schemas/TokenPair" },
+                },
+            },
+            BrandResponse: {
+                type: "object",
+                properties: {
+                    _id: {
+                        type: "string",
+                        example: "69af1e639bf0bb06ce8fd83a",
+                    },
+                    brand: { type: "string", example: "LAMBORGHINI" },
+                    models: {
+                        type: "array",
+                        items: { type: "string" },
+                        example: ["URUS", "HURACAN"],
+                    },
                 },
             },
             ApiError: {
