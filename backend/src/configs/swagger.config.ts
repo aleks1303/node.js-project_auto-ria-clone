@@ -277,6 +277,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                 },
             },
         },
+
         "/management/users": {
             get: {
                 tags: ["Management"],
@@ -666,6 +667,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                 },
             },
         },
+
         "/auth/sign-up": {
             post: {
                 tags: ["Auth"],
