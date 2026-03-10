@@ -80,7 +80,7 @@ export class UserValidator {
     });
 
     public static setForgotPassword = Joi.object({
-        password: this.password,
+        password: this.password.required(),
         actionToken: Joi.string().trim().required(),
     });
 

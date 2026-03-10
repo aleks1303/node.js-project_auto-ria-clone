@@ -740,7 +740,26 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
-                    "409": { description: "Email or Phone already exists" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "409": {
+                        description: "Email or Phone already exists",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -774,18 +793,50 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
-                    "401": { description: "Invalid email or password" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid email or password",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
         "/auth/refresh": {
             post: {
                 tags: ["Auth"],
-                summary: "Refresh tokens",
+                summary: "Refresh tokens (Requires Refresh Token)",
+                description:
+                    "Send your **Refresh Token** in the Authorization header to get a new pair of tokens.",
                 security: [{ bearerAuth: [] }],
                 responses: {
                     "201": {
                         description: "Tokens refreshed successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/TokenPair",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description:
+                            " Reasons: 1.Invalid token; 2.Header is provided; 3.No refresh token provided ",
                         content: {
                             "application/json": {
                                 schema: {
@@ -800,19 +851,52 @@ const swaggerDocument: OpenAPIV3.Document = {
         "/auth/verify-email": {
             post: {
                 tags: ["Auth"],
-                summary: "Send verification email again",
+                summary: "Send verification email",
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
                             schema: {
                                 type: "object",
+                                required: ["email"],
                                 properties: { email: { type: "string" } },
                             },
                         },
                     },
                 },
-                responses: { "204": { description: "No Content" } },
+                responses: {
+                    "204": { description: "No Content" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "User not found or account is disabled",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "409": {
+                        description: "Email already verified",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/auth/verify/{token}": {
@@ -827,7 +911,19 @@ const swaggerDocument: OpenAPIV3.Document = {
                         schema: { type: "string" },
                     },
                 ],
-                responses: { "200": { description: "Email verified" } },
+                responses: {
+                    "200": { description: "Email verified" },
+                    "401": {
+                        description: "Token not found or already used",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/auth/forgot-password": {
@@ -840,38 +936,123 @@ const swaggerDocument: OpenAPIV3.Document = {
                         "application/json": {
                             schema: {
                                 type: "object",
+                                required: ["email"],
                                 properties: { email: { type: "string" } },
                             },
                         },
                     },
                 },
-                responses: { "204": { description: "No Content" } },
+                responses: {
+                    "204": { description: "No Content" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "User not found or account is disabled",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
             put: {
                 tags: ["Auth"],
                 summary: "Set new password",
-                security: [{ bearerAuth: [] }], // Тут перевіряється actionToken
+                security: [{ bearerAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
                             schema: {
                                 type: "object",
-                                properties: { password: { type: "string" } },
+                                required: ["password", "actionToken"],
+                                properties: {
+                                    password: {
+                                        type: "string",
+                                        example: "NewPassword123!",
+                                    },
+                                    actionToken: { type: "string" },
+                                },
                             },
                         },
                     },
                 },
-                responses: { "204": { description: "No Content" } },
+                responses: {
+                    "204": { description: "No Content" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "409": {
+                        description:
+                            "This password was used in the last 180 days",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "/auth/logout": {
             post: {
                 tags: ["Auth"],
-                summary: "Logout user",
+                summary: "Logout user (Requires Refresh Token)",
+                description:
+                    "Send your **Refresh Token** in the Authorization header to logout.",
                 security: [{ bearerAuth: [] }],
                 responses: {
                     "204": { description: "Logged out successfully" },
+                    "401": {
+                        description: "Header is provided",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Invalid token",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },

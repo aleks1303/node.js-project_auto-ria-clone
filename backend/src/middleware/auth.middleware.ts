@@ -150,7 +150,7 @@ class AuthMiddleware {
         next: NextFunction,
     ) {
         try {
-            const { actionToken } = req.body as ForgotPasswordSet;
+            const { actionToken } = (req.body || {}) as ForgotPasswordSet;
             if (!actionToken) {
                 throw new ApiError(
                     "Token is required",
