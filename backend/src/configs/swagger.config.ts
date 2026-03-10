@@ -164,7 +164,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -244,7 +244,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -354,7 +354,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -392,7 +392,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -441,7 +441,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -489,7 +489,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -548,7 +548,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -644,7 +644,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid token",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -804,7 +804,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description: "Invalid email or password",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -835,8 +835,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "401": {
-                        description:
-                            " Reasons: 1.Invalid token; 2.Header is provided; 3.No refresh token provided ",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -914,7 +913,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                 responses: {
                     "200": { description: "Email verified" },
                     "401": {
-                        description: "Token not found or already used",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1034,7 +1033,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                 responses: {
                     "204": { description: "Logged out successfully" },
                     "401": {
-                        description: "Header is provided",
+                        description: "Unauthorized",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1068,7 +1067,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         content: {
                             "application/json": {
                                 schema: {
-                                    $ref: "#/components/schemas/UserMeResponse",
+                                    $ref: "#/components/schemas/UserResponse",
                                 },
                             },
                         },
@@ -1111,7 +1110,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "400": {
-                        description: "Validation error",
+                        description: "Bad request (Validation Error)",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1121,7 +1120,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "403": {
-                        description: "Forbidden - Account not verified",
+                        description: "Forbidden. Account is not verified.",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1148,6 +1147,16 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
+                    "403": {
+                        description: "Forbidden. Account is not verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -1165,6 +1174,8 @@ const swaggerDocument: OpenAPIV3.Document = {
                                     avatar: {
                                         type: "string",
                                         format: "binary",
+                                        description:
+                                            "User profile picture (jpg, jpeg, png, webp)",
                                     },
                                 },
                             },
@@ -1182,6 +1193,36 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden. Account is not verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "File not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
             delete: {
@@ -1192,6 +1233,26 @@ const swaggerDocument: OpenAPIV3.Document = {
                     "204": { description: "Avatar removed successfully" },
                     "400": {
                         description: "User has no avatar to delete",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden. Account is not verified.",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1220,7 +1281,86 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "400": {
-                        description: "Already premium or invalid role",
+                        description: "User already has a premium account",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden. Account is not verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/users/me/upgrade-seller": {
+            patch: {
+                tags: ["Users"],
+                summary: "Upgrade role to seller",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "200": {
+                        description: "Upgraded to seller, new tokens issued",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/AuthResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "User already has a premium account",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden. Account is not verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "409": {
+                        description: "You already have the right to sell a car",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1236,22 +1376,57 @@ const swaggerDocument: OpenAPIV3.Document = {
             get: {
                 tags: ["Users"],
                 summary: "Get user by ID",
+                description:
+                    "Returns full data for Admins/Managers and limited data for regular users.",
                 security: [{ bearerAuth: [] }],
                 parameters: [
                     {
                         name: "userId",
                         in: "path",
                         required: true,
-                        schema: { type: "string", example: "65e1f72..." },
+                        schema: { type: "string" },
                     },
                 ],
                 responses: {
                     "200": {
-                        description: "User details retrieved",
+                        description:
+                            "User details retrieved (structure depends on your role)",
                         content: {
                             "application/json": {
                                 schema: {
-                                    $ref: "#/components/schemas/UserMeResponse",
+                                    type: "object",
+                                    properties: {
+                                        user: {
+                                            oneOf: [
+                                                {
+                                                    $ref: "#/components/schemas/UserResponse",
+                                                },
+                                                {
+                                                    $ref: "#/components/schemas/PublicUserResponse",
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
                                 },
                             },
                         },
@@ -1318,6 +1493,19 @@ const swaggerDocument: OpenAPIV3.Document = {
                     isActive: { type: "boolean" },
                     isVerified: { type: "boolean" },
                     isDeleted: { type: "boolean" },
+                },
+            },
+            PublicUserResponse: {
+                type: "object",
+                properties: {
+                    _id: {
+                        type: "string",
+                        example: "69aed2bc97545e4d065683f4",
+                    },
+                    name: { type: "string", example: "Alex" },
+                    surname: { type: "string", example: "Novak" },
+                    phone: { type: "string", example: "+380935212311" },
+                    avatar: { type: "string", nullable: true, example: null },
                 },
             },
             UpgradeRoleDto: {
