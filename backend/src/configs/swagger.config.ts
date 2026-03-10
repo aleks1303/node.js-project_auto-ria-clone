@@ -20,6 +20,7 @@ const swaggerDocument: OpenAPIV3.Document = {
         { name: "Auth", description: "Authentication endpoints" },
         { name: "Users", description: "Users endpoints" },
         { name: "Cars", description: "Cars endpoints" },
+        { name: "Brands", description: "Brands endpoints" },
     ],
     paths: {
         "/admin/create": {
@@ -1444,6 +1445,113 @@ const swaggerDocument: OpenAPIV3.Document = {
                 },
             },
         },
+
+        "/brands": {
+            get: {
+                tags: ["Brands"],
+                summary: "Get all car brands and models",
+                responses: {
+                    "200": {
+                        description: "Success",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "array",
+                                    items: {
+                                        $ref: "#/components/schemas/BrandResponse",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "500": {
+                        description: "Internal Server Error",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/brands/report": {
+            post: {
+                tags: ["Brands"],
+                summary: "Report a missing brand",
+                security: [{ bearerAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: ["brand"],
+                                properties: {
+                                    brand: {
+                                        type: "string",
+                                        example: "Tesla",
+                                        description:
+                                            "Name of the brand you want to add",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Report sent successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        message: {
+                                            type: "string",
+                                            example:
+                                                "Your message has been sent to the administration. Thank you for your help!",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad Request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden. Account is not verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     },
     components: {
         securitySchemes: {
@@ -1548,7 +1656,6 @@ const swaggerDocument: OpenAPIV3.Document = {
                 properties: {
                     _id: {
                         type: "string",
-                        example: "69af1e639bf0bb06ce8fd83a",
                     },
                     brand: { type: "string", example: "LAMBORGHINI" },
                     models: {
