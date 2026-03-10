@@ -1056,6 +1056,219 @@ const swaggerDocument: OpenAPIV3.Document = {
                 },
             },
         },
+
+        "/users/me": {
+            get: {
+                tags: ["Users"],
+                summary: "Get current user profile",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "200": {
+                        description: "Profile retrieved successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/UserMeResponse",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            put: {
+                tags: ["Users"],
+                summary: "Update current user profile",
+                security: [{ bearerAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/UserUpdateDto",
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Profile updated successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/UserResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Validation error",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Forbidden - Account not verified",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            delete: {
+                tags: ["Users"],
+                summary: "Soft delete current account",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "204": { description: "Account successfully deactivated" },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/users/me/avatar": {
+            post: {
+                tags: ["Users"],
+                summary: "Upload profile avatar",
+                security: [{ bearerAuth: [] }],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    avatar: {
+                                        type: "string",
+                                        format: "binary",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "Avatar uploaded successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/UserResponse",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            delete: {
+                tags: ["Users"],
+                summary: "Delete profile avatar",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "204": { description: "Avatar removed successfully" },
+                    "400": {
+                        description: "User has no avatar to delete",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/users/me/premium": {
+            patch: {
+                tags: ["Users"],
+                summary: "Purchase premium status",
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    "200": {
+                        description: "Upgraded to premium, new tokens issued",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/AuthResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Already premium or invalid role",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/users/{userId}": {
+            get: {
+                tags: ["Users"],
+                summary: "Get user by ID",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "userId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string", example: "65e1f72..." },
+                    },
+                ],
+                responses: {
+                    "200": {
+                        description: "User details retrieved",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/UserMeResponse",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "User not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     },
     components: {
         securitySchemes: {
