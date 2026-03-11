@@ -41,6 +41,7 @@ export class CarPresenter {
                 : null,
             price: entity.price,
             currency: entity.currency,
+            description: entity.description,
             year: entity.year,
             region: entity.region,
             city: entity.city,

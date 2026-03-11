@@ -80,6 +80,7 @@ export interface ICarShortResponseDto {
     model: string;
     image: string;
     price: number;
+    description: string;
     currency: CurrencyEnum;
     year: number;
     region: string;

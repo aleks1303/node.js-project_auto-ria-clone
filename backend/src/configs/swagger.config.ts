@@ -752,7 +752,8 @@ const swaggerDocument: OpenAPIV3.Document = {
                         },
                     },
                     "409": {
-                        description: "Email or Phone already exists",
+                        description:
+                            "Conflict. Possible reasons: 1. Email or Phone already exists. 2. Email belongs to a soft-deleted account and is unavailable.",
                         content: {
                             "application/json": {
                                 schema: {
@@ -806,6 +807,16 @@ const swaggerDocument: OpenAPIV3.Document = {
                     },
                     "401": {
                         description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description: "Banned user",
                         content: {
                             "application/json": {
                                 schema: {
@@ -1446,6 +1457,369 @@ const swaggerDocument: OpenAPIV3.Document = {
             },
         },
 
+        "/cars": {
+            get: {
+                tags: ["Cars"],
+                summary: "Get list of cars",
+                description:
+                    "Returns a paginated list of cars with optional filtering.",
+                parameters: [
+                    {
+                        name: "page",
+                        in: "query",
+                        schema: { type: "integer", default: 1 },
+                    },
+                    {
+                        name: "pageSize",
+                        in: "query",
+                        schema: { type: "integer", default: 10 },
+                    },
+                    { name: "brand", in: "query", schema: { type: "string" } },
+                    {
+                        name: "priceMin",
+                        in: "query",
+                        schema: { type: "number" },
+                    },
+                    {
+                        name: "priceMax",
+                        in: "query",
+                        schema: { type: "number" },
+                    },
+                    {
+                        name: "status",
+                        in: "query",
+                        schema: { type: "string" },
+                        description: "Managers only",
+                    },
+                ],
+                responses: {
+                    "200": {
+                        description: "Success",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/CarListResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/cars/create": {
+            post: {
+                tags: ["Cars"],
+                summary: "Create new car ad",
+                security: [{ bearerAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: [
+                                    "brand",
+                                    "model",
+                                    "year",
+                                    "price",
+                                    "currency",
+                                    "description",
+                                ],
+                                properties: {
+                                    brand: { type: "string" },
+                                    model: { type: "string" },
+                                    year: { type: "integer" },
+                                    price: { type: "number" },
+                                    currency: { type: "string" },
+                                    description: { type: "string" },
+                                    region: { type: "string" },
+                                    city: { type: "string" },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description:
+                            "Car ad created. NOTE: If the description contains forbidden words, the status will be 'pending' and the ad will be hidden from public search until verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/CarCreateResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden. Possible reasons: 1. Account not verified. 2. You don't have the required permission",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/cars/{carId}/image": {
+            post: {
+                tags: ["Cars"],
+                summary: "Upload car image",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "carId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    image: { type: "string", format: "binary" },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "Image uploaded",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/CarCreateResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden. Possible reasons: 1. Account not verified. 2. Access denied",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "Car or file not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            delete: {
+                tags: ["Cars"],
+                summary: "Delete car image",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "carId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: {
+                    "204": { description: "Deleted" },
+                    "400": {
+                        description:
+                            "Reasons: 1.Bad request (Validation Error), 2. Car does not have an image",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden. Possible reasons: 1. Account not verified. 2. Access denied",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "Car or file not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/cars/{carId}": {
+            get: {
+                tags: ["Cars"],
+                summary: "Get car by ID",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "carId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: {
+                    "200": {
+                        description: "Success",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/CarDetailedResponse",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            put: {
+                tags: ["Cars"],
+                summary: "Update car ad",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "carId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    price: { type: "number" },
+                                    description: { type: "string" },
+                                    region: { type: "string" },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Updated",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/CarResponse",
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description:
+                            "Bad Request - e.g. Obscene language detected",
+                    },
+                },
+            },
+            delete: {
+                tags: ["Cars"],
+                summary: "Delete car",
+                security: [{ bearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "carId",
+                        in: "path",
+                        required: true,
+                        schema: { type: "string" },
+                    },
+                ],
+                responses: {
+                    "204": { description: "Successfully deleted" },
+                },
+            },
+        },
+
         "/brands": {
             get: {
                 tags: ["Brands"],
@@ -1649,6 +2023,155 @@ const swaggerDocument: OpenAPIV3.Document = {
                 properties: {
                     user: { $ref: "#/components/schemas/UserResponse" },
                     tokens: { $ref: "#/components/schemas/TokenPair" },
+                },
+            },
+
+            CarResponse: {
+                type: "object",
+                properties: {
+                    _id: { type: "string", example: "65e1f72..." },
+                    brand: { type: "string", example: "BMW" },
+                    model: { type: "string", example: "X5" },
+                    year: { type: "integer", example: 2022 },
+                    price: { type: "number", example: 55000 },
+                    currency: { type: "string", enum: ["USD", "EUR", "UAH"] },
+                    description: { type: "string" },
+                    region: { type: "string", example: "Kyivska" },
+                    city: { type: "string", example: "Kyiv" },
+                    image: {
+                        type: "string",
+                        nullable: true,
+                        example: "https://s3.../car.jpg",
+                    },
+                    createdAt: { type: "string", format: "date-time" },
+                },
+            },
+            CarCreateResponse: {
+                allOf: [
+                    { $ref: "#/components/schemas/CarResponse" },
+                    {
+                        type: "object",
+                        properties: {
+                            _userId: {
+                                type: "string",
+                                example: "69b1a4ac67e19fec3dae79d5",
+                            },
+                            exchangeRates: {
+                                type: "object",
+                                properties: {
+                                    USD: { type: "number" },
+                                    EUR: { type: "number" },
+                                },
+                            },
+                            convertedPrices: {
+                                type: "object",
+                                properties: {
+                                    USD: { type: "number" },
+                                    EUR: { type: "number" },
+                                    UAH: { type: "number" },
+                                },
+                            },
+                            status: {
+                                type: "string",
+                                enum: ["active", "pending", "inactive"],
+                                description: `Current moderation status:
+                                                 - active: Visible to everyone.
+                                                 - pending: Hidden from public view. Requires manual moderation (usually due to obscene language in description).
+                                                 - inactive: Hidden by owner or banned by manager.`,
+                            },
+                        },
+                    },
+                ],
+            },
+            CarOwnerPublic: {
+                type: "object",
+                properties: {
+                    name: { type: "string", example: "Ivan" },
+                    phone: { type: "string", example: "+380671234567" },
+                },
+            },
+            CarOwnerStaff: {
+                allOf: [
+                    { $ref: "#/components/schemas/CarOwnerPublic" },
+                    {
+                        type: "object",
+                        properties: {
+                            _id: { type: "string", example: "65e1f72..." },
+                            surname: { type: "string", example: "Sirko" },
+                            email: {
+                                type: "string",
+                                example: "ivan@example.com",
+                            },
+                        },
+                    },
+                ],
+            },
+            CarDetailedResponse: {
+                allOf: [
+                    { $ref: "#/components/schemas/CarResponse" },
+                    {
+                        type: "object",
+                        properties: {
+                            description: { type: "string" },
+                            owner: {
+                                oneOf: [
+                                    {
+                                        $ref: "#/components/schemas/CarOwnerPublic",
+                                    },
+                                    {
+                                        $ref: "#/components/schemas/CarOwnerStaff",
+                                    },
+                                ],
+                            },
+                            status: {
+                                type: "string",
+                                enum: ["active", "pending", "inactive"],
+                                description: "Visible for Staff and Owner",
+                            },
+                            isDeleted: {
+                                type: "boolean",
+                                description: "Visible only for Staff",
+                            },
+                            statistics: {
+                                type: "object",
+                                nullable: true,
+                                description:
+                                    "Available for Premium users or Staff",
+                                properties: {
+                                    views: {
+                                        type: "object",
+                                        properties: {
+                                            day: { type: "integer" },
+                                            week: { type: "integer" },
+                                            month: { type: "integer" },
+                                            total: { type: "integer" },
+                                        },
+                                    },
+                                    averagePrice: {
+                                        type: "object",
+                                        properties: {
+                                            region: { type: "number" },
+                                            ukraine: { type: "number" },
+                                            currency: { type: "string" },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
+            CarListResponse: {
+                type: "object",
+                properties: {
+                    data: {
+                        type: "array",
+                        items: { $ref: "#/components/schemas/CarResponse" },
+                    },
+                    total: { type: "integer" },
+                    page: { type: "integer" },
+                    pageSize: { type: "integer" },
+                    totalPages: { type: "integer" },
                 },
             },
             BrandResponse: {
