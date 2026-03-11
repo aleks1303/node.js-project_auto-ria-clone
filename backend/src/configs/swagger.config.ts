@@ -1792,6 +1792,8 @@ const swaggerDocument: OpenAPIV3.Document = {
             put: {
                 tags: ["Cars"],
                 summary: "Update car ad",
+                description:
+                    "Updates car details. Includes automatic content moderation for the description field.",
                 security: [{ bearerAuth: [] }],
                 parameters: [
                     {
@@ -1805,36 +1807,81 @@ const swaggerDocument: OpenAPIV3.Document = {
                     content: {
                         "application/json": {
                             schema: {
-                                type: "object",
-                                properties: {
-                                    price: { type: "number" },
-                                    description: { type: "string" },
-                                    region: { type: "string" },
-                                },
+                                $ref: "#/components/schemas/CarUpdateDto",
                             },
                         },
                     },
                 },
                 responses: {
                     "200": {
-                        description: "Updated",
+                        description:
+                            "Successfully updated. Status may remain 'active' if no bad words found.",
                         content: {
                             "application/json": {
                                 schema: {
-                                    $ref: "#/components/schemas/CarResponse",
+                                    $ref: "#/components/schemas/CarCreateResponse",
                                 },
                             },
                         },
                     },
                     "400": {
                         description:
-                            "Bad Request - e.g. Obscene language detected",
+                            "Bad Request. Reasons: 1.The description contains obscene language, 2.Validation Error ",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                                example: {
+                                    status: "400",
+                                    message:
+                                        "The description contains obscene language. Attempts remaining: 2",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden. Reasons: 1.Maximum moderation attempts reached, 2.Access denied, 3.Account not verified.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                                example: {
+                                    status: "403",
+                                    message:
+                                        "The ad has been blocked and sent to the manager for review.",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "Car not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
                     },
                 },
             },
             delete: {
                 tags: ["Cars"],
-                summary: "Delete car",
+                summary:
+                    "Deletes a car advertisement. Permissions: Owner, Manager, or Admin.",
                 security: [{ bearerAuth: [] }],
                 parameters: [
                     {
@@ -1846,6 +1893,47 @@ const swaggerDocument: OpenAPIV3.Document = {
                 ],
                 responses: {
                     "204": { description: "Successfully deleted" },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "403": {
+                        description:
+                            "Forbidden. Possible reasons: 1. Account not verified. 2. Access denied",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "Car not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
