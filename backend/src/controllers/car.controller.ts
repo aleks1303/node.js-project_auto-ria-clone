@@ -120,7 +120,7 @@ class CarController {
             const car = res.locals.car as ICarPopulated;
             const tokenPayload = res.locals.tokenPayload as ITokenPayload;
             await carService.deleteImage(car, tokenPayload);
-            res.status(StatusCodesEnum.NO_CONTENT);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }

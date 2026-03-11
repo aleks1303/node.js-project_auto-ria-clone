@@ -1757,6 +1757,26 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
+                    "401": {
+                        description: "Unauthorized",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
+                    "404": {
+                        description: "Car or file not found",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                 },
             },
             put: {
@@ -2085,9 +2105,10 @@ const swaggerDocument: OpenAPIV3.Document = {
             },
             CarOwnerPublic: {
                 type: "object",
+                required: ["name", "phone"],
                 properties: {
-                    name: { type: "string", example: "Ivan" },
-                    phone: { type: "string", example: "+380671234567" },
+                    name: { type: "string" },
+                    phone: { type: "string" },
                 },
             },
             CarOwnerStaff: {
@@ -2096,12 +2117,9 @@ const swaggerDocument: OpenAPIV3.Document = {
                     {
                         type: "object",
                         properties: {
-                            _id: { type: "string", example: "65e1f72..." },
-                            surname: { type: "string", example: "Sirko" },
-                            email: {
-                                type: "string",
-                                example: "ivan@example.com",
-                            },
+                            _id: { type: "string" },
+                            surname: { type: "string" },
+                            email: { type: "string" },
                         },
                     },
                 ],
@@ -2111,32 +2129,30 @@ const swaggerDocument: OpenAPIV3.Document = {
                     { $ref: "#/components/schemas/CarResponse" },
                     {
                         type: "object",
+                        required: ["description", "owner"],
                         properties: {
-                            description: { type: "string" },
+                            description: {
+                                type: "string",
+                                example: "hello this is a good car",
+                            },
                             owner: {
-                                oneOf: [
-                                    {
-                                        $ref: "#/components/schemas/CarOwnerPublic",
-                                    },
-                                    {
-                                        $ref: "#/components/schemas/CarOwnerStaff",
-                                    },
-                                ],
+                                $ref: "#/components/schemas/CarOwnerStaff",
                             },
                             status: {
                                 type: "string",
                                 enum: ["active", "pending", "inactive"],
-                                description: "Visible for Staff and Owner",
+                                description:
+                                    "Видимо лише для персоналу та власника",
                             },
                             isDeleted: {
                                 type: "boolean",
-                                description: "Visible only for Staff",
+                                description: "Видимо лише для персоналу",
                             },
                             statistics: {
                                 type: "object",
                                 nullable: true,
                                 description:
-                                    "Available for Premium users or Staff",
+                                    "Доступно для Premium користувачів або персоналу",
                                 properties: {
                                     views: {
                                         type: "object",
