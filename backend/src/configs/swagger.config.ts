@@ -1757,6 +1757,16 @@ const swaggerDocument: OpenAPIV3.Document = {
                             },
                         },
                     },
+                    "400": {
+                        description: "Bad request (Validation Error)",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/ApiError",
+                                },
+                            },
+                        },
+                    },
                     "401": {
                         description: "Unauthorized",
                         content: {
