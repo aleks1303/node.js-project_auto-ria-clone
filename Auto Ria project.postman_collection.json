@@ -1,0 +1,1650 @@
+{
+  "info": {
+    "_postman_id": "da48c633-e493-496a-a217-b5c9ec8ed766",
+    "name": "Auto Ria project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40466895"
+  },
+  "item": [
+    {
+      "name": "admin",
+      "item": [
+        {
+          "name": "create manager",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.environment.unset(\"accessToken\");",
+                  "    pm.environment.unset(\"refreshToken\");",
+                  "    if (body.tokens) {",
+                  "        pm.environment.set(\"accessToken\", body.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", body.tokens.refreshToken);",
+                  "        console.log(\"Tokens have been updated in environment!\");",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "3b6ac7e5-0b1c-4818-8a9e-44cd58e11a21"
+                },
+                {
+                  "key": "surname",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "a9d291f7-a75b-4be4-bed1-7544952100f6"
+                },
+                {
+                  "key": "age",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "38982749-7939-4f4d-95b9-c66a914fca00"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "f0851b58-df23-4cea-a6ab-6246fc113cb8"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "4be72ccd-3d87-4a0f-95e2-3c06b6657e71"
+                },
+                {
+                  "key": "phone",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "5ac00ae0-eac9-4ab0-8a4a-bd6ec8e1609f"
+                },
+                {
+                  "key": "city",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "4256ec24-382c-45a3-ac8d-aeb7fce4a76e"
+                },
+                {
+                  "key": "region",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "aa2740cd-6385-4c9a-a2f3-d3bdcf042d68"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/admin/manager",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "admin",
+                "manager"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "3b6ac7e5-0b1c-4818-8a9e-44cd58e11a21"
+                },
+                {
+                  "key": "surname",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "a9d291f7-a75b-4be4-bed1-7544952100f6"
+                },
+                {
+                  "key": "age",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "38982749-7939-4f4d-95b9-c66a914fca00"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "f0851b58-df23-4cea-a6ab-6246fc113cb8"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "4be72ccd-3d87-4a0f-95e2-3c06b6657e71"
+                },
+                {
+                  "key": "phone",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "5ac00ae0-eac9-4ab0-8a4a-bd6ec8e1609f"
+                },
+                {
+                  "key": "city",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "4256ec24-382c-45a3-ac8d-aeb7fce4a76e"
+                },
+                {
+                  "key": "region",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "aa2740cd-6385-4c9a-a2f3-d3bdcf042d68"
+                },
+                {
+                  "key": "key",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "73232d38-3ff0-4789-924f-ab9a9cc1a07c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/admin/create",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "admin",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upgrade role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "role",
+                  "value": "buyer",
+                  "type": "text",
+                  "uuid": "cc45719b-5cd0-4491-8bd1-dce533e01834"
+                },
+                {
+                  "key": "accountType",
+                  "value": "basic",
+                  "type": "text",
+                  "uuid": "f37ec8ae-cfc5-4f45-b18c-885b5f9231c9"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/admin/:userId/upgrade-role",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "admin",
+                ":userId",
+                "upgrade-role"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "management",
+      "item": [
+        {
+          "name": "users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/management/users",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "management",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "isDeleted",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "users ban",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/management/:userId/ban",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "management",
+                ":userId",
+                "ban"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "users unban",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/management/:userId/unban",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "management",
+                ":userId",
+                "unban"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/management/:userId",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "management",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ads validate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/management/:carId/validate",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "management",
+                ":carId",
+                "validate"
+              ],
+              "variable": [
+                {
+                  "key": "carId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add brand models",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"brand\": \"Lamborgini\",\n    \"models\": [\n        \"Urus\",\n        \"Huracan\",\n        \"Aventador\",\n        \"Revuelto\",\n        \"Gallardo\",\n        \"Murcielago\"\n    ]}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/management/brand-models",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "management",
+                "brand-models"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/me",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/:userId",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "5960067c-69f4-411c-8510-bbec0d0ad749"
+                },
+                {
+                  "key": "surname",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "5c98c65a-eff6-4951-b9f5-078c3b8974e6"
+                },
+                {
+                  "key": "age",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "81b9bc98-4b45-4447-b0e0-4819b636cb9c"
+                },
+                {
+                  "key": "phone",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "440fcc3e-f509-4afa-9288-efbbed652dce"
+                },
+                {
+                  "key": "city",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "c258ce4b-f278-4429-9779-0a629b660800"
+                },
+                {
+                  "key": "region",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "9a48ac07-8e4f-443a-a41b-05e56808f48e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/me",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload avatar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "0563fb86-c604-48df-b444-8487525242a2",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/me/avatar",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteAvatar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/avatar",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "premium",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.environment.unset(\"accessToken\");",
+                  "    pm.environment.unset(\"refreshToken\");",
+                  "    if (body.tokens) {",
+                  "        pm.environment.set(\"accessToken\", body.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", body.tokens.refreshToken);",
+                  "        console.log(\"Tokens have been updated in environment!\");",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/me/premium",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "premium"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upgrade seller",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.environment.unset(\"accessToken\");",
+                  "    pm.environment.unset(\"refreshToken\");",
+                  "    if (body.tokens) {",
+                  "        pm.environment.set(\"accessToken\", body.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", body.tokens.refreshToken);",
+                  "        console.log(\"Tokens have been updated in environment!\");",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/me/upgrade-seller",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "upgrade-seller"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/users/me",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "sign-up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.environment.unset(\"accessToken\");",
+                  "    pm.environment.unset(\"refreshToken\");",
+                  "    if (body.tokens) {",
+                  "        pm.environment.set(\"accessToken\", body.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", body.tokens.refreshToken);",
+                  "        console.log(\"Tokens have been updated in environment!\");",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "3b6ac7e5-0b1c-4818-8a9e-44cd58e11a21"
+                },
+                {
+                  "key": "surname",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "a9d291f7-a75b-4be4-bed1-7544952100f6"
+                },
+                {
+                  "key": "age",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "38982749-7939-4f4d-95b9-c66a914fca00"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "f0851b58-df23-4cea-a6ab-6246fc113cb8"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "4be72ccd-3d87-4a0f-95e2-3c06b6657e71"
+                },
+                {
+                  "key": "phone",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "5ac00ae0-eac9-4ab0-8a4a-bd6ec8e1609f"
+                },
+                {
+                  "key": "city",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "4256ec24-382c-45a3-ac8d-aeb7fce4a76e"
+                },
+                {
+                  "key": "region",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "aa2740cd-6385-4c9a-a2f3-d3bdcf042d68"
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "d62c23d7-208f-4dba-a658-7bc8c5e183a2"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/sign-up",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sign-in",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.environment.unset(\"accessToken\");",
+                  "    pm.environment.unset(\"refreshToken\");",
+                  "    if (body.tokens) {",
+                  "        pm.environment.set(\"accessToken\", body.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", body.tokens.refreshToken);",
+                  "        console.log(\"Tokens have been updated in environment!\");",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "0e297f22-bbc5-4986-8492-cb0033f35013"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e30ade10-c96b-443f-9d6b-905e50d5fa47"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/sign-in",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "sign-in"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.environment.unset(\"accessToken\");",
+                  "    pm.environment.unset(\"refreshToken\");",
+                  "    if (body.tokens) {",
+                  "        pm.environment.set(\"accessToken\", body.tokens.accessToken);",
+                  "        pm.environment.set(\"refreshToken\", body.tokens.refreshToken);",
+                  "        console.log(\"Tokens have been updated in environment!\");",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{refreshToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/refresh",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verifyToken from email",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/verify/:token",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "verify",
+                ":token"
+              ],
+              "variable": [
+                {
+                  "key": "token",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verifyEmail send",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e870b5cd-3713-46f0-ad2f-d0c5a20f40e9"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/verify-email",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "verify-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgot password send email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "1e3e3548-aeb7-4119-8788-ff2f9ca9d7d5"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/forgot-password",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgot set password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "bdca6aa0-0e37-4e2b-aef8-8bb1adea6570"
+                },
+                {
+                  "key": "actionToken",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "eefe08fe-3737-4ccd-b4fa-f2fcac949ed8"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/forgot-password",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{refreshToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/auth/logout",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "cars",
+      "item": [
+        {
+          "name": "create car",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "brand",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "2376c27b-40c8-43b1-940f-b9c771af3ad2"
+                },
+                {
+                  "key": "model",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "b78cd57d-7d8c-4a94-ab79-da51e8d5d2d8"
+                },
+                {
+                  "key": "year",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e8bfb0e3-08dd-465c-bca4-5031ee3e42f7"
+                },
+                {
+                  "key": "description",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "49578527-63cc-4d14-be1b-682c4103a62c"
+                },
+                {
+                  "key": "region",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "46296e8c-6dda-4938-961c-d47995f2e3d8"
+                },
+                {
+                  "key": "city",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "63ad346b-92f2-43ce-8c84-677b97d05e3b"
+                },
+                {
+                  "key": "price",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "dbff58ae-fe6f-4074-afb0-e18c3ff120b3"
+                },
+                {
+                  "key": "currency",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "23d29efd-c7c6-4c26-9cfa-4417b0f350d6"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars/create",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "description",
+                  "value": "This is my car",
+                  "type": "text",
+                  "uuid": "08fa3fcf-5972-4349-9658-2889b797998f"
+                },
+                {
+                  "key": "region",
+                  "value": "Kyiv",
+                  "type": "text",
+                  "uuid": "ae946b11-960c-4743-b916-b9c1a421cc55"
+                },
+                {
+                  "key": "city",
+                  "value": "Linve",
+                  "type": "text",
+                  "uuid": "a64824ee-0da7-4889-b7a1-825131d49dfd"
+                },
+                {
+                  "key": "price",
+                  "value": "1200",
+                  "type": "text",
+                  "uuid": "5f382967-e910-4da9-b4d8-a1368d7d2a0c"
+                },
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text",
+                  "uuid": "952ff18f-c177-4ee1-9d49-2d4d08f8f976"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars",
+                ":carId"
+              ],
+              "variable": [
+                {
+                  "key": "carId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get cars",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars"
+              ],
+              "query": [
+                {
+                  "key": "isDeleted",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars",
+                ":carId"
+              ],
+              "variable": [
+                {
+                  "key": "carId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "9421e047-f8c7-4e6c-a1c2-afed7f19cfa3",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId/image",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars",
+                ":carId",
+                "image"
+              ],
+              "variable": [
+                {
+                  "key": "carId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId/image",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars",
+                ":carId",
+                "image"
+              ],
+              "variable": [
+                {
+                  "key": "carId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "cars",
+                ":carId"
+              ],
+              "variable": [
+                {
+                  "key": "carId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "brands",
+      "item": [
+        {
+          "name": "brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/brands",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "brands"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "brand",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "59bfb702-d551-4d23-925a-226c92aeee76"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API-NODE-NEW-HOST}}/brands/report",
+              "host": [
+                "{{API-NODE-NEW-HOST}}"
+              ],
+              "path": [
+                "brands",
+                "report"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
