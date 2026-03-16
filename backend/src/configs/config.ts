@@ -1,7 +1,7 @@
 import { ObjectCannedACL } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
+dotenv.config();
 
 interface IConfig {
     NODE_ENV: string;

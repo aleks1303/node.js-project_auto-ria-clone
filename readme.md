@@ -52,30 +52,30 @@
 * Налаштовано підтримку AWS SDK для Node.js.
 
 ---
-### Варіанти запуску проєкту
 
-Проєкт підтримує два режими роботи:
 
-1.  **Full Docker Stack** (рекомендовано для деплою/демонстрації):
-    Усі сервіси (App, DB, Nginx) піднімаються однією командою:
-    ```bash
-    docker-compose up --build
-    ```
-    Доступ до сервісів:
+###  Запуск проєкту
 
-Backend API: http://localhost:5000 (mapping 5000:7000)
+Проєкт повністю контейнеризований і налаштований на роботу з хмарною базою даних **MongoDB Atlas**.
+
+#### 1. Підготовка
+* Склонуйте репозиторій.
+* Створіть файл `.env` у папці проєкту, скопіювавши вміст із `.env.example`.
+* Переконайтеся, що в `.env` вказано актуальний `MONGO_URI` (Atlas).
+
+#### 2. Запуск через Docker
+Виконайте команду для збірки та запуску всіх сервісів (API та Nginx):
+```bash
+docker-compose up --build
+```
+Доступ до сервісів
+
+Backend API: http://localhost:5000
 
 Swagger UI: http://localhost:5000/api-docs
 
 Frontend (Nginx): http://localhost:80
 
-MongoDB: доступна локально на порту 1234
-
-2.  **Hybrid Dev Mode** (найзручніший для розробки):
-    Дозволяє використовувати `hot reload` для Node.js.
-    * Запустіть тільки базу даних: `docker-compose up -d db`
-    * Запустіть сервер локально: `npm run start:dev`
- 
 ---
 
 ### Особливості логіки та безпеки
@@ -95,11 +95,6 @@ MongoDB: доступна локально на порту 1234
 приклад фалу .env: .env.example - додано до проекту
 
 ```env
-# Порт 7000 необхідний для коректної роботи Docker (mapping 5000:7000)
-PORT=7000
-
-# Для локального запуску (Hybrid Mode) використовуйте порт 1234
-MONGO_URI=mongodb://user:user@localhost:1234/nodejs-auto-ria-db?authSource=admin
 
 # Секретний ключ для cтворення адміністратора
 ADMIN_KEY=your_super_secret_key
@@ -139,12 +134,6 @@ AWS_S3_REGION=your_region
 * **Виправлення проблем із залежностями (Build без кешу):**
     ```bash
     docker-compose build --no-cache
-    ```
-
-* **Робота в гібридному режимі (Тільки БД):**
-  Запуск лише контейнера з базою даних для локального дебагу через `npm run start:dev`:
-    ```bash
-    docker-compose up -d db
     ```
 
 *Проєкт виконав: **Олександр Булда***
