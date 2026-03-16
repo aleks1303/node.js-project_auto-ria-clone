@@ -184,7 +184,10 @@ class AuthService {
                 _userId: tokenData._userId,
             });
 
-            throw new ApiError("Account no longer exists or is disabled", 403);
+            throw new ApiError(
+                "Account no longer exists or is disabled",
+                StatusCodesEnum.FORBIDDEN,
+            );
         }
         await userRepository.updateById(tokenData._userId, {
             isVerified: true,

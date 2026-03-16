@@ -1809,6 +1809,13 @@ const swaggerDocument: OpenAPIV3.Document = {
                             schema: {
                                 $ref: "#/components/schemas/CarUpdateDto",
                             },
+                            example: {
+                                description: "Super car",
+                                region: "Kyiv",
+                                city: "Kyiv",
+                                price: 5500,
+                                currency: "EUR",
+                            },
                         },
                     },
                 },

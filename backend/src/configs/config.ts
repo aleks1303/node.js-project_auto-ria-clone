@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
 
 interface IConfig {
+    NODE_ENV: string;
     PORT: string;
     MONGO_URI: string;
 
@@ -65,5 +66,7 @@ const config: IConfig = {
     AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT,
 
     ADMIN_KEY: process.env.ADMIN_KEY,
+
+    NODE_ENV: process.env.NODE_ENV,
 };
 export { config };

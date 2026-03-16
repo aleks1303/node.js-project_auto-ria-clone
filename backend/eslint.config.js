@@ -18,7 +18,6 @@ export default [
                 tsconfigRootDir: process.cwd(),
             },
             globals: {
-                // Node.js globals
                 process: "readonly",
                 __dirname: "readonly",
                 module: "readonly",

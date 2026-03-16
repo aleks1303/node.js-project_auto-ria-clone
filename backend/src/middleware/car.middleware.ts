@@ -13,7 +13,7 @@ class CarMiddleware {
         next: NextFunction,
     ) {
         try {
-            const { _id, accountType } = res.locals.user; // Дані юзера після authMiddleware
+            const { _id, accountType } = res.locals.user;
             if (accountType === accountTypeEnum.PREMIUM) {
                 return next();
             }
