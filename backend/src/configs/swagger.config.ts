@@ -676,7 +676,7 @@ const swaggerDocument: OpenAPIV3.Document = {
                 requestBody: {
                     required: true,
                     content: {
-                        "application-json": {
+                        "application/json": {
                             schema: {
                                 type: "object",
                                 required: [
@@ -1461,6 +1461,7 @@ const swaggerDocument: OpenAPIV3.Document = {
             get: {
                 tags: ["Cars"],
                 summary: "Get list of cars",
+                security: [{ bearerAuth: [] }],
                 description:
                     "Returns a paginated list of cars with optional filtering.",
                 parameters: [
@@ -1489,6 +1490,15 @@ const swaggerDocument: OpenAPIV3.Document = {
                         name: "status",
                         in: "query",
                         schema: { type: "string" },
+                        description: "Managers only",
+                    },
+                    {
+                        name: "isDeleted",
+                        in: "query",
+                        schema: {
+                            type: "boolean",
+                            default: false,
+                        },
                         description: "Managers only",
                     },
                 ],
@@ -2169,6 +2179,8 @@ const swaggerDocument: OpenAPIV3.Document = {
                         example: "https://s3.../car.jpg",
                     },
                     createdAt: { type: "string", format: "date-time" },
+                    status: { type: "string" },
+                    isDeleted: { type: "boolean" },
                 },
             },
             CarCreateResponse: {
