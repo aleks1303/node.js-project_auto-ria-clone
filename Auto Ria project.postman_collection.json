@@ -51,59 +51,61 @@
               "urlencoded": [
                 {
                   "key": "name",
-                  "value": "",
+                  "value": "Norman",
                   "type": "text",
                   "uuid": "3b6ac7e5-0b1c-4818-8a9e-44cd58e11a21"
                 },
                 {
                   "key": "surname",
-                  "value": "",
+                  "value": "Novak",
                   "type": "text",
                   "uuid": "a9d291f7-a75b-4be4-bed1-7544952100f6"
                 },
                 {
                   "key": "age",
-                  "value": "",
+                  "value": "34",
                   "type": "text",
                   "uuid": "38982749-7939-4f4d-95b9-c66a914fca00"
                 },
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "norman1234@gmail.com",
                   "type": "text",
                   "uuid": "f0851b58-df23-4cea-a6ab-6246fc113cb8"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "Norman1234$",
                   "type": "text",
                   "uuid": "4be72ccd-3d87-4a0f-95e2-3c06b6657e71"
                 },
                 {
                   "key": "phone",
-                  "value": "",
+                  "value": "+380931234567",
                   "type": "text",
                   "uuid": "5ac00ae0-eac9-4ab0-8a4a-bd6ec8e1609f"
                 },
                 {
                   "key": "city",
-                  "value": "",
+                  "value": "Kyiv",
                   "type": "text",
                   "uuid": "4256ec24-382c-45a3-ac8d-aeb7fce4a76e"
                 },
                 {
                   "key": "region",
-                  "value": "",
+                  "value": "Kyiv",
                   "type": "text",
                   "uuid": "aa2740cd-6385-4c9a-a2f3-d3bdcf042d68"
                 }
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/admin/manager",
+              "raw": "http://localhost:5000/admin/manager",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "admin",
                 "manager"
@@ -135,65 +137,67 @@
               "urlencoded": [
                 {
                   "key": "name",
-                  "value": "",
+                  "value": "Norman",
                   "type": "text",
                   "uuid": "3b6ac7e5-0b1c-4818-8a9e-44cd58e11a21"
                 },
                 {
                   "key": "surname",
-                  "value": "",
+                  "value": "Novak",
                   "type": "text",
                   "uuid": "a9d291f7-a75b-4be4-bed1-7544952100f6"
                 },
                 {
                   "key": "age",
-                  "value": "",
+                  "value": "34",
                   "type": "text",
                   "uuid": "38982749-7939-4f4d-95b9-c66a914fca00"
                 },
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "novak1234@gmail.com",
                   "type": "text",
                   "uuid": "f0851b58-df23-4cea-a6ab-6246fc113cb8"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "Novak1234$",
                   "type": "text",
                   "uuid": "4be72ccd-3d87-4a0f-95e2-3c06b6657e71"
                 },
                 {
                   "key": "phone",
-                  "value": "",
+                  "value": "+380939870989",
                   "type": "text",
                   "uuid": "5ac00ae0-eac9-4ab0-8a4a-bd6ec8e1609f"
                 },
                 {
                   "key": "city",
-                  "value": "",
+                  "value": "Lviv",
                   "type": "text",
                   "uuid": "4256ec24-382c-45a3-ac8d-aeb7fce4a76e"
                 },
                 {
                   "key": "region",
-                  "value": "",
+                  "value": "Lviv",
                   "type": "text",
                   "uuid": "aa2740cd-6385-4c9a-a2f3-d3bdcf042d68"
                 },
                 {
                   "key": "key",
-                  "value": "",
+                  "value": "your key",
                   "type": "text",
                   "uuid": "73232d38-3ff0-4789-924f-ab9a9cc1a07c"
                 }
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/admin/create",
+              "raw": "http://localhost:5000/admin/create",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "admin",
                 "create"
@@ -235,10 +239,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/admin/:userId/upgrade-role",
+              "raw": "http://localhost:5000/admin/:userId/upgrade-role",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "admin",
                 ":userId",
@@ -275,10 +281,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/management/users",
+              "raw": "http://localhost:5000/management/users",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "management",
                 "users"
@@ -315,10 +323,12 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/management/:userId/ban",
+              "raw": "http://localhost:5000/management/:userId/ban",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "management",
                 ":userId",
@@ -350,10 +360,12 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/management/:userId/unban",
+              "raw": "http://localhost:5000/management/:userId/unban",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "management",
                 ":userId",
@@ -389,10 +401,12 @@
               "urlencoded": []
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/management/:userId",
+              "raw": "http://localhost:5000/management/:userId",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "management",
                 ":userId"
@@ -423,10 +437,12 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/management/:carId/validate",
+              "raw": "http://localhost:5000/management/:carId/validate",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "management",
                 ":carId",
@@ -467,10 +483,12 @@
               }
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/management/brand-models",
+              "raw": "http://localhost:5000/management/brand-models",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "management",
                 "brand-models"
@@ -500,10 +518,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/me",
+              "raw": "http://localhost:5000/users/me",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "me"
@@ -528,10 +548,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/:userId",
+              "raw": "http://localhost:5000/users/:userId",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 ":userId"
@@ -603,10 +625,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/me",
+              "raw": "http://localhost:5000/users/me",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "me"
@@ -642,10 +666,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/me/avatar",
+              "raw": "http://localhost:5000/users/me/avatar",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "me",
@@ -671,10 +697,12 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/avatar",
+              "raw": "http://localhost:5000/users/avatar",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "avatar"
@@ -721,10 +749,12 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/me/premium",
+              "raw": "http://localhost:5000/users/me/premium",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "me",
@@ -781,10 +811,12 @@
               }
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/me/upgrade-seller",
+              "raw": "http://localhost:5000/users/me/upgrade-seller",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "me",
@@ -814,10 +846,12 @@
               "urlencoded": []
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/users/me",
+              "raw": "http://localhost:5000/users/me",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "users",
                 "me"
@@ -863,65 +897,67 @@
               "urlencoded": [
                 {
                   "key": "name",
-                  "value": "",
+                  "value": "Alex",
                   "type": "text",
                   "uuid": "3b6ac7e5-0b1c-4818-8a9e-44cd58e11a21"
                 },
                 {
                   "key": "surname",
-                  "value": "",
+                  "value": "Novak",
                   "type": "text",
                   "uuid": "a9d291f7-a75b-4be4-bed1-7544952100f6"
                 },
                 {
                   "key": "age",
-                  "value": "",
+                  "value": "34",
                   "type": "text",
                   "uuid": "38982749-7939-4f4d-95b9-c66a914fca00"
                 },
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "aleksnovak1234@gmail.com",
                   "type": "text",
                   "uuid": "f0851b58-df23-4cea-a6ab-6246fc113cb8"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "Aleks1234$",
                   "type": "text",
                   "uuid": "4be72ccd-3d87-4a0f-95e2-3c06b6657e71"
                 },
                 {
                   "key": "phone",
-                  "value": "",
+                  "value": "+380933412380",
                   "type": "text",
                   "uuid": "5ac00ae0-eac9-4ab0-8a4a-bd6ec8e1609f"
                 },
                 {
                   "key": "city",
-                  "value": "",
+                  "value": "Dobre",
                   "type": "text",
                   "uuid": "4256ec24-382c-45a3-ac8d-aeb7fce4a76e"
                 },
                 {
                   "key": "region",
-                  "value": "",
+                  "value": "Lviv",
                   "type": "text",
                   "uuid": "aa2740cd-6385-4c9a-a2f3-d3bdcf042d68"
                 },
                 {
                   "key": "role",
-                  "value": "",
+                  "value": "seller",
                   "type": "text",
                   "uuid": "d62c23d7-208f-4dba-a658-7bc8c5e183a2"
                 }
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/sign-up",
+              "raw": "http://localhost:5000/auth/sign-up",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "sign-up"
@@ -962,23 +998,25 @@
               "urlencoded": [
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "alexnovak1234@gmail.com",
                   "type": "text",
                   "uuid": "0e297f22-bbc5-4986-8492-cb0033f35013"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "Aleks1234$",
                   "type": "text",
                   "uuid": "e30ade10-c96b-443f-9d6b-905e50d5fa47"
                 }
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/sign-in",
+              "raw": "http://localhost:5000/auth/sign-in",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "sign-in"
@@ -1029,10 +1067,12 @@
               "urlencoded": []
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/refresh",
+              "raw": "http://localhost:5000/auth/refresh",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "refresh"
@@ -1054,10 +1094,12 @@
               "urlencoded": []
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/verify/:token",
+              "raw": "http://localhost:5000/auth/verify/:token",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "verify",
@@ -1090,10 +1132,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/verify-email",
+              "raw": "http://localhost:5000/auth/verify-email",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "verify-email"
@@ -1135,10 +1179,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/forgot-password",
+              "raw": "http://localhost:5000/auth/forgot-password",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "forgot-password"
@@ -1183,10 +1229,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/forgot-password",
+              "raw": "http://localhost:5000/auth/forgot-password",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "forgot-password"
@@ -1233,10 +1281,12 @@
               }
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/auth/logout",
+              "raw": "http://localhost:5000/auth/logout",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "auth",
                 "logout"
@@ -1270,59 +1320,61 @@
               "urlencoded": [
                 {
                   "key": "brand",
-                  "value": "",
+                  "value": "audi",
                   "type": "text",
                   "uuid": "2376c27b-40c8-43b1-940f-b9c771af3ad2"
                 },
                 {
                   "key": "model",
-                  "value": "",
+                  "value": "a4",
                   "type": "text",
                   "uuid": "b78cd57d-7d8c-4a94-ab79-da51e8d5d2d8"
                 },
                 {
                   "key": "year",
-                  "value": "",
+                  "value": "2025",
                   "type": "text",
                   "uuid": "e8bfb0e3-08dd-465c-bca4-5031ee3e42f7"
                 },
                 {
                   "key": "description",
-                  "value": "",
+                  "value": "hello this is a good car  ",
                   "type": "text",
                   "uuid": "49578527-63cc-4d14-be1b-682c4103a62c"
                 },
                 {
                   "key": "region",
-                  "value": "",
+                  "value": "Rivne",
                   "type": "text",
                   "uuid": "46296e8c-6dda-4938-961c-d47995f2e3d8"
                 },
                 {
                   "key": "city",
-                  "value": "",
+                  "value": "Solotvino",
                   "type": "text",
                   "uuid": "63ad346b-92f2-43ce-8c84-677b97d05e3b"
                 },
                 {
                   "key": "price",
-                  "value": "",
+                  "value": "9000",
                   "type": "text",
                   "uuid": "dbff58ae-fe6f-4074-afb0-e18c3ff120b3"
                 },
                 {
                   "key": "currency",
-                  "value": "",
+                  "value": "EUR",
                   "type": "text",
                   "uuid": "23d29efd-c7c6-4c26-9cfa-4417b0f350d6"
                 }
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars/create",
+              "raw": "http://localhost:5000/cars/create",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars",
                 "create"
@@ -1382,10 +1434,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId",
+              "raw": "http://localhost:5000/cars/:carId",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars",
                 ":carId"
@@ -1416,10 +1470,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars",
+              "raw": "http://localhost:5000/cars",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars"
               ],
@@ -1450,10 +1506,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId",
+              "raw": "http://localhost:5000/cars/:carId",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars",
                 ":carId"
@@ -1495,10 +1553,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId/image",
+              "raw": "http://localhost:5000/cars/:carId/image",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars",
                 ":carId",
@@ -1530,10 +1590,12 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId/image",
+              "raw": "http://localhost:5000/cars/:carId/image",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars",
                 ":carId",
@@ -1565,10 +1627,12 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/cars/:carId",
+              "raw": "http://localhost:5000/cars/:carId",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "cars",
                 ":carId"
@@ -1594,10 +1658,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/brands",
+              "raw": "http://localhost:5000/brands",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "brands"
               ]
@@ -1632,10 +1698,12 @@
               ]
             },
             "url": {
-              "raw": "{{API-NODE-NEW-HOST}}/brands/report",
+              "raw": "http://localhost:5000/brands/report",
+              "protocol": "http",
               "host": [
-                "{{API-NODE-NEW-HOST}}"
+                "localhost"
               ],
+              "port": "5000",
               "path": [
                 "brands",
                 "report"

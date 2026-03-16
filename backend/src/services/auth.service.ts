@@ -17,6 +17,7 @@ import {
     IUser,
     IUserCreateDTO,
 } from "../interfaces/user.interface";
+import { logger } from "../logger/logger";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { passwordRepository } from "../repositories/password.repository";
 import { tokenRepository } from "../repositories/token.repository";
@@ -65,6 +66,12 @@ class AuthService {
             _userId: newUser._id,
             actionToken: actionToken,
         });
+        const verificationLink = `http://localhost:5000/auth/sign-up/${actionToken}`;
+        logger.info("-----------------------------------------");
+        logger.info(`VERIFICATION LINK FOR ${newUser.email}:`);
+        logger.info(verificationLink);
+        logger.info("-----------------------------------------");
+
         await emailService.sendMail(EmailTypeEnum.WELCOME, newUser.email, {
             name: newUser.name,
             email: newUser.email,
@@ -158,7 +165,11 @@ class AuthService {
             _userId: user._id,
             actionToken: verifyToken,
         });
-
+        const verificationLink = `http://localhost:5000/auth/sign-up/${verifyToken}`;
+        logger.info("-----------------------------------------");
+        logger.info(`VERIFICATION LINK FOR ${user.email}:`);
+        logger.info(verificationLink);
+        logger.info("-----------------------------------------");
         await emailService.sendMail(EmailTypeEnum.WELCOME, user.email, {
             email: user.email,
             name: user.name,
@@ -214,6 +225,11 @@ class AuthService {
             _userId: user._id,
             actionToken,
         });
+        const verificationLink = `http://localhost:5000/auth/sign-up/${actionToken}`;
+        logger.info("-----------------------------------------");
+        logger.info(`VERIFICATION LINK FOR ${user.email}:`);
+        logger.info(verificationLink);
+        logger.info("-----------------------------------------");
         await emailService.sendMail(EmailTypeEnum.FORGOT_PASSWORD, user.email, {
             name: user.name,
             email: user.email,
