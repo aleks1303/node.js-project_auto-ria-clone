@@ -43,7 +43,6 @@ const dbConnection = async () => {
             logger.info("Connecting to DB...");
             await mongoose.connect(mongoDb);
             dbCon = true;
-            logger.info(`Connecting to: ${mongoDb}`); // ДОДАЙ ЦЕЙ РЯДОК
             logger.info("Database available!!!");
             await seedBrands();
         } catch (e) {
