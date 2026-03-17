@@ -100,14 +100,14 @@ Frontend (Nginx): http://localhost:80
 
 
 # Секретний ключ для cтворення адміністратора
-ADMIN_KEY=your_super_secret_key
+ * ADMIN_KEY=your_super_secret_key
 
 
 # Налаштування AWS S3
-AWS_ACCESS_KEY=your_key
-AWS_SECRET_KEY=your_secret
-AWS_S3_BUCKET=your_bucket_name
-AWS_S3_REGION=your_region
+* AWS_ACCESS_KEY=your_key
+* AWS_SECRET_KEY=your_secret
+* AWS_S3_BUCKET=your_bucket_name
+* AWS_S3_REGION=your_region
 ```
 ---
 
